@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- ── SEO ── -->
-    <title>Ahmad Chabayta — Frontend Developer &amp; Creative Technologist</title>
+    <title>
+      Ahmad Chabayta — Frontend Developer &amp; Creative Technologist
+    </title>
     <meta
       name="description"
       content="Self-taught frontend developer based in Beirut & Riyadh. Four years of professional work in React, Next.js, WebGL/GLSL shaders, and data engineering. No degree — only the work."
@@ -37,6 +39,69 @@
       name="twitter:description"
       content="Self-taught frontend developer. React, Next.js, live GLSL fractals, and data pipelines. Beirut / Riyadh."
     />
+
+    <!-- Theme & PWA hints -->
+    <meta name="theme-color" content="#ff4500" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ahmad Chabayta",
+        "alternateName": "A.C.",
+        "jobTitle": "Frontend Developer & Creative Technologist",
+        "url": "https://ahmadchabayta.com",
+        "email": "mailto:ahmadchabayta@proton.me",
+        "telephone": "+96170687167",
+        "address": [
+          {
+            "@type": "PostalAddress",
+            "addressLocality": "Beirut",
+            "addressCountry": "LB"
+          },
+          {
+            "@type": "PostalAddress",
+            "addressLocality": "Riyadh",
+            "addressCountry": "SA"
+          }
+        ],
+        "knowsLanguage": ["en", "ar"],
+        "knowsAbout": [
+          "Frontend Development",
+          "React",
+          "Next.js",
+          "TypeScript",
+          "WebGL",
+          "GLSL",
+          "Raymarching",
+          "Mandelbulb",
+          "Data Visualization",
+          "PostgreSQL",
+          "Python",
+          "UI/UX Design",
+          "Design Systems"
+        ],
+        "sameAs": ["https://github.com/AhmedChabayta"]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Ahmad Chabayta — Portfolio",
+        "url": "https://ahmadchabayta.com",
+        "inLanguage": "en",
+        "author": { "@type": "Person", "name": "Ahmad Chabayta" }
+      }
+    </script>
 
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -89,7 +154,9 @@
         pointer-events: none;
         z-index: 9999;
         transform: translate(-50%, -50%);
-        transition: transform 0.08s ease, background 0.3s ease;
+        transition:
+          transform 0.08s ease,
+          background 0.3s ease;
         will-change: transform, left, top;
       }
       #cursor-ring {
@@ -101,7 +168,11 @@
         pointer-events: none;
         z-index: 9998;
         transform: translate(-50%, -50%);
-        transition: left 0.12s ease, top 0.12s ease, width 0.3s ease, height 0.3s ease,
+        transition:
+          left 0.12s ease,
+          top 0.12s ease,
+          width 0.3s ease,
+          height 0.3s ease,
           border-color 0.4s ease;
         will-change: left, top;
       }
@@ -140,10 +211,8 @@
       }
 
       .grid-bg {
-        background-image: linear-gradient(
-            rgba(255, 255, 255, 0.022) 1px,
-            transparent 1px
-          ),
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
           linear-gradient(
             90deg,
             rgba(255, 255, 255, 0.022) 1px,
@@ -207,10 +276,9 @@
         cursor: none;
         overflow: hidden;
       }
-      #fractal-wrap canvas {
+      /* Canvas size controlled inline by JS + ResizeObserver — no !important */
+      #fractal-wrap > canvas {
         display: block;
-        width: 100% !important;
-        height: 100% !important;
       }
 
       #fractal-text-overlay {
@@ -295,7 +363,9 @@
         padding: 2.75rem 2.5rem 2.5rem;
         border-right: 1px solid rgba(0, 0, 0, 0.15);
         border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-        transition: background 0.4s ease, transform 0.3s ease;
+        transition:
+          background 0.4s ease,
+          transform 0.3s ease;
         position: relative;
         overflow: hidden;
       }
@@ -335,7 +405,9 @@
         align-items: center;
         padding: 3rem 2.5rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        transition: background 0.4s, color 0.4s;
+        transition:
+          background 0.4s,
+          color 0.4s;
         gap: 2rem;
         position: relative;
         overflow: hidden;
@@ -349,7 +421,9 @@
         top: 50%;
         transform: translateY(-50%) translateX(20px);
         opacity: 0;
-        transition: opacity 0.3s ease, transform 0.3s ease;
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease;
         color: var(--black);
       }
       .work-row:hover::after {
@@ -448,7 +522,9 @@
         padding: 2.5rem;
         background: rgba(255, 69, 0, 0.05);
         border: 1px solid rgba(255, 69, 0, 0.12);
-        transition: background 0.3s ease, border-color 0.3s ease;
+        transition:
+          background 0.3s ease,
+          border-color 0.3s ease;
       }
       .stat-card:hover {
         background: rgba(255, 69, 0, 0.1);
@@ -512,13 +588,25 @@
       }
       /* ── Rich Media Banner ── */
       @keyframes scanLine {
-        0%   { top: 0;              opacity: 0.9; }
-        85%  {                      opacity: 0.3; }
-        100% { top: calc(100% - 26px); opacity: 0; }
+        0% {
+          top: 0;
+          opacity: 0.9;
+        }
+        85% {
+          opacity: 0.3;
+        }
+        100% {
+          top: calc(100% - 26px);
+          opacity: 0;
+        }
       }
       @keyframes ticker {
-        from { transform: translateX(0); }
-        to   { transform: translateX(-50%); }
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
       }
       .corner-bracket {
         position: absolute;
@@ -526,1130 +614,1762 @@
         height: 12px;
         pointer-events: none;
       }
-      .corner-tl   { top: 12px;    left: 12px;  border-top:    1px solid rgba(255,69,0,0.3); border-left:  1px solid rgba(255,69,0,0.3); }
-      .corner-tr   { top: 12px;    right: 12px; border-top:    1px solid rgba(255,69,0,0.3); border-right: 1px solid rgba(255,69,0,0.3); }
-      .corner-bl   { bottom: 30px; left: 12px;  border-bottom: 1px solid rgba(255,69,0,0.3); border-left:  1px solid rgba(255,69,0,0.3); }
-      .corner-br-b { bottom: 30px; right: 12px; border-bottom: 1px solid rgba(255,69,0,0.3); border-right: 1px solid rgba(255,69,0,0.3); }
+      .corner-tl {
+        top: 12px;
+        left: 12px;
+        border-top: 1px solid rgba(255, 69, 0, 0.3);
+        border-left: 1px solid rgba(255, 69, 0, 0.3);
+      }
+      .corner-tr {
+        top: 12px;
+        right: 12px;
+        border-top: 1px solid rgba(255, 69, 0, 0.3);
+        border-right: 1px solid rgba(255, 69, 0, 0.3);
+      }
+      .corner-bl {
+        bottom: 30px;
+        left: 12px;
+        border-bottom: 1px solid rgba(255, 69, 0, 0.3);
+        border-left: 1px solid rgba(255, 69, 0, 0.3);
+      }
+      .corner-br-b {
+        bottom: 30px;
+        right: 12px;
+        border-bottom: 1px solid rgba(255, 69, 0, 0.3);
+        border-right: 1px solid rgba(255, 69, 0, 0.3);
+      }
       /* ── Rich media grid responsive ── */
       @media (max-width: 700px) {
-        .rich-media-grid { grid-template-columns: 1fr !important; }
-        .poster-wrap     { min-height: 160px !important; }
+        .rich-media-grid {
+          grid-template-columns: 1fr !important;
+        }
+        .poster-wrap {
+          min-height: 160px !important;
+        }
+      }
+
+      /* ══════════════════════════════════════════════════════
+         ACCESSIBILITY · INCLUSIVE DESIGN · RESPONSIVE FIXES
+         ══════════════════════════════════════════════════════ */
+
+      /* ── Skip-to-content link ── */
+      .skip-link {
+        position: absolute;
+        top: -100px;
+        left: 1rem;
+        background: var(--orange);
+        color: #000;
+        padding: 0.6rem 1rem;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        text-decoration: none;
+        border-radius: 4px;
+        z-index: 10000;
+        transition: top 0.2s ease;
+      }
+      .skip-link:focus {
+        top: 1rem;
+        outline: 2px solid #fff;
+        outline-offset: 2px;
+      }
+
+      /* ── Visible focus rings (keyboard users) ── */
+      :focus {
+        outline: none;
+      }
+      :focus-visible {
+        outline: 2px solid var(--orange);
+        outline-offset: 3px;
+        border-radius: 2px;
+      }
+      a:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--orange);
+        outline-offset: 4px;
+      }
+
+      /* ── Screen-reader-only ── */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* ── Fractal Manual Controls ── */
+      .fractal-controls {
+        position: absolute;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        display: flex;
+        gap: 0.4rem;
+        z-index: 5;
+        flex-wrap: wrap;
+        max-width: calc(100% - 3rem);
+      }
+      .fractal-controls button {
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(10px);
+        color: rgba(255, 255, 255, 0.85);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.5rem 0.7rem;
+        min-width: 36px;
+        min-height: 36px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          border-color 0.2s,
+          color 0.2s;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .fractal-controls button:hover,
+      .fractal-controls button:focus-visible {
+        background: rgba(255, 69, 0, 0.2);
+        border-color: var(--orange);
+        color: #fff;
+      }
+      .fractal-controls button.active {
+        background: var(--orange);
+        color: #000;
+        border-color: var(--orange);
+      }
+      #focus-overlay-hint {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--orange);
+        background: rgba(0, 0, 0, 0.7);
+        padding: 0.8rem 1.5rem;
+        border: 1px solid var(--orange);
+        border-radius: 6px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        z-index: 6;
+        text-align: center;
+        line-height: 1.8;
+      }
+      #fractal-wrap.focus-mode {
+        outline: 2px solid var(--orange);
+        outline-offset: -2px;
+        touch-action: none;
+      }
+      #fractal-wrap.focus-mode #focus-overlay-hint {
+        opacity: 0.85;
+      }
+
+      /* ══════════════════════════════════════════════════════
+         REDUCED MOTION (motion-sickness friendly)
+         ══════════════════════════════════════════════════════ */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          scroll-behavior: auto !important;
+        }
+        html {
+          scroll-behavior: auto;
+        }
+        #cursor-dot,
+        #cursor-ring {
+          display: none;
+        }
+        body {
+          cursor: auto;
+        }
+        a,
+        button,
+        [role="button"] {
+          cursor: auto;
+        }
+        #fractal-text-overlay > div {
+          transform: none !important;
+        }
+        /* Stop ticker, gradient-shift, scan-line via animation:none */
+        #banner-ticker {
+          animation: none !important;
+        }
+      }
+
+      /* ══════════════════════════════════════════════════════
+         HIGH CONTRAST
+         ══════════════════════════════════════════════════════ */
+      @media (prefers-contrast: more) {
+        :root {
+          --orange: #ff8800;
+        }
+        .work-row {
+          border-bottom-color: rgba(255, 255, 255, 0.4) !important;
+        }
+        .demo-card {
+          border-color: rgba(255, 255, 255, 0.4) !important;
+        }
+        nav {
+          mix-blend-mode: normal;
+        }
+      }
+
+      /* Forced-colors mode (Windows High Contrast) */
+      @media (forced-colors: active) {
+        .skip-link {
+          border: 2px solid CanvasText;
+        }
+        .fractal-controls button {
+          border: 2px solid CanvasText;
+        }
+      }
+
+      /* ══════════════════════════════════════════════════════
+         RESPONSIVE: TABLET & MOBILE
+         ══════════════════════════════════════════════════════ */
+      @media (max-width: 1024px) {
+        section,
+        footer {
+          padding-left: 1.5rem !important;
+          padding-right: 1.5rem !important;
+        }
+        nav {
+          padding: 1.25rem 1.5rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        :root {
+          --base-pad: 1.25rem;
+        }
+
+        section[id="hero"] {
+          padding: 5.5rem 1.25rem 3rem !important;
+        }
+        section#capabilities,
+        section#experiments,
+        section#work,
+        .quote-section {
+          padding: 5rem 1.25rem !important;
+        }
+        footer {
+          padding: 5rem 1.25rem !important;
+        }
+
+        nav {
+          padding: 1rem 1.25rem;
+        }
+        nav a {
+          font-size: 0.6rem;
+        }
+        nav > div:last-child {
+          gap: 1.1rem !important;
+        }
+
+        #scroll-indicator {
+          display: none !important;
+        }
+
+        /* Fractal HUD: shrink + reposition for mobile */
+        #fractal-text-overlay {
+          padding: 5rem 1.25rem 6rem !important;
+        }
+        #fractal-wrap .hud-panel {
+          width: 180px !important;
+          font-size: 0.5rem !important;
+          padding: 0.7rem 0.85rem !important;
+          line-height: 1.9 !important;
+        }
+        #coord-display {
+          display: none !important;
+        }
+        #phase-announce {
+          bottom: 4rem !important;
+        }
+        .fractal-controls {
+          bottom: 1rem !important;
+          left: 50% !important;
+          transform: translateX(-50%);
+          justify-content: center;
+        }
+        .fractal-controls button {
+          min-width: 40px !important;
+          min-height: 40px !important;
+          font-size: 0.6rem !important;
+          padding: 0.4rem 0.6rem !important;
+        }
+
+        /* Capabilities: tighter cards */
+        .cap-card {
+          padding: 2rem 1.5rem !important;
+        }
+        .cap-card .card-title {
+          font-size: 1.5rem !important;
+        }
+
+        /* Work log: stack badges below text */
+        .work-row {
+          padding: 2rem 1.25rem !important;
+          flex-direction: column;
+          align-items: flex-start !important;
+          gap: 1rem !important;
+        }
+        .work-row > div:first-child {
+          gap: 1.25rem !important;
+        }
+        .work-num {
+          font-size: 1.8rem !important;
+          min-width: 2.5rem !important;
+        }
+
+        /* Stats: stack tech-spectrum on mobile */
+        #skill-bars-section > div:last-child {
+          grid-template-columns: 1fr !important;
+          gap: 2rem !important;
+        }
+        #skill-bars-section {
+          padding: 2rem !important;
+        }
+
+        /* Rich media banner stacking */
+        .rich-media-grid {
+          grid-template-columns: 1fr !important;
+        }
+        .corner-bracket {
+          display: none;
+        }
+
+        /* Bigger tap targets */
+        nav a,
+        footer a {
+          padding: 0.4rem 0;
+          min-height: 32px;
+          display: inline-flex;
+          align-items: center;
+        }
+
+        /* Disable backdrop-filter on mobile for perf */
+        .hud-panel {
+          backdrop-filter: none !important;
+          background: rgba(0, 0, 0, 0.6) !important;
+        }
+
+        /* Custom cursor off on mobile */
+        body {
+          cursor: auto !important;
+        }
+        a,
+        button,
+        [role="button"] {
+          cursor: pointer !important;
+        }
+      }
+
+      @media (max-width: 480px) {
+        h1.f-anton,
+        h2.f-anton {
+          word-break: break-word;
+        }
+        .stat-card {
+          padding: 1.5rem !important;
+        }
+        .demo-canvas-wrap {
+          height: 180px !important;
+        }
+      }
+
+      /* iOS safe-area padding */
+      @supports (padding: max(0px)) {
+        section,
+        footer {
+          padding-left: max(1.25rem, env(safe-area-inset-left));
+          padding-right: max(1.25rem, env(safe-area-inset-right));
+        }
+      }
+
+      /* Use 100svh where supported (avoids mobile bar issues) */
+      @supports (height: 100svh) {
+        section[id="hero"] {
+          min-height: 100svh;
+        }
+        section#visuals {
+          min-height: 100svh;
+        }
       }
     </style>
   </head>
 
   <body class="grid-bg">
-    <div id="progress"></div>
+    <!-- Skip-to-content link (keyboard users) -->
+    <a href="#main" class="skip-link">Skip to main content</a>
 
-    <!-- Custom cursor -->
-    <div id="cursor-dot"></div>
-    <div id="cursor-ring"></div>
+    <div id="progress" role="presentation" aria-hidden="true"></div>
+
+    <!-- Custom cursor (decorative) -->
+    <div id="cursor-dot" aria-hidden="true"></div>
+    <div id="cursor-ring" aria-hidden="true"></div>
 
     <!-- ── NAV ── -->
-    <nav>
-      <div class="f-anton" style="font-size: 1.75rem">A.C.</div>
+    <nav aria-label="Primary navigation">
+      <div
+        class="f-anton"
+        style="font-size: 1.75rem"
+        aria-label="Ahmad Chabayta"
+      >
+        A.C.
+      </div>
       <div class="f-mono" style="display: flex; gap: 2rem; font-weight: 700">
-        <a href="#visuals">3D</a>
-        <a href="#capabilities">Skills</a>
-        <a href="#experiments">Demos</a>
-        <a href="#contact">Contact</a>
+        <a href="#visuals" aria-label="Jump to 3D fractal section">3D</a>
+        <a href="#capabilities" aria-label="Jump to skills section">Skills</a>
+        <a href="#experiments" aria-label="Jump to interactive experiments"
+          >Demos</a
+        >
+        <a href="#contact" aria-label="Jump to contact section">Contact</a>
       </div>
     </nav>
 
-    <!-- ══════════════ 00 HERO ══════════════ -->
-    <section
-      id="hero"
-      style="
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 2rem 2.5rem 5rem;
-        position: relative;
-      "
-    >
-      <!-- Scroll indicator -->
-      <div
+    <main id="main">
+      <!-- ══════════════ 00 HERO ══════════════ -->
+      <section
+        id="hero"
         style="
-          position: absolute;
-          right: 2.5rem;
-          top: 50%;
-          transform: translateY(-50%);
+          min-height: 100vh;
           display: flex;
           flex-direction: column;
-          align-items: center;
-          gap: 0.5rem;
-          opacity: 0.25;
-        "
-        id="scroll-indicator"
-      >
-        <div
-          class="f-mono"
-          style="
-            writing-mode: vertical-rl;
-            font-size: 0.5rem;
-            letter-spacing: 0.2em;
-          "
-        >
-          SCROLL
-        </div>
-        <div
-          style="
-            width: 1px;
-            height: 60px;
-            background: linear-gradient(to bottom, var(--white), transparent);
-          "
-        ></div>
-      </div>
-
-      <div style="max-width: 1600px; width: 100%">
-        <div
-          class="f-mono hero-line"
-          style="
-            color: var(--orange);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            opacity: 0;
-          "
-        >
-          <span
-            style="
-              width: 2rem;
-              height: 1px;
-              background: var(--orange);
-              display: inline-block;
-              flex-shrink: 0;
-            "
-          ></span>
-          BASED IN BEIRUT / RIYADH
-        </div>
-        <h1
-          class="f-anton hero-line"
-          style="
-            font-size: clamp(3.5rem, 14vw, 14rem);
-            margin-bottom: 0.5rem;
-            opacity: 0;
-          "
-        >
-          FRONTEND<br />DEVELOPER.
-        </h1>
-        <div
-          style="
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 1.5rem;
-          "
-        >
-          <h2
-            class="f-anton outline hero-line"
-            style="font-size: clamp(3.5rem, 14vw, 14rem); opacity: 0"
-          >
-            CREATIVE TECH.
-          </h2>
-          <p
-            class="f-mono hero-line"
-            style="
-              opacity: 0;
-              line-height: 2;
-              max-width: 280px;
-              padding-bottom: 0.4rem;
-              color: rgba(255, 255, 255, 0.35);
-            "
-          >
-            SELF-TAUGHT ACROSS EVERY DISCIPLINE.<br />
-            FOUR YEARS OF PROFESSIONAL WORK.<br />
-            NO DEGREE. ONLY THE WORK.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════ 01 3D FRACTAL ══════════════ -->
-    <section
-      id="visuals"
-      style="
-        background: radial-gradient(
-          circle at 52% 40%,
-          rgba(255, 69, 0, 0.12),
-          #000 55%
-        );
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      "
-    >
-      <div
-        id="fractal-wrap"
-        style="
+          justify-content: flex-end;
+          padding: 2rem 2.5rem 5rem;
           position: relative;
-          width: 100%;
-          flex: 1;
-          overflow: hidden;
         "
       >
-        <!-- Three.js particle overlay -->
-        <div id="particle-container"></div>
-
-        <!-- Text overlay -->
-        <div id="fractal-text-overlay">
-          <div>
-            <p
-              class="f-mono reveal"
-              style="color: var(--orange); margin-bottom: 1rem"
-            >
-              / GLSL · RAYMARCHING · WEBGL · 4-PHASE
-            </p>
-            <h2
-              class="f-anton reveal"
-              style="font-size: clamp(3rem, 7.5vw, 8rem)"
-            >
-              COMPUTED<br />IN THE BROWSER.
-            </h2>
-          </div>
-        </div>
-
-        <!-- HUD: top-right panel -->
+        <!-- Scroll indicator -->
         <div
-          class="f-mono"
           style="
             position: absolute;
-            top: 2rem;
             right: 2.5rem;
-            width: min(260px, 30vw);
-            background: rgba(0, 0, 0, 0.38);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 1rem 1.2rem;
-            backdrop-filter: blur(12px);
-            line-height: 2.2;
-            color: rgba(255, 255, 255, 0.72);
-            border-radius: 12px;
-            pointer-events: none;
-          "
-        >
-          STATUS&nbsp;&nbsp;RENDERING<br />
-          SHADER&nbsp;&nbsp;MANDELBULB_4P<br />
-          PHASE&nbsp;&nbsp;&nbsp;<span
-            id="phase-val"
-            style="color: var(--orange)"
-            >EMBER STORM</span
-          ><br />
-          POWER&nbsp;&nbsp;&nbsp;<span id="power-val">8.00</span><br />
-          FPS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="fps-val">—</span>
-        </div>
-
-        <!-- Tech specs: top-left area below overlay text -->
-        <div
-          class="f-mono reveal"
-          style="
-            position: absolute;
-            top: 6rem;
-            right: 2.5rem;
-            opacity: 0;
-            text-align: right;
-            line-height: 2.2;
-            max-width: 240px;
-            pointer-events: none;
-          "
-        >
-          <!-- intentionally hidden, HUD replaces this -->
-        </div>
-
-        <!-- Phase announcement toast -->
-        <div id="phase-announce">
-          <div id="phase-announce-name">EMBER STORM</div>
-          <div id="phase-announce-bar"></div>
-        </div>
-
-        <!-- Orbit hint -->
-        <div
-          class="hud"
-          style="
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0.3;
-            letter-spacing: 0.2em;
-            white-space: nowrap;
-          "
-        >
-          ← MOVE CURSOR TO ORBIT →
-        </div>
-
-        <!-- Live coordinates -->
-        <div
-          class="hud"
-          id="coord-display"
-          style="
-            bottom: 1.5rem;
-            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
             opacity: 0.25;
-            text-align: right;
-            line-height: 2.2;
           "
+          id="scroll-indicator"
         >
-          CAM_X&nbsp;0.000<br />
-          CAM_Y&nbsp;0.000
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════ 02 CAPABILITIES ══════════════ -->
-    <section
-      id="capabilities"
-      style="background: var(--orange); color: #000; padding: 8rem 2.5rem"
-    >
-      <div style="max-width: 1600px; margin: 0 auto">
-        <div
-          style="
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 3rem;
-            margin-bottom: 4rem;
-          "
-        >
-          <h3
-            class="f-anton reveal"
-            style="font-size: clamp(3.5rem, 9vw, 9rem)"
-          >
-            THE<br />ARSENAL.
-          </h3>
-          <div style="max-width: 320px; padding-top: 0.5rem" class="reveal">
-            <p
-              style="
-                font-weight: 800;
-                font-size: 1.2rem;
-                line-height: 1.5;
-                margin-bottom: 1rem;
-              "
-            >
-              "I left university to build things."
-            </p>
-            <p style="font-size: 0.875rem; opacity: 0.75; line-height: 1.9">
-              Design, data, and frontend engineering — combined. I bridge the
-              gap between aesthetic vision and functional architecture.
-            </p>
-          </div>
-        </div>
-
-        <div class="cap-grid reveal">
-          <div class="cap-card">
-            <span class="f-mono card-label">01 / Engineering</span>
-            <h4 class="f-anton card-title">Frontend Systems</h4>
-            <p style="font-size: 0.875rem; font-weight: 500; line-height: 1.7">
-              React, Next.js, TypeScript, Tailwind. Building production
-              platforms with focus on speed and code quality.
-            </p>
-          </div>
-          <div class="cap-card">
-            <span class="f-mono card-label">02 / Analysis</span>
-            <h4 class="f-anton card-title">Data Pipelines</h4>
-            <p style="font-size: 0.875rem; font-weight: 500; line-height: 1.7">
-              Python, SQL, PostgreSQL. Turning raw business data into actionable
-              dashboard logic.
-            </p>
-          </div>
-          <div class="cap-card">
-            <span class="f-mono card-label">03 / Craft</span>
-            <h4 class="f-anton card-title">Visual Design</h4>
-            <p style="font-size: 0.875rem; font-weight: 500; line-height: 1.7">
-              Photoshop, Illustrator, InDesign. Eye for editorial typography,
-              geometric composition, visual storytelling.
-            </p>
-          </div>
-          <div class="cap-card">
-            <span class="f-mono card-label">04 / Graphics</span>
-            <h4 class="f-anton card-title">GLSL / WebGL</h4>
-            <p style="font-size: 0.875rem; font-weight: 500; line-height: 1.7">
-              Raymarching, custom shaders, 3D simulations. Pushing the
-              boundaries of browser-based rendering.
-            </p>
-          </div>
-          <div class="cap-card">
-            <span class="f-mono card-label">05 / Intelligence</span>
-            <h4 class="f-anton card-title">AI Workflows</h4>
-            <p style="font-size: 0.875rem; font-weight: 500; line-height: 1.7">
-              Prompt engineering, Ollama integration. Shipping features powered
-              by local AI inference.
-            </p>
-          </div>
-          <div class="cap-card">
-            <span class="f-mono card-label">06 / Human</span>
-            <h4 class="f-anton card-title">Bilingual</h4>
-            <p style="font-size: 0.875rem; font-weight: 500; line-height: 1.7">
-              Native Arabic, Professional English. Working across borders
-              without losing nuance.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════ 03 INTERACTIVE DEMOS ══════════════ -->
-    <section
-      id="experiments"
-      style="padding: 8rem 2.5rem; background: var(--black)"
-    >
-      <div style="max-width: 1600px; margin: 0 auto">
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 3rem;
-            margin-bottom: 4rem;
-            flex-wrap: wrap;
-          "
-        >
-          <h2
-            class="f-anton reveal"
-            style="font-size: clamp(3.5rem, 9vw, 9rem)"
-          >
-            INTERACTIVE<br />EXPERIMENTS.
-          </h2>
-          <p
-            class="f-mono reveal"
-            style="opacity: 0.35; max-width: 280px; line-height: 1.8"
-          >
-            Live demonstrations of design, animation, and interactive
-            architecture across web platforms.
-          </p>
-        </div>
-
-        <!-- ── 3 Interactive Canvas Experiments ── -->
-        <div
-          style="
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-          "
-        >
-          <!-- EXPERIMENT 1: Particle Gravity Field -->
-          <div class="demo-card reveal">
-            <div class="demo-canvas-wrap" style="height: 220px; cursor: crosshair;">
-              <canvas id="cv-particles"></canvas>
-              <div class="demo-hint">MOVE MOUSE · CLICK TO BURST</div>
-            </div>
-            <p class="f-mono" style="font-size: 0.65rem; color: var(--orange); margin-bottom: 0.8rem;">CANVAS PHYSICS</p>
-            <h4 class="f-anton" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Particle Gravity</h4>
-            <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6;">
-              120 bodies orbiting your cursor via inverse-square attraction. Click to detonate an outward burst force and watch them drift back.
-            </p>
-          </div>
-
-          <!-- EXPERIMENT 2: Wave Synth -->
-          <div class="demo-card reveal">
-            <div class="demo-canvas-wrap" style="height: 220px; cursor: crosshair;">
-              <canvas id="cv-wave"></canvas>
-              <div class="demo-hint">X = FREQUENCY · Y = AMPLITUDE</div>
-            </div>
-            <p class="f-mono" style="font-size: 0.65rem; color: var(--orange); margin-bottom: 0.8rem;">GENERATIVE VISUAL</p>
-            <h4 class="f-anton" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Wave Synth</h4>
-            <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6;">
-              Three layered interference waves shaped by your cursor. Mouse X controls frequency, Y controls amplitude. Live, no libraries.
-            </p>
-          </div>
-
-          <!-- EXPERIMENT 3: Micro Breakout Game -->
-          <div class="demo-card reveal">
-            <div class="demo-canvas-wrap" style="height: 220px; cursor: none; position: relative;">
-              <canvas id="cv-game"></canvas>
-              <div id="game-hint" style="
-                position: absolute; inset: 0;
-                display: flex; flex-direction: column; align-items: center; justify-content: center;
-                background: rgba(5,5,5,0.75); gap: 0.6rem; border-radius: 6px;
-              ">
-                <span class="f-anton" style="font-size: 1.1rem; letter-spacing: 0.25em; color: var(--orange);">MICRO BREAKOUT</span>
-                <span class="f-mono" style="font-size: 0.5rem; opacity: 0.5; letter-spacing: 0.2em;">CLICK TO PLAY</span>
-              </div>
-            </div>
-            <p class="f-mono" style="font-size: 0.65rem; color: var(--orange); margin-bottom: 0.8rem;">GAME LOOP</p>
-            <h4 class="f-anton" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Micro Breakout</h4>
-            <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6;">
-              Fully playable in-browser. Move your mouse to control the paddle. Raw canvas game loop — no engine, no framework.
-            </p>
-          </div>
-        </div>
-
-        <!-- ── Rich Media Row ── -->
-        <div
-          class="rich-media-grid"
-          style="
-            display: grid;
-            grid-template-columns: 3fr 2fr;
-            gap: 2rem;
-            margin-bottom: 4rem;
-            align-items: stretch;
-          "
-        >
-          <!-- RICH MEDIA 1: Available-for-Work Banner Ad -->
-          <div style="
-            position: relative; overflow: hidden;
-            background: #0a0a0a;
-            border: 1px solid rgba(255,255,255,0.07);
-            min-height: 200px;
-            display: flex; flex-direction: column; justify-content: center;
-            padding: 2.5rem 2.5rem 3rem;
-          ">
-            <!-- Animated scan line -->
-            <div style="
-              position: absolute; top: 0; left: 0; right: 0; height: 1px;
-              background: linear-gradient(90deg, transparent, rgba(255,69,0,0.55), transparent);
-              animation: scanLine 4s ease-in-out infinite;
-            "></div>
-            <!-- Corner brackets -->
-            <div class="corner-bracket corner-tl"></div>
-            <div class="corner-bracket corner-tr"></div>
-            <div class="corner-bracket corner-bl"></div>
-            <div class="corner-bracket corner-br-b"></div>
-            <!-- Watermark -->
-            <div class="f-anton" style="
-              position: absolute; right: -0.5rem; top: 50%; transform: translateY(-50%);
-              font-size: 7rem; color: rgba(255,255,255,0.03); pointer-events: none;
-              user-select: none; line-height: 1;
-            ">HIRE</div>
-            <!-- Label -->
-            <p class="f-mono" style="font-size: 0.5rem; color: var(--orange); letter-spacing: 0.28em; margin-bottom: 0.75rem;">
-              AVAILABLE FOR WORK · 2026
-            </p>
-            <!-- Headline -->
-            <h3 class="f-anton" style="font-size: clamp(1.8rem, 3.5vw, 2.8rem); margin-bottom: 1rem; line-height: 1;">
-              LET'S BUILD<br/>SOMETHING.
-            </h3>
-            <!-- Cycling skill tag -->
-            <div style="height: 1.3em; overflow: hidden; margin-bottom: 1.5rem;">
-              <div id="skill-cycle" class="f-mono" style="font-size: 0.6rem; opacity: 0.45; letter-spacing: 0.1em;">
-                REACT · NEXT.JS · TYPESCRIPT
-              </div>
-            </div>
-            <!-- CTA -->
-            <a href="mailto:ahmadchabayta@proton.me" style="
-              display: inline-flex; align-items: center; gap: 0.75rem; width: fit-content;
-              background: var(--orange); color: #000; padding: 0.65rem 1.5rem;
-              font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700;
-              text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;
-              transition: transform 0.2s ease, box-shadow 0.2s ease;
-            "
-            onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 0 20px rgba(255,69,0,0.4)'"
-            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'"
-            >HIRE ME &nbsp;→</a>
-            <!-- Ticker strip -->
-            <div style="
-              position: absolute; bottom: 0; left: 0; right: 0; height: 26px;
-              background: rgba(255,69,0,0.05); border-top: 1px solid rgba(255,69,0,0.1);
-              overflow: hidden; display: flex; align-items: center;
-            ">
-              <div id="banner-ticker" class="f-mono" style="
-                display: inline-block; white-space: nowrap;
-                animation: ticker 24s linear infinite;
-                font-size: 0.46rem; color: rgba(255,69,0,0.5); letter-spacing: 0.14em;
-              ">
-                FRONTEND DEVELOPMENT &nbsp;·&nbsp; REACT &amp; NEXT.JS &nbsp;·&nbsp; GLSL SHADERS &nbsp;·&nbsp; DATA PIPELINES &nbsp;·&nbsp; UI SYSTEMS &nbsp;·&nbsp; OPEN SOURCE &nbsp;·&nbsp; BILINGUAL AR/EN &nbsp;·&nbsp; BEIRUT / RIYADH &nbsp;·&nbsp; AVAILABLE GLOBALLY &nbsp;·&nbsp;&nbsp;&nbsp;&nbsp;FRONTEND DEVELOPMENT &nbsp;·&nbsp; REACT &amp; NEXT.JS &nbsp;·&nbsp; GLSL SHADERS &nbsp;·&nbsp; DATA PIPELINES &nbsp;·&nbsp; UI SYSTEMS &nbsp;·&nbsp; OPEN SOURCE &nbsp;·&nbsp; BILINGUAL AR/EN &nbsp;·&nbsp; BEIRUT / RIYADH &nbsp;·&nbsp; AVAILABLE GLOBALLY &nbsp;·&nbsp;&nbsp;&nbsp;
-              </div>
-            </div>
-          </div>
-
-          <!-- RICH MEDIA 2: Generative Poster (click to regenerate) -->
           <div
-            id="poster-wrap"
-            class="poster-wrap"
-            style="
-              position: relative; overflow: hidden; cursor: pointer;
-              min-height: 200px;
-              border: 1px solid rgba(255,255,255,0.07);
-            "
-            title="Click to regenerate"
-          >
-            <canvas id="cv-poster" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></canvas>
-            <div style="
-              position: absolute; bottom: 0.75rem; left: 0; right: 0;
-              text-align: center; pointer-events: none; z-index: 1;
-            ">
-              <span class="f-mono" style="font-size: 0.46rem; letter-spacing: 0.22em; color: rgba(255,255,255,0.28);">
-                CLICK TO REGENERATE
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════ 04 WORK LOG ══════════════ -->
-    <section id="work" style="padding: 8rem 2.5rem; background: var(--black)">
-      <div style="max-width: 1600px; margin: 0 auto">
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 3rem;
-            margin-bottom: 4rem;
-            flex-wrap: wrap;
-          "
-        >
-          <h2
-            class="f-anton reveal"
-            style="font-size: clamp(4rem, 11vw, 11rem)"
-          >
-            WORK LOG
-          </h2>
-          <p
-            class="f-mono reveal"
-            style="opacity: 0.25; max-width: 300px; line-height: 1.8"
-          >
-            Production platforms, enterprise tools, and open-source
-            contributions.
-          </p>
-        </div>
-
-        <div style="border-top: 1px solid rgba(255, 255, 255, 0.08)">
-          <div class="work-row reveal">
-            <div
-              style="
-                display: flex;
-                align-items: flex-start;
-                gap: 2.5rem;
-                flex: 1;
-                min-width: 0;
-              "
-            >
-              <span class="work-num">01</span>
-              <div style="flex: 1; min-width: 0">
-                <h4
-                  class="f-anton"
-                  style="font-size: clamp(1.8rem, 5vw, 4.5rem)"
-                >
-                  Production Web Platform
-                </h4>
-                <p
-                  class="f-mono"
-                  style="opacity: 0.35; margin-top: 0.4rem; margin-bottom: 1rem"
-                >
-                  NEXT.JS / REACT / TYPESCRIPT / SUPABASE / TAILWIND
-                </p>
-                <p
-                  style="
-                    font-size: 0.9rem;
-                    opacity: 0.7;
-                    line-height: 1.7;
-                    max-width: 600px;
-                  "
-                >
-                  Full-stack SaaS platform serving 10k+ users. Architected
-                  scalable frontend with dynamic routing, real-time data sync,
-                  and complex state management. Achieved 98 Lighthouse score.
-                  Handled API optimization reducing load times by 40%.
-                </p>
-              </div>
-            </div>
-            <span class="badge">CLIENT WORK</span>
-          </div>
-
-          <div class="work-row reveal">
-            <div
-              style="
-                display: flex;
-                align-items: flex-start;
-                gap: 2.5rem;
-                flex: 1;
-                min-width: 0;
-              "
-            >
-              <span class="work-num">02</span>
-              <div style="flex: 1; min-width: 0">
-                <h4
-                  class="f-anton"
-                  style="font-size: clamp(1.8rem, 5vw, 4.5rem)"
-                >
-                  Enterprise Analytics Dashboard
-                </h4>
-                <p
-                  class="f-mono"
-                  style="opacity: 0.35; margin-top: 0.4rem; margin-bottom: 1rem"
-                >
-                  REACT / D3.JS / POSTGRESQL / NODE.JS / WEBSOCKETS
-                </p>
-                <p
-                  style="
-                    font-size: 0.9rem;
-                    opacity: 0.7;
-                    line-height: 1.7;
-                    max-width: 600px;
-                  "
-                >
-                  Real-time analytics platform connecting 50+ data sources.
-                  Built custom D3 visualizations with 100ms latency updates.
-                  Designed SQL query optimization layer reducing database load
-                  by 60%.
-                </p>
-              </div>
-            </div>
-            <span class="badge">ENTERPRISE</span>
-          </div>
-
-          <div class="work-row reveal">
-            <div
-              style="
-                display: flex;
-                align-items: flex-start;
-                gap: 2.5rem;
-                flex: 1;
-                min-width: 0;
-              "
-            >
-              <span class="work-num">03</span>
-              <div style="flex: 1; min-width: 0">
-                <h4
-                  class="f-anton"
-                  style="font-size: clamp(1.8rem, 5vw, 4.5rem)"
-                >
-                  Design System &amp; Component Library
-                </h4>
-                <p
-                  class="f-mono"
-                  style="opacity: 0.35; margin-top: 0.4rem; margin-bottom: 1rem"
-                >
-                  REACT / STORYBOOK / TYPESCRIPT / FIGMA
-                </p>
-                <p
-                  style="
-                    font-size: 0.9rem;
-                    opacity: 0.7;
-                    line-height: 1.7;
-                    max-width: 600px;
-                  "
-                >
-                  60+ components built accessibility-first (WCAG 2.1 AA).
-                  Created Figma plugin for dev-designer sync. Documented with
-                  Storybook + MDX. Adopted across 4 product teams.
-                </p>
-              </div>
-            </div>
-            <span class="badge">INTERNAL</span>
-          </div>
-
-          <div class="work-row reveal">
-            <div
-              style="
-                display: flex;
-                align-items: flex-start;
-                gap: 2.5rem;
-                flex: 1;
-                min-width: 0;
-              "
-            >
-              <span class="work-num">04</span>
-              <div style="flex: 1; min-width: 0">
-                <h4
-                  class="f-anton"
-                  style="font-size: clamp(1.8rem, 5vw, 4.5rem)"
-                >
-                  Open Source CLI Tool
-                </h4>
-                <p
-                  class="f-mono"
-                  style="opacity: 0.35; margin-top: 0.4rem; margin-bottom: 1rem"
-                >
-                  TYPESCRIPT / NODE.JS / GITHUB ACTIONS / NPM
-                </p>
-                <p
-                  style="
-                    font-size: 0.9rem;
-                    opacity: 0.7;
-                    line-height: 1.7;
-                    max-width: 600px;
-                  "
-                >
-                  Developer tool for data transformation. 2k+ GitHub stars,
-                  500+ weekly npm downloads. Implemented parallel processing for
-                  10× speed improvement. Active community support.
-                </p>
-              </div>
-            </div>
-            <span class="badge">OPEN SOURCE</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════ 05 DATA DRIVEN ══════════════ -->
-    <section
-      style="
-        padding: 8rem 2.5rem;
-        background: var(--white);
-        color: var(--black);
-      "
-    >
-      <div style="max-width: 1600px; margin: 0 auto">
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 3rem;
-            margin-bottom: 4rem;
-            flex-wrap: wrap;
-          "
-        >
-          <h2
-            class="f-anton reveal"
-            style="font-size: clamp(3.5rem, 9vw, 9rem)"
-          >
-            DATA<br />DRIVEN.
-          </h2>
-          <p
-            class="f-mono reveal"
-            style="opacity: 0.4; max-width: 280px; line-height: 1.8"
-          >
-            Turning raw metrics into meaningful insights through custom
-            visualizations and analytics.
-          </p>
-        </div>
-
-        <!-- Stats -->
-        <div
-          style="
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
-          "
-        >
-          <div class="stat-card reveal">
-            <p
-              class="f-mono"
-              style="
-                font-size: 0.65rem;
-                color: var(--orange);
-                margin-bottom: 1rem;
-              "
-            >
-              PERFORMANCE
-            </p>
-            <div
-              style="
-                display: flex;
-                align-items: baseline;
-                gap: 0.5rem;
-                margin-bottom: 1rem;
-              "
-            >
-              <span
-                class="f-anton"
-                style="font-size: 3.5rem"
-                data-count="98"
-                >0</span
-              >
-              <span class="f-mono" style="opacity: 0.5">LIGHTHOUSE</span>
-            </div>
-            <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6">
-              Average score across 12 production projects. Focus on Core Web
-              Vitals and accessibility.
-            </p>
-          </div>
-
-          <div class="stat-card reveal">
-            <p
-              class="f-mono"
-              style="
-                font-size: 0.65rem;
-                color: var(--orange);
-                margin-bottom: 1rem;
-              "
-            >
-              SCALE
-            </p>
-            <div
-              style="
-                display: flex;
-                align-items: baseline;
-                gap: 0.5rem;
-                margin-bottom: 1rem;
-              "
-            >
-              <span
-                class="f-anton"
-                style="font-size: 3.5rem"
-                data-count="50"
-                >0</span
-              >
-              <span class="f-mono" style="opacity: 0.5">K MONTHLY USERS</span>
-            </div>
-            <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6">
-              Combined user base across all active projects. Systems handling
-              1000+ concurrent connections.
-            </p>
-          </div>
-
-          <div class="stat-card reveal">
-            <p
-              class="f-mono"
-              style="
-                font-size: 0.65rem;
-                color: var(--orange);
-                margin-bottom: 1rem;
-              "
-            >
-              OPTIMIZATION
-            </p>
-            <div
-              style="
-                display: flex;
-                align-items: baseline;
-                gap: 0.5rem;
-                margin-bottom: 1rem;
-              "
-            >
-              <span
-                class="f-anton"
-                style="font-size: 3.5rem"
-                data-count="60"
-                >0</span
-              >
-              <span class="f-mono" style="opacity: 0.5">% LOAD REDUCTION</span>
-            </div>
-            <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6">
-              Average database query optimization across enterprise projects.
-            </p>
-          </div>
-        </div>
-
-        <!-- Tech Stack Bars -->
-        <div
-          class="reveal"
-          style="border: 1px solid rgba(0, 0, 0, 0.08); padding: 3rem"
-          id="skill-bars-section"
-        >
-          <p
             class="f-mono"
             style="
-              font-size: 0.65rem;
+              writing-mode: vertical-rl;
+              font-size: 0.5rem;
+              letter-spacing: 0.2em;
+            "
+          >
+            SCROLL
+          </div>
+          <div
+            style="
+              width: 1px;
+              height: 60px;
+              background: linear-gradient(to bottom, var(--white), transparent);
+            "
+          ></div>
+        </div>
+
+        <div style="max-width: 1600px; width: 100%">
+          <div
+            class="f-mono hero-line"
+            style="
               color: var(--orange);
+              display: flex;
+              align-items: center;
+              gap: 1rem;
+              margin-bottom: 2rem;
+              opacity: 0;
+            "
+          >
+            <span
+              style="
+                width: 2rem;
+                height: 1px;
+                background: var(--orange);
+                display: inline-block;
+                flex-shrink: 0;
+              "
+            ></span>
+            BASED IN BEIRUT / RIYADH
+          </div>
+          <h1
+            class="f-anton hero-line"
+            style="
+              font-size: clamp(3.5rem, 14vw, 14rem);
+              margin-bottom: 0.5rem;
+              opacity: 0;
+            "
+          >
+            FRONTEND<br />DEVELOPER.
+          </h1>
+          <div
+            style="
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: space-between;
+              align-items: flex-end;
+              gap: 1.5rem;
+            "
+          >
+            <h2
+              class="f-anton outline hero-line"
+              style="font-size: clamp(3.5rem, 14vw, 14rem); opacity: 0"
+            >
+              CREATIVE TECH.
+            </h2>
+            <p
+              class="f-mono hero-line"
+              style="
+                opacity: 0;
+                line-height: 2;
+                max-width: 280px;
+                padding-bottom: 0.4rem;
+                color: rgba(255, 255, 255, 0.35);
+              "
+            >
+              SELF-TAUGHT ACROSS EVERY DISCIPLINE.<br />
+              FOUR YEARS OF PROFESSIONAL WORK.<br />
+              NO DEGREE. ONLY THE WORK.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ 01 3D FRACTAL ══════════════ -->
+      <section
+        id="visuals"
+        aria-labelledby="visuals-heading"
+        style="
+          background: radial-gradient(
+            circle at 52% 40%,
+            rgba(255, 69, 0, 0.12),
+            #000 55%
+          );
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <div
+          id="fractal-wrap"
+          role="region"
+          aria-label="Live 3D Mandelbulb fractal — animated WebGL raymarcher cycling through four visual phases. Use buttons below to zoom and toggle interactive focus mode."
+          style="position: relative; width: 100%; flex: 1; overflow: hidden"
+        >
+          <!-- Three.js particle overlay (decorative) -->
+          <div id="particle-container" aria-hidden="true"></div>
+
+          <!-- Text overlay -->
+          <div id="fractal-text-overlay">
+            <div>
+              <p
+                class="f-mono reveal"
+                style="color: var(--orange); margin-bottom: 1rem"
+              >
+                / GLSL · RAYMARCHING · WEBGL · 4-PHASE
+              </p>
+              <h2
+                id="visuals-heading"
+                class="f-anton reveal"
+                style="font-size: clamp(2.5rem, 7.5vw, 8rem)"
+              >
+                COMPUTED<br />IN THE BROWSER.
+              </h2>
+            </div>
+          </div>
+
+          <!-- HUD: top-right panel -->
+          <div
+            class="f-mono hud-panel"
+            role="status"
+            aria-live="polite"
+            aria-label="Fractal renderer status"
+            style="
+              position: absolute;
+              top: 2rem;
+              right: 2.5rem;
+              width: min(240px, 30vw);
+              background: rgba(0, 0, 0, 0.42);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              padding: 1rem 1.2rem;
+              backdrop-filter: blur(12px);
+              line-height: 2.2;
+              color: rgba(255, 255, 255, 0.78);
+              border-radius: 12px;
+              pointer-events: none;
+              font-size: 0.6rem;
+            "
+          >
+            STATUS&nbsp;&nbsp;RENDERING<br />
+            SHADER&nbsp;&nbsp;MANDELBULB_4P<br />
+            PHASE&nbsp;&nbsp;&nbsp;<span
+              id="phase-val"
+              style="color: var(--orange)"
+              >EMBER STORM</span
+            ><br />
+            POWER&nbsp;&nbsp;&nbsp;<span id="power-val">8.00</span><br />
+            ZOOM&nbsp;&nbsp;&nbsp;&nbsp;<span id="zoom-val">1.00</span>×<br />
+            FPS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="fps-val">—</span>
+          </div>
+
+          <!-- Phase announcement toast -->
+          <div id="phase-announce" role="status" aria-live="polite">
+            <div id="phase-announce-name">EMBER STORM</div>
+            <div id="phase-announce-bar"></div>
+          </div>
+
+          <!-- Focus-mode overlay hint (decorative — buttons describe controls) -->
+          <div id="focus-overlay-hint" aria-hidden="true">
+            FOCUS MODE ACTIVE<br />
+            SCROLL = ZOOM &nbsp;·&nbsp; DRAG = ORBIT &nbsp;·&nbsp; ESC TO EXIT
+          </div>
+
+          <!-- Manual fractal controls -->
+          <div
+            class="fractal-controls"
+            role="toolbar"
+            aria-label="Fractal controls"
+          >
+            <button id="zoom-out" type="button" aria-label="Zoom out fractal">
+              −
+            </button>
+            <button
+              id="zoom-reset"
+              type="button"
+              aria-label="Reset fractal zoom and rotation"
+            >
+              RESET
+            </button>
+            <button id="zoom-in" type="button" aria-label="Zoom in fractal">
+              +
+            </button>
+            <button
+              id="pause-toggle"
+              type="button"
+              aria-pressed="false"
+              aria-label="Pause fractal animation"
+            >
+              PAUSE
+            </button>
+            <button
+              id="focus-mode-btn"
+              type="button"
+              aria-pressed="false"
+              aria-label="Enter interactive focus mode — scroll wheel zooms, drag to orbit"
+            >
+              FOCUS
+            </button>
+          </div>
+
+          <!-- Live coordinates (decorative, hidden on mobile) -->
+          <div
+            class="hud"
+            id="coord-display"
+            aria-hidden="true"
+            style="
+              bottom: 1.5rem;
+              right: 1.5rem;
+              opacity: 0.25;
+              text-align: right;
+              line-height: 2.2;
+            "
+          >
+            CAM_X&nbsp;0.000<br />
+            CAM_Y&nbsp;0.000
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ 02 CAPABILITIES ══════════════ -->
+      <section
+        id="capabilities"
+        style="background: var(--orange); color: #000; padding: 8rem 2.5rem"
+      >
+        <div style="max-width: 1600px; margin: 0 auto">
+          <div
+            style="
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: space-between;
+              align-items: flex-start;
+              gap: 3rem;
+              margin-bottom: 4rem;
+            "
+          >
+            <h2
+              class="f-anton reveal"
+              style="font-size: clamp(3.5rem, 9vw, 9rem)"
+            >
+              THE<br />ARSENAL.
+            </h2>
+            <div style="max-width: 320px; padding-top: 0.5rem" class="reveal">
+              <p
+                style="
+                  font-weight: 800;
+                  font-size: 1.2rem;
+                  line-height: 1.5;
+                  margin-bottom: 1rem;
+                "
+              >
+                "I left university to build things."
+              </p>
+              <p style="font-size: 0.875rem; opacity: 0.75; line-height: 1.9">
+                Design, data, and frontend engineering — combined. I bridge the
+                gap between aesthetic vision and functional architecture.
+              </p>
+            </div>
+          </div>
+
+          <div class="cap-grid reveal">
+            <div class="cap-card">
+              <span class="f-mono card-label">01 / Engineering</span>
+              <h4 class="f-anton card-title">Frontend Systems</h4>
+              <p
+                style="font-size: 0.875rem; font-weight: 500; line-height: 1.7"
+              >
+                React, Next.js, TypeScript, Tailwind. Building production
+                platforms with focus on speed and code quality.
+              </p>
+            </div>
+            <div class="cap-card">
+              <span class="f-mono card-label">02 / Analysis</span>
+              <h4 class="f-anton card-title">Data Pipelines</h4>
+              <p
+                style="font-size: 0.875rem; font-weight: 500; line-height: 1.7"
+              >
+                Python, SQL, PostgreSQL. Turning raw business data into
+                actionable dashboard logic.
+              </p>
+            </div>
+            <div class="cap-card">
+              <span class="f-mono card-label">03 / Craft</span>
+              <h4 class="f-anton card-title">Visual Design</h4>
+              <p
+                style="font-size: 0.875rem; font-weight: 500; line-height: 1.7"
+              >
+                Photoshop, Illustrator, InDesign. Eye for editorial typography,
+                geometric composition, visual storytelling.
+              </p>
+            </div>
+            <div class="cap-card">
+              <span class="f-mono card-label">04 / Graphics</span>
+              <h4 class="f-anton card-title">GLSL / WebGL</h4>
+              <p
+                style="font-size: 0.875rem; font-weight: 500; line-height: 1.7"
+              >
+                Raymarching, custom shaders, 3D simulations. Pushing the
+                boundaries of browser-based rendering.
+              </p>
+            </div>
+            <div class="cap-card">
+              <span class="f-mono card-label">05 / Intelligence</span>
+              <h4 class="f-anton card-title">AI Workflows</h4>
+              <p
+                style="font-size: 0.875rem; font-weight: 500; line-height: 1.7"
+              >
+                Prompt engineering, Ollama integration. Shipping features
+                powered by local AI inference.
+              </p>
+            </div>
+            <div class="cap-card">
+              <span class="f-mono card-label">06 / Human</span>
+              <h4 class="f-anton card-title">Bilingual</h4>
+              <p
+                style="font-size: 0.875rem; font-weight: 500; line-height: 1.7"
+              >
+                Native Arabic, Professional English. Working across borders
+                without losing nuance.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ 03 INTERACTIVE DEMOS ══════════════ -->
+      <section
+        id="experiments"
+        style="padding: 8rem 2.5rem; background: var(--black)"
+      >
+        <div style="max-width: 1600px; margin: 0 auto">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-end;
+              gap: 3rem;
+              margin-bottom: 4rem;
+              flex-wrap: wrap;
+            "
+          >
+            <h2
+              class="f-anton reveal"
+              style="font-size: clamp(3.5rem, 9vw, 9rem)"
+            >
+              INTERACTIVE<br />EXPERIMENTS.
+            </h2>
+            <p
+              class="f-mono reveal"
+              style="opacity: 0.35; max-width: 280px; line-height: 1.8"
+            >
+              Live demonstrations of design, animation, and interactive
+              architecture across web platforms.
+            </p>
+          </div>
+
+          <!-- ── 3 Interactive Canvas Experiments ── -->
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+              gap: 2rem;
               margin-bottom: 2rem;
             "
           >
-            TECHNICAL SPECTRUM
-          </p>
-
-          <div
-            style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem"
-          >
-            <div>
-              <h4 class="f-anton" style="margin-bottom: 1.5rem">
-                Frontend Stack
+            <!-- EXPERIMENT 1: Particle Gravity Field -->
+            <div class="demo-card reveal">
+              <div
+                class="demo-canvas-wrap"
+                style="height: 220px; cursor: crosshair"
+              >
+                <canvas id="cv-particles"></canvas>
+                <div class="demo-hint">MOVE MOUSE · CLICK TO BURST</div>
+              </div>
+              <p
+                class="f-mono"
+                style="
+                  font-size: 0.65rem;
+                  color: var(--orange);
+                  margin-bottom: 0.8rem;
+                "
+              >
+                CANVAS PHYSICS
+              </p>
+              <h4
+                class="f-anton"
+                style="font-size: 1.5rem; margin-bottom: 0.5rem"
+              >
+                Particle Gravity
               </h4>
-              <div style="display: flex; flex-direction: column; gap: 1rem">
-                <div>
-                  <div
+              <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6">
+                120 bodies orbiting your cursor via inverse-square attraction.
+                Click to detonate an outward burst force and watch them drift
+                back.
+              </p>
+            </div>
+
+            <!-- EXPERIMENT 2: Wave Synth -->
+            <div class="demo-card reveal">
+              <div
+                class="demo-canvas-wrap"
+                style="height: 220px; cursor: crosshair"
+              >
+                <canvas id="cv-wave"></canvas>
+                <div class="demo-hint">X = FREQUENCY · Y = AMPLITUDE</div>
+              </div>
+              <p
+                class="f-mono"
+                style="
+                  font-size: 0.65rem;
+                  color: var(--orange);
+                  margin-bottom: 0.8rem;
+                "
+              >
+                GENERATIVE VISUAL
+              </p>
+              <h4
+                class="f-anton"
+                style="font-size: 1.5rem; margin-bottom: 0.5rem"
+              >
+                Wave Synth
+              </h4>
+              <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6">
+                Three layered interference waves shaped by your cursor. Mouse X
+                controls frequency, Y controls amplitude. Live, no libraries.
+              </p>
+            </div>
+
+            <!-- EXPERIMENT 3: Micro Breakout Game -->
+            <div class="demo-card reveal">
+              <div
+                class="demo-canvas-wrap"
+                style="height: 220px; cursor: none; position: relative"
+              >
+                <canvas id="cv-game"></canvas>
+                <div
+                  id="game-hint"
+                  style="
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(5, 5, 5, 0.75);
+                    gap: 0.6rem;
+                    border-radius: 6px;
+                  "
+                >
+                  <span
+                    class="f-anton"
                     style="
-                      display: flex;
-                      justify-content: space-between;
-                      margin-bottom: 0.5rem;
+                      font-size: 1.1rem;
+                      letter-spacing: 0.25em;
+                      color: var(--orange);
                     "
+                    >MICRO BREAKOUT</span
                   >
-                    <span style="font-weight: 600">React &amp; Next.js</span>
-                    <span class="f-mono" style="opacity: 0.5">95%</span>
-                  </div>
-                  <div
+                  <span
+                    class="f-mono"
                     style="
-                      height: 5px;
-                      background: rgba(0, 0, 0, 0.06);
-                      border-radius: 3px;
-                      overflow: hidden;
+                      font-size: 0.5rem;
+                      opacity: 0.5;
+                      letter-spacing: 0.2em;
                     "
+                    >CLICK TO PLAY</span
                   >
-                    <div
-                      class="skill-fill"
-                      style="--target-width: 95%"
-                    ></div>
-                  </div>
                 </div>
-                <div>
-                  <div
-                    style="
-                      display: flex;
-                      justify-content: space-between;
-                      margin-bottom: 0.5rem;
-                    "
-                  >
-                    <span style="font-weight: 600">TypeScript</span>
-                    <span class="f-mono" style="opacity: 0.5">88%</span>
-                  </div>
-                  <div
-                    style="
-                      height: 5px;
-                      background: rgba(0, 0, 0, 0.06);
-                      border-radius: 3px;
-                      overflow: hidden;
-                    "
-                  >
-                    <div
-                      class="skill-fill"
-                      style="--target-width: 88%"
-                    ></div>
-                  </div>
+              </div>
+              <p
+                class="f-mono"
+                style="
+                  font-size: 0.65rem;
+                  color: var(--orange);
+                  margin-bottom: 0.8rem;
+                "
+              >
+                GAME LOOP
+              </p>
+              <h4
+                class="f-anton"
+                style="font-size: 1.5rem; margin-bottom: 0.5rem"
+              >
+                Micro Breakout
+              </h4>
+              <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6">
+                Fully playable in-browser. Move your mouse to control the
+                paddle. Raw canvas game loop — no engine, no framework.
+              </p>
+            </div>
+          </div>
+
+          <!-- ── Rich Media Row ── -->
+          <div
+            class="rich-media-grid"
+            style="
+              display: grid;
+              grid-template-columns: 3fr 2fr;
+              gap: 2rem;
+              margin-bottom: 4rem;
+              align-items: stretch;
+            "
+          >
+            <!-- RICH MEDIA 1: Available-for-Work Banner Ad -->
+            <div
+              style="
+                position: relative;
+                overflow: hidden;
+                background: #0a0a0a;
+                border: 1px solid rgba(255, 255, 255, 0.07);
+                min-height: 200px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 2.5rem 2.5rem 3rem;
+              "
+            >
+              <!-- Animated scan line -->
+              <div
+                style="
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  right: 0;
+                  height: 1px;
+                  background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 69, 0, 0.55),
+                    transparent
+                  );
+                  animation: scanLine 4s ease-in-out infinite;
+                "
+              ></div>
+              <!-- Corner brackets -->
+              <div class="corner-bracket corner-tl"></div>
+              <div class="corner-bracket corner-tr"></div>
+              <div class="corner-bracket corner-bl"></div>
+              <div class="corner-bracket corner-br-b"></div>
+              <!-- Watermark -->
+              <div
+                class="f-anton"
+                style="
+                  position: absolute;
+                  right: -0.5rem;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  font-size: 7rem;
+                  color: rgba(255, 255, 255, 0.03);
+                  pointer-events: none;
+                  user-select: none;
+                  line-height: 1;
+                "
+              >
+                HIRE
+              </div>
+              <!-- Label -->
+              <p
+                class="f-mono"
+                style="
+                  font-size: 0.5rem;
+                  color: var(--orange);
+                  letter-spacing: 0.28em;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                AVAILABLE FOR WORK · 2026
+              </p>
+              <!-- Headline -->
+              <h3
+                class="f-anton"
+                style="
+                  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+                  margin-bottom: 1rem;
+                  line-height: 1;
+                "
+              >
+                LET'S BUILD<br />SOMETHING.
+              </h3>
+              <!-- Cycling skill tag -->
+              <div
+                style="height: 1.3em; overflow: hidden; margin-bottom: 1.5rem"
+              >
+                <div
+                  id="skill-cycle"
+                  class="f-mono"
+                  style="
+                    font-size: 0.6rem;
+                    opacity: 0.45;
+                    letter-spacing: 0.1em;
+                  "
+                >
+                  REACT · NEXT.JS · TYPESCRIPT
                 </div>
-                <div>
-                  <div
-                    style="
-                      display: flex;
-                      justify-content: space-between;
-                      margin-bottom: 0.5rem;
-                    "
-                  >
-                    <span style="font-weight: 600">WebGL &amp; Shaders</span>
-                    <span class="f-mono" style="opacity: 0.5">72%</span>
-                  </div>
-                  <div
-                    style="
-                      height: 5px;
-                      background: rgba(0, 0, 0, 0.06);
-                      border-radius: 3px;
-                      overflow: hidden;
-                    "
-                  >
-                    <div
-                      class="skill-fill"
-                      style="--target-width: 72%"
-                    ></div>
-                  </div>
+              </div>
+              <!-- CTA -->
+              <a
+                href="mailto:ahmadchabayta@proton.me"
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 0.75rem;
+                  width: fit-content;
+                  background: var(--orange);
+                  color: #000;
+                  padding: 0.65rem 1.5rem;
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 0.65rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.1em;
+                  text-decoration: none;
+                  transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+                "
+                onmouseover="
+                  this.style.transform = 'scale(1.04)';
+                  this.style.boxShadow = '0 0 20px rgba(255,69,0,0.4)';
+                "
+                onmouseout="
+                  this.style.transform = 'scale(1)';
+                  this.style.boxShadow = 'none';
+                "
+                >HIRE ME &nbsp;→</a
+              >
+              <!-- Ticker strip -->
+              <div
+                style="
+                  position: absolute;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+                  height: 26px;
+                  background: rgba(255, 69, 0, 0.05);
+                  border-top: 1px solid rgba(255, 69, 0, 0.1);
+                  overflow: hidden;
+                  display: flex;
+                  align-items: center;
+                "
+              >
+                <div
+                  id="banner-ticker"
+                  class="f-mono"
+                  style="
+                    display: inline-block;
+                    white-space: nowrap;
+                    animation: ticker 24s linear infinite;
+                    font-size: 0.46rem;
+                    color: rgba(255, 69, 0, 0.5);
+                    letter-spacing: 0.14em;
+                  "
+                >
+                  FRONTEND DEVELOPMENT &nbsp;·&nbsp; REACT &amp; NEXT.JS
+                  &nbsp;·&nbsp; GLSL SHADERS &nbsp;·&nbsp; DATA PIPELINES
+                  &nbsp;·&nbsp; UI SYSTEMS &nbsp;·&nbsp; OPEN SOURCE
+                  &nbsp;·&nbsp; BILINGUAL AR/EN &nbsp;·&nbsp; BEIRUT / RIYADH
+                  &nbsp;·&nbsp; AVAILABLE GLOBALLY
+                  &nbsp;·&nbsp;&nbsp;&nbsp;&nbsp;FRONTEND DEVELOPMENT
+                  &nbsp;·&nbsp; REACT &amp; NEXT.JS &nbsp;·&nbsp; GLSL SHADERS
+                  &nbsp;·&nbsp; DATA PIPELINES &nbsp;·&nbsp; UI SYSTEMS
+                  &nbsp;·&nbsp; OPEN SOURCE &nbsp;·&nbsp; BILINGUAL AR/EN
+                  &nbsp;·&nbsp; BEIRUT / RIYADH &nbsp;·&nbsp; AVAILABLE GLOBALLY
+                  &nbsp;·&nbsp;&nbsp;&nbsp;
                 </div>
               </div>
             </div>
 
-            <div>
-              <h4 class="f-anton" style="margin-bottom: 1.5rem">
-                Backend &amp; Data
-              </h4>
-              <div style="display: flex; flex-direction: column; gap: 1rem">
-                <div>
-                  <div
+            <!-- RICH MEDIA 2: Generative Poster (click to regenerate) -->
+            <div
+              id="poster-wrap"
+              class="poster-wrap"
+              style="
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+                min-height: 200px;
+                border: 1px solid rgba(255, 255, 255, 0.07);
+              "
+              title="Click to regenerate"
+            >
+              <canvas
+                id="cv-poster"
+                style="
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                "
+              ></canvas>
+              <div
+                style="
+                  position: absolute;
+                  bottom: 0.75rem;
+                  left: 0;
+                  right: 0;
+                  text-align: center;
+                  pointer-events: none;
+                  z-index: 1;
+                "
+              >
+                <span
+                  class="f-mono"
+                  style="
+                    font-size: 0.46rem;
+                    letter-spacing: 0.22em;
+                    color: rgba(255, 255, 255, 0.28);
+                  "
+                >
+                  CLICK TO REGENERATE
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ 04 WORK LOG ══════════════ -->
+      <section id="work" style="padding: 8rem 2.5rem; background: var(--black)">
+        <div style="max-width: 1600px; margin: 0 auto">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-end;
+              gap: 3rem;
+              margin-bottom: 4rem;
+              flex-wrap: wrap;
+            "
+          >
+            <h2
+              class="f-anton reveal"
+              style="font-size: clamp(4rem, 11vw, 11rem)"
+            >
+              WORK LOG
+            </h2>
+            <p
+              class="f-mono reveal"
+              style="opacity: 0.25; max-width: 300px; line-height: 1.8"
+            >
+              Production platforms, enterprise tools, and open-source
+              contributions.
+            </p>
+          </div>
+
+          <div style="border-top: 1px solid rgba(255, 255, 255, 0.08)">
+            <div class="work-row reveal">
+              <div
+                style="
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 2.5rem;
+                  flex: 1;
+                  min-width: 0;
+                "
+              >
+                <span class="work-num">01</span>
+                <div style="flex: 1; min-width: 0">
+                  <h4
+                    class="f-anton"
+                    style="font-size: clamp(1.8rem, 5vw, 4.5rem)"
+                  >
+                    Production Web Platform
+                  </h4>
+                  <p
+                    class="f-mono"
                     style="
-                      display: flex;
-                      justify-content: space-between;
-                      margin-bottom: 0.5rem;
+                      opacity: 0.35;
+                      margin-top: 0.4rem;
+                      margin-bottom: 1rem;
                     "
                   >
-                    <span style="font-weight: 600">Node.js</span>
-                    <span class="f-mono" style="opacity: 0.5">85%</span>
-                  </div>
-                  <div
+                    NEXT.JS / REACT / TYPESCRIPT / SUPABASE / TAILWIND
+                  </p>
+                  <p
                     style="
-                      height: 5px;
-                      background: rgba(0, 0, 0, 0.06);
-                      border-radius: 3px;
-                      overflow: hidden;
+                      font-size: 0.9rem;
+                      opacity: 0.7;
+                      line-height: 1.7;
+                      max-width: 600px;
                     "
                   >
+                    Full-stack SaaS platform serving 10k+ users. Architected
+                    scalable frontend with dynamic routing, real-time data sync,
+                    and complex state management. Achieved 98 Lighthouse score.
+                    Handled API optimization reducing load times by 40%.
+                  </p>
+                </div>
+              </div>
+              <span class="badge">CLIENT WORK</span>
+            </div>
+
+            <div class="work-row reveal">
+              <div
+                style="
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 2.5rem;
+                  flex: 1;
+                  min-width: 0;
+                "
+              >
+                <span class="work-num">02</span>
+                <div style="flex: 1; min-width: 0">
+                  <h4
+                    class="f-anton"
+                    style="font-size: clamp(1.8rem, 5vw, 4.5rem)"
+                  >
+                    Enterprise Analytics Dashboard
+                  </h4>
+                  <p
+                    class="f-mono"
+                    style="
+                      opacity: 0.35;
+                      margin-top: 0.4rem;
+                      margin-bottom: 1rem;
+                    "
+                  >
+                    REACT / D3.JS / POSTGRESQL / NODE.JS / WEBSOCKETS
+                  </p>
+                  <p
+                    style="
+                      font-size: 0.9rem;
+                      opacity: 0.7;
+                      line-height: 1.7;
+                      max-width: 600px;
+                    "
+                  >
+                    Real-time analytics platform connecting 50+ data sources.
+                    Built custom D3 visualizations with 100ms latency updates.
+                    Designed SQL query optimization layer reducing database load
+                    by 60%.
+                  </p>
+                </div>
+              </div>
+              <span class="badge">ENTERPRISE</span>
+            </div>
+
+            <div class="work-row reveal">
+              <div
+                style="
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 2.5rem;
+                  flex: 1;
+                  min-width: 0;
+                "
+              >
+                <span class="work-num">03</span>
+                <div style="flex: 1; min-width: 0">
+                  <h4
+                    class="f-anton"
+                    style="font-size: clamp(1.8rem, 5vw, 4.5rem)"
+                  >
+                    Design System &amp; Component Library
+                  </h4>
+                  <p
+                    class="f-mono"
+                    style="
+                      opacity: 0.35;
+                      margin-top: 0.4rem;
+                      margin-bottom: 1rem;
+                    "
+                  >
+                    REACT / STORYBOOK / TYPESCRIPT / FIGMA
+                  </p>
+                  <p
+                    style="
+                      font-size: 0.9rem;
+                      opacity: 0.7;
+                      line-height: 1.7;
+                      max-width: 600px;
+                    "
+                  >
+                    60+ components built accessibility-first (WCAG 2.1 AA).
+                    Created Figma plugin for dev-designer sync. Documented with
+                    Storybook + MDX. Adopted across 4 product teams.
+                  </p>
+                </div>
+              </div>
+              <span class="badge">INTERNAL</span>
+            </div>
+
+            <div class="work-row reveal">
+              <div
+                style="
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 2.5rem;
+                  flex: 1;
+                  min-width: 0;
+                "
+              >
+                <span class="work-num">04</span>
+                <div style="flex: 1; min-width: 0">
+                  <h4
+                    class="f-anton"
+                    style="font-size: clamp(1.8rem, 5vw, 4.5rem)"
+                  >
+                    Open Source CLI Tool
+                  </h4>
+                  <p
+                    class="f-mono"
+                    style="
+                      opacity: 0.35;
+                      margin-top: 0.4rem;
+                      margin-bottom: 1rem;
+                    "
+                  >
+                    TYPESCRIPT / NODE.JS / GITHUB ACTIONS / NPM
+                  </p>
+                  <p
+                    style="
+                      font-size: 0.9rem;
+                      opacity: 0.7;
+                      line-height: 1.7;
+                      max-width: 600px;
+                    "
+                  >
+                    Developer tool for data transformation. 2k+ GitHub stars,
+                    500+ weekly npm downloads. Implemented parallel processing
+                    for 10× speed improvement. Active community support.
+                  </p>
+                </div>
+              </div>
+              <span class="badge">OPEN SOURCE</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ 05 DATA DRIVEN ══════════════ -->
+      <section
+        style="
+          padding: 8rem 2.5rem;
+          background: var(--white);
+          color: var(--black);
+        "
+      >
+        <div style="max-width: 1600px; margin: 0 auto">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-end;
+              gap: 3rem;
+              margin-bottom: 4rem;
+              flex-wrap: wrap;
+            "
+          >
+            <h2
+              class="f-anton reveal"
+              style="font-size: clamp(3.5rem, 9vw, 9rem)"
+            >
+              DATA<br />DRIVEN.
+            </h2>
+            <p
+              class="f-mono reveal"
+              style="opacity: 0.4; max-width: 280px; line-height: 1.8"
+            >
+              Turning raw metrics into meaningful insights through custom
+              visualizations and analytics.
+            </p>
+          </div>
+
+          <!-- Stats -->
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+              gap: 2rem;
+              margin-bottom: 4rem;
+            "
+          >
+            <div class="stat-card reveal">
+              <p
+                class="f-mono"
+                style="
+                  font-size: 0.65rem;
+                  color: var(--orange);
+                  margin-bottom: 1rem;
+                "
+              >
+                PERFORMANCE
+              </p>
+              <div
+                style="
+                  display: flex;
+                  align-items: baseline;
+                  gap: 0.5rem;
+                  margin-bottom: 1rem;
+                "
+              >
+                <span class="f-anton" style="font-size: 3.5rem" data-count="98"
+                  >0</span
+                >
+                <span class="f-mono" style="opacity: 0.5">LIGHTHOUSE</span>
+              </div>
+              <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6">
+                Average score across 12 production projects. Focus on Core Web
+                Vitals and accessibility.
+              </p>
+            </div>
+
+            <div class="stat-card reveal">
+              <p
+                class="f-mono"
+                style="
+                  font-size: 0.65rem;
+                  color: var(--orange);
+                  margin-bottom: 1rem;
+                "
+              >
+                SCALE
+              </p>
+              <div
+                style="
+                  display: flex;
+                  align-items: baseline;
+                  gap: 0.5rem;
+                  margin-bottom: 1rem;
+                "
+              >
+                <span class="f-anton" style="font-size: 3.5rem" data-count="50"
+                  >0</span
+                >
+                <span class="f-mono" style="opacity: 0.5">K MONTHLY USERS</span>
+              </div>
+              <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6">
+                Combined user base across all active projects. Systems handling
+                1000+ concurrent connections.
+              </p>
+            </div>
+
+            <div class="stat-card reveal">
+              <p
+                class="f-mono"
+                style="
+                  font-size: 0.65rem;
+                  color: var(--orange);
+                  margin-bottom: 1rem;
+                "
+              >
+                OPTIMIZATION
+              </p>
+              <div
+                style="
+                  display: flex;
+                  align-items: baseline;
+                  gap: 0.5rem;
+                  margin-bottom: 1rem;
+                "
+              >
+                <span class="f-anton" style="font-size: 3.5rem" data-count="60"
+                  >0</span
+                >
+                <span class="f-mono" style="opacity: 0.5"
+                  >% LOAD REDUCTION</span
+                >
+              </div>
+              <p style="font-size: 0.85rem; opacity: 0.6; line-height: 1.6">
+                Average database query optimization across enterprise projects.
+              </p>
+            </div>
+          </div>
+
+          <!-- Tech Stack Bars -->
+          <div
+            class="reveal"
+            style="border: 1px solid rgba(0, 0, 0, 0.08); padding: 3rem"
+            id="skill-bars-section"
+          >
+            <p
+              class="f-mono"
+              style="
+                font-size: 0.65rem;
+                color: var(--orange);
+                margin-bottom: 2rem;
+              "
+            >
+              TECHNICAL SPECTRUM
+            </p>
+
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem"
+            >
+              <div>
+                <h4 class="f-anton" style="margin-bottom: 1.5rem">
+                  Frontend Stack
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 1rem">
+                  <div>
                     <div
-                      class="skill-fill"
-                      style="--target-width: 85%"
-                    ></div>
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 0.5rem;
+                      "
+                    >
+                      <span style="font-weight: 600">React &amp; Next.js</span>
+                      <span class="f-mono" style="opacity: 0.5">95%</span>
+                    </div>
+                    <div
+                      style="
+                        height: 5px;
+                        background: rgba(0, 0, 0, 0.06);
+                        border-radius: 3px;
+                        overflow: hidden;
+                      "
+                    >
+                      <div class="skill-fill" style="--target-width: 95%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 0.5rem;
+                      "
+                    >
+                      <span style="font-weight: 600">TypeScript</span>
+                      <span class="f-mono" style="opacity: 0.5">88%</span>
+                    </div>
+                    <div
+                      style="
+                        height: 5px;
+                        background: rgba(0, 0, 0, 0.06);
+                        border-radius: 3px;
+                        overflow: hidden;
+                      "
+                    >
+                      <div class="skill-fill" style="--target-width: 88%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 0.5rem;
+                      "
+                    >
+                      <span style="font-weight: 600">WebGL &amp; Shaders</span>
+                      <span class="f-mono" style="opacity: 0.5">72%</span>
+                    </div>
+                    <div
+                      style="
+                        height: 5px;
+                        background: rgba(0, 0, 0, 0.06);
+                        border-radius: 3px;
+                        overflow: hidden;
+                      "
+                    >
+                      <div class="skill-fill" style="--target-width: 72%"></div>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <div
-                    style="
-                      display: flex;
-                      justify-content: space-between;
-                      margin-bottom: 0.5rem;
-                    "
-                  >
-                    <span style="font-weight: 600">PostgreSQL &amp; SQL</span>
-                    <span class="f-mono" style="opacity: 0.5">90%</span>
-                  </div>
-                  <div
-                    style="
-                      height: 5px;
-                      background: rgba(0, 0, 0, 0.06);
-                      border-radius: 3px;
-                      overflow: hidden;
-                    "
-                  >
+              </div>
+
+              <div>
+                <h4 class="f-anton" style="margin-bottom: 1.5rem">
+                  Backend &amp; Data
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 1rem">
+                  <div>
                     <div
-                      class="skill-fill"
-                      style="--target-width: 90%"
-                    ></div>
-                  </div>
-                </div>
-                <div>
-                  <div
-                    style="
-                      display: flex;
-                      justify-content: space-between;
-                      margin-bottom: 0.5rem;
-                    "
-                  >
-                    <span style="font-weight: 600">Python Data Tools</span>
-                    <span class="f-mono" style="opacity: 0.5">78%</span>
-                  </div>
-                  <div
-                    style="
-                      height: 5px;
-                      background: rgba(0, 0, 0, 0.06);
-                      border-radius: 3px;
-                      overflow: hidden;
-                    "
-                  >
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 0.5rem;
+                      "
+                    >
+                      <span style="font-weight: 600">Node.js</span>
+                      <span class="f-mono" style="opacity: 0.5">85%</span>
+                    </div>
                     <div
-                      class="skill-fill"
-                      style="--target-width: 78%"
-                    ></div>
+                      style="
+                        height: 5px;
+                        background: rgba(0, 0, 0, 0.06);
+                        border-radius: 3px;
+                        overflow: hidden;
+                      "
+                    >
+                      <div class="skill-fill" style="--target-width: 85%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 0.5rem;
+                      "
+                    >
+                      <span style="font-weight: 600">PostgreSQL &amp; SQL</span>
+                      <span class="f-mono" style="opacity: 0.5">90%</span>
+                    </div>
+                    <div
+                      style="
+                        height: 5px;
+                        background: rgba(0, 0, 0, 0.06);
+                        border-radius: 3px;
+                        overflow: hidden;
+                      "
+                    >
+                      <div class="skill-fill" style="--target-width: 90%"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 0.5rem;
+                      "
+                    >
+                      <span style="font-weight: 600">Python Data Tools</span>
+                      <span class="f-mono" style="opacity: 0.5">78%</span>
+                    </div>
+                    <div
+                      style="
+                        height: 5px;
+                        background: rgba(0, 0, 0, 0.06);
+                        border-radius: 3px;
+                        overflow: hidden;
+                      "
+                    >
+                      <div class="skill-fill" style="--target-width: 78%"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ══════════════ 06 TESTIMONIAL ══════════════ -->
-    <div class="quote-section">
-      <div style="max-width: 900px; margin: 0 auto; text-align: center">
-        <p
-          class="f-mono reveal"
-          style="
-            font-size: 0.6rem;
-            letter-spacing: 0.25em;
-            margin-bottom: 3rem;
-            opacity: 0.4;
-          "
-        >
-          REPUTATION
-        </p>
-        <blockquote
-          class="f-anton reveal"
-          style="
-            font-size: clamp(1.75rem, 4.5vw, 4rem);
-            line-height: 1.1;
-            margin-bottom: 3rem;
-          "
-        >
-          "HE COMBINES THINGS PEOPLE USUALLY KEEP SEPARATE — A DESIGNER'S EYE,
-          A DEVELOPER'S DISCIPLINE."
-        </blockquote>
-        <div class="reveal">
+      <!-- ══════════════ 06 TESTIMONIAL ══════════════ -->
+      <div class="quote-section">
+        <div style="max-width: 900px; margin: 0 auto; text-align: center">
           <p
-            style="font-weight: 800; font-size: 0.875rem; letter-spacing: 0.1em"
+            class="f-mono reveal"
+            style="
+              font-size: 0.6rem;
+              letter-spacing: 0.25em;
+              margin-bottom: 3rem;
+              opacity: 0.4;
+            "
           >
-            JENNIFER KHOURY
+            REPUTATION
           </p>
-          <p class="f-mono" style="opacity: 0.4; margin-top: 0.4rem">
-            ARTIST &amp; TATTOO ARTIST
-          </p>
+          <blockquote
+            class="f-anton reveal"
+            style="
+              font-size: clamp(1.75rem, 4.5vw, 4rem);
+              line-height: 1.1;
+              margin-bottom: 3rem;
+            "
+          >
+            "HE COMBINES THINGS PEOPLE USUALLY KEEP SEPARATE — A DESIGNER'S EYE,
+            A DEVELOPER'S DISCIPLINE."
+          </blockquote>
+          <div class="reveal">
+            <p
+              style="
+                font-weight: 800;
+                font-size: 0.875rem;
+                letter-spacing: 0.1em;
+              "
+            >
+              JENNIFER KHOURY
+            </p>
+            <p class="f-mono" style="opacity: 0.4; margin-top: 0.4rem">
+              ARTIST &amp; TATTOO ARTIST
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
 
     <!-- ══════════════ 07 CONTACT ══════════════ -->
-    <footer id="contact">
+    <footer id="contact" aria-label="Contact information">
       <div
         style="
           max-width: 1600px;
@@ -1687,8 +2407,8 @@
                   text-decoration: none;
                   transition: color 0.3s;
                 "
-                onmouseover="this.style.color='#FF4500'"
-                onmouseout="this.style.color='inherit'"
+                onmouseover="this.style.color = '#FF4500'"
+                onmouseout="this.style.color = 'inherit'"
               >
                 ahmadchabayta@proton.me
               </a>
@@ -1701,8 +2421,8 @@
                   text-decoration: none;
                   transition: color 0.3s;
                 "
-                onmouseover="this.style.color='#FF4500'"
-                onmouseout="this.style.color='inherit'"
+                onmouseover="this.style.color = '#FF4500'"
+                onmouseout="this.style.color = 'inherit'"
               >
                 +961 70 687 167
               </a>
@@ -1718,8 +2438,8 @@
                   text-decoration: none;
                   transition: opacity 0.2s;
                 "
-                onmouseover="this.style.opacity='0.5'"
-                onmouseout="this.style.opacity='1'"
+                onmouseover="this.style.opacity = '0.5'"
+                onmouseout="this.style.opacity = '1'"
                 >Github</a
               >
             </div>
@@ -1767,6 +2487,7 @@
       uniform float uTime;
       uniform vec2  uRes;
       uniform vec2  uMouse;
+      uniform float uZoom;
 
       const int   STEPS = 80;
       const float MIN_D = 0.0008;
@@ -1924,11 +2645,12 @@
           float pwSpeed = blendF(pt, 0.15, 0.20, 0.10, 0.30);
           float pw      = pwBase + pwOsc * sin(uTime * pwSpeed);
 
-          // Camera orbit
+          // Camera orbit (uZoom: 0.5 → 3.0; smaller = farther)
           float yaw   = uTime*0.07 + uMouse.x*1.2;
           float pitch = uMouse.y*0.9;
-          vec3 ro = rotX(pitch)*rotY(yaw)*vec3(0.0,0.0,3.6);
-          vec3 rd = rotX(pitch)*rotY(yaw)*normalize(vec3(uv,-1.6));
+          float dist  = 3.6 / max(uZoom, 0.05);
+          vec3 ro = rotX(pitch)*rotY(yaw)*vec3(0.0, 0.0, dist);
+          vec3 rd = rotX(pitch)*rotY(yaw)*normalize(vec3(uv, -1.6));
 
           // Raymarch + closest-miss for halo
           float t     = 0.0;
@@ -2051,24 +2773,31 @@
     <script>
       gsap.registerPlugin(ScrollTrigger);
 
+      // ── Reduced-motion preference (used throughout) ───────
+      const REDUCED_MOTION =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
       // ── Custom cursor ─────────────────────────────────────
-      const cursorDot  = document.getElementById("cursor-dot");
+      const cursorDot = document.getElementById("cursor-dot");
       const cursorRing = document.getElementById("cursor-ring");
-      let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-      let rx = cx, ry = cy;
+      let cx = window.innerWidth / 2,
+        cy = window.innerHeight / 2;
+      let rx = cx,
+        ry = cy;
 
       document.addEventListener("mousemove", (e) => {
         cx = e.clientX;
         cy = e.clientY;
         cursorDot.style.left = cx + "px";
-        cursorDot.style.top  = cy + "px";
+        cursorDot.style.top = cy + "px";
       });
 
       (function ringLoop() {
         rx += (cx - rx) * 0.14;
         ry += (cy - ry) * 0.14;
         cursorRing.style.left = rx + "px";
-        cursorRing.style.top  = ry + "px";
+        cursorRing.style.top = ry + "px";
         requestAnimationFrame(ringLoop);
       })();
 
@@ -2080,31 +2809,39 @@
       });
 
       // ── Hero entrance (GSAP) ──────────────────────────────
-      gsap.to(".hero-line", {
-        opacity: 1,
-        y: 0,
-        duration: 1.1,
-        stagger: 0.14,
-        ease: "power3.out",
-        delay: 0.25,
-        onStart() {
-          gsap.set(".hero-line", { y: 48 });
-        },
-      });
+      if (REDUCED_MOTION) {
+        gsap.set(".hero-line", { opacity: 1, y: 0 });
+      } else {
+        gsap.to(".hero-line", {
+          opacity: 1,
+          y: 0,
+          duration: 1.1,
+          stagger: 0.14,
+          ease: "power3.out",
+          delay: 0.25,
+          onStart() {
+            gsap.set(".hero-line", { y: 48 });
+          },
+        });
+      }
 
       // ── Scroll reveals ────────────────────────────────────
-      gsap.set(".reveal", { opacity: 0, y: 36 });
-      ScrollTrigger.batch(".reveal", {
-        onEnter: (els) =>
-          gsap.to(els, {
-            opacity: 1,
-            y: 0,
-            duration: 0.9,
-            stagger: 0.08,
-            ease: "power3.out",
-          }),
-        start: "top 90%",
-      });
+      if (REDUCED_MOTION) {
+        gsap.set(".reveal", { opacity: 1, y: 0 });
+      } else {
+        gsap.set(".reveal", { opacity: 0, y: 36 });
+        ScrollTrigger.batch(".reveal", {
+          onEnter: (els) =>
+            gsap.to(els, {
+              opacity: 1,
+              y: 0,
+              duration: 0.9,
+              stagger: 0.08,
+              ease: "power3.out",
+            }),
+          start: "top 90%",
+        });
+      }
 
       // ══════════════════════════════════════════════════════
       // EXPERIMENT 1 — Particle Gravity Field
@@ -2113,22 +2850,24 @@
         const canvas = document.getElementById("cv-particles");
         if (!canvas) return;
         const wrap = canvas.parentElement;
-        const dpr  = Math.min(window.devicePixelRatio || 1, 2);
-        const W    = wrap.offsetWidth;
-        const H    = wrap.offsetHeight;
-        canvas.width  = W * dpr;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const W = wrap.offsetWidth;
+        const H = wrap.offsetHeight;
+        canvas.width = W * dpr;
         canvas.height = H * dpr;
-        canvas.style.width  = W + "px";
+        canvas.style.width = W + "px";
         canvas.style.height = H + "px";
         const ctx = canvas.getContext("2d");
         ctx.scale(dpr, dpr);
 
-        let mx = W / 2, my = H / 2;
-        let bursting = false, burstTimer = 0;
+        let mx = W / 2,
+          my = H / 2;
+        let bursting = false,
+          burstTimer = 0;
 
         const particles = Array.from({ length: 120 }, () => ({
-          x:  Math.random() * W,
-          y:  Math.random() * H,
+          x: Math.random() * W,
+          y: Math.random() * H,
           vx: (Math.random() - 0.5) * 1.5,
           vy: (Math.random() - 0.5) * 1.5,
           sz: Math.random() * 1.4 + 0.4,
@@ -2139,14 +2878,18 @@
           mx = e.clientX - r.left;
           my = e.clientY - r.top;
         });
-        wrap.addEventListener("mouseleave", () => { mx = W / 2; my = H / 2; });
+        wrap.addEventListener("mouseleave", () => {
+          mx = W / 2;
+          my = H / 2;
+        });
         wrap.addEventListener("click", () => {
-          bursting  = true;
+          bursting = true;
           burstTimer = 0;
           particles.forEach((p) => {
-            const dx = p.x - mx, dy = p.y - my;
+            const dx = p.x - mx,
+              dy = p.y - my;
             const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const f = (300 / dist);
+            const f = 300 / dist;
             p.vx += (dx / dist) * f * 0.08;
             p.vy += (dy / dist) * f * 0.08;
           });
@@ -2161,21 +2904,27 @@
 
           particles.forEach((p) => {
             if (!bursting) {
-              const dx = mx - p.x, dy = my - p.y;
+              const dx = mx - p.x,
+                dy = my - p.y;
               const dist = Math.sqrt(dx * dx + dy * dy) + 0.001;
               const f = Math.min(1800 / (dist * dist), 0.9);
               p.vx += dx * f * 0.001;
               p.vy += dy * f * 0.001;
             }
-            p.vx *= 0.97; p.vy *= 0.97;
-            p.x  += p.vx; p.y  += p.vy;
-            if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-            if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+            p.vx *= 0.97;
+            p.vy *= 0.97;
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0) p.x = W;
+            if (p.x > W) p.x = 0;
+            if (p.y < 0) p.y = H;
+            if (p.y > H) p.y = 0;
 
-            const dx = mx - p.x, dy = my - p.y;
-            const d  = Math.sqrt(dx * dx + dy * dy);
-            const a  = Math.min(0.95, 80 / d + 0.08);
-            const g  = Math.min(255, 50 + d * 0.4) | 0;
+            const dx = mx - p.x,
+              dy = my - p.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            const a = Math.min(0.95, 80 / d + 0.08);
+            const g = Math.min(255, 50 + d * 0.4) | 0;
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.sz, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(255,${g},0,${a})`;
@@ -2205,46 +2954,49 @@
         const canvas = document.getElementById("cv-wave");
         if (!canvas) return;
         const wrap = canvas.parentElement;
-        const dpr  = Math.min(window.devicePixelRatio || 1, 2);
-        const W    = wrap.offsetWidth;
-        const H    = wrap.offsetHeight;
-        canvas.width  = W * dpr;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const W = wrap.offsetWidth;
+        const H = wrap.offsetHeight;
+        canvas.width = W * dpr;
         canvas.height = H * dpr;
-        canvas.style.width  = W + "px";
+        canvas.style.width = W + "px";
         canvas.style.height = H + "px";
         const ctx = canvas.getContext("2d");
         ctx.scale(dpr, dpr);
 
-        let mx = 0.5, my = 0.5, waveTime = 0;
+        let mx = 0.5,
+          my = 0.5,
+          waveTime = 0;
 
         wrap.addEventListener("mousemove", (e) => {
           const r = wrap.getBoundingClientRect();
           mx = (e.clientX - r.left) / r.width;
-          my = (e.clientY - r.top)  / r.height;
+          my = (e.clientY - r.top) / r.height;
         });
 
         function drawLayer(freqMult, ampMult, phase, alpha, lw) {
-          const amp  = 12 + ampMult * 58;
-          const freq = 1  + freqMult * 4.5;
+          const amp = 12 + ampMult * 58;
+          const freq = 1 + freqMult * 4.5;
           ctx.beginPath();
           for (let x = 0; x <= W; x += 2) {
             const t = (x / W) * Math.PI * 2 * freq + waveTime + phase;
-            const y = H / 2 + Math.sin(t) * amp * Math.sin(t * 0.5 + waveTime * 0.28);
+            const y =
+              H / 2 + Math.sin(t) * amp * Math.sin(t * 0.5 + waveTime * 0.28);
             x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
           }
           ctx.strokeStyle = `rgba(255,${Math.round(69 + alpha * 60)},0,${alpha})`;
-          ctx.lineWidth   = lw;
+          ctx.lineWidth = lw;
           ctx.stroke();
         }
 
         function loop() {
           ctx.fillStyle = "rgba(5,5,5,0.30)";
           ctx.fillRect(0, 0, W, H);
-          ctx.shadowBlur  = 10;
+          ctx.shadowBlur = 10;
           ctx.shadowColor = "rgba(255,69,0,0.35)";
-          drawLayer(mx, 1 - my, 0,               0.90, 1.8);
-          drawLayer(mx, 1 - my, Math.PI * 0.65,  0.55, 1.1);
-          drawLayer(mx, 1 - my, Math.PI * 1.30,  0.28, 0.7);
+          drawLayer(mx, 1 - my, 0, 0.9, 1.8);
+          drawLayer(mx, 1 - my, Math.PI * 0.65, 0.55, 1.1);
+          drawLayer(mx, 1 - my, Math.PI * 1.3, 0.28, 0.7);
           ctx.shadowBlur = 0;
           waveTime += 0.022 + mx * 0.04;
           requestAnimationFrame(loop);
@@ -2257,51 +3009,81 @@
       // ══════════════════════════════════════════════════════
       (function () {
         const canvas = document.getElementById("cv-game");
-        const hint   = document.getElementById("game-hint");
+        const hint = document.getElementById("game-hint");
         if (!canvas || !hint) return;
         const wrap = canvas.parentElement;
-        const dpr  = Math.min(window.devicePixelRatio || 1, 2);
-        const W    = wrap.offsetWidth;
-        const H    = wrap.offsetHeight;
-        canvas.width  = W * dpr;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const W = wrap.offsetWidth;
+        const H = wrap.offsetHeight;
+        canvas.width = W * dpr;
         canvas.height = H * dpr;
-        canvas.style.width  = W + "px";
+        canvas.style.width = W + "px";
         canvas.style.height = H + "px";
         const ctx = canvas.getContext("2d");
         ctx.scale(dpr, dpr);
 
-        const COLS    = 7, ROWS = 4;
-        const BRICKH  = 15, BRICKGAP = 3;
-        const MARGX   = 8, MARGT = 26;
-        const BRICKW  = (W - MARGX * 2 - (COLS - 1) * BRICKGAP) / COLS;
-        const PADDLE_W = 64, PADDLE_H = 7, PADDLE_Y = H - 22;
-        const BALL_R   = 5;
-        const ROW_COLORS = ["#ff4500","#ff5820","#ff6e40","#ff8460"];
+        const COLS = 7,
+          ROWS = 4;
+        const BRICKH = 15,
+          BRICKGAP = 3;
+        const MARGX = 8,
+          MARGT = 26;
+        const BRICKW = (W - MARGX * 2 - (COLS - 1) * BRICKGAP) / COLS;
+        const PADDLE_W = 64,
+          PADDLE_H = 7,
+          PADDLE_Y = H - 22;
+        const BALL_R = 5;
+        const ROW_COLORS = ["#ff4500", "#ff5820", "#ff6e40", "#ff8460"];
 
         let state = "idle";
         let ball, paddle, bricks, score, lives;
 
         function resetGame() {
-          score = 0; lives = 3;
+          score = 0;
+          lives = 3;
           paddle = { x: W / 2 };
-          ball   = { x: W / 2, y: H * 0.58, vx: (Math.random() > 0.5 ? 1 : -1) * 2.8, vy: -3.8 };
+          ball = {
+            x: W / 2,
+            y: H * 0.58,
+            vx: (Math.random() > 0.5 ? 1 : -1) * 2.8,
+            vy: -3.8,
+          };
           bricks = [];
           for (let r = 0; r < ROWS; r++)
             for (let c = 0; c < COLS; c++)
-              bricks.push({ x: MARGX + c * (BRICKW + BRICKGAP), y: MARGT + r * (BRICKH + BRICKGAP), r, alive: true });
+              bricks.push({
+                x: MARGX + c * (BRICKW + BRICKGAP),
+                y: MARGT + r * (BRICKH + BRICKGAP),
+                r,
+                alive: true,
+              });
         }
 
         wrap.addEventListener("mousemove", (e) => {
           const rect = wrap.getBoundingClientRect();
-          paddle.x = Math.max(PADDLE_W / 2, Math.min(W - PADDLE_W / 2, e.clientX - rect.left));
+          paddle.x = Math.max(
+            PADDLE_W / 2,
+            Math.min(W - PADDLE_W / 2, e.clientX - rect.left),
+          );
         });
-        wrap.addEventListener("touchmove", (e) => {
-          e.preventDefault();
-          const rect = wrap.getBoundingClientRect();
-          paddle.x = Math.max(PADDLE_W / 2, Math.min(W - PADDLE_W / 2, e.touches[0].clientX - rect.left));
-        }, { passive: false });
+        wrap.addEventListener(
+          "touchmove",
+          (e) => {
+            e.preventDefault();
+            const rect = wrap.getBoundingClientRect();
+            paddle.x = Math.max(
+              PADDLE_W / 2,
+              Math.min(W - PADDLE_W / 2, e.touches[0].clientX - rect.left),
+            );
+          },
+          { passive: false },
+        );
         wrap.addEventListener("click", () => {
-          if (state !== "playing") { resetGame(); state = "playing"; hint.style.display = "none"; }
+          if (state !== "playing") {
+            resetGame();
+            state = "playing";
+            hint.style.display = "none";
+          }
         });
 
         resetGame();
@@ -2328,17 +3110,29 @@
           ctx.fill();
 
           if (state === "playing") {
-            ball.x += ball.vx; ball.y += ball.vy;
+            ball.x += ball.vx;
+            ball.y += ball.vy;
 
             // Wall bounces
-            if (ball.x - BALL_R < 0)     { ball.x = BALL_R;     ball.vx = Math.abs(ball.vx); }
-            if (ball.x + BALL_R > W)      { ball.x = W - BALL_R; ball.vx = -Math.abs(ball.vx); }
-            if (ball.y - BALL_R < 0)      { ball.y = BALL_R;     ball.vy = Math.abs(ball.vy); }
+            if (ball.x - BALL_R < 0) {
+              ball.x = BALL_R;
+              ball.vx = Math.abs(ball.vx);
+            }
+            if (ball.x + BALL_R > W) {
+              ball.x = W - BALL_R;
+              ball.vx = -Math.abs(ball.vx);
+            }
+            if (ball.y - BALL_R < 0) {
+              ball.y = BALL_R;
+              ball.vy = Math.abs(ball.vy);
+            }
 
             // Paddle
             if (
-              ball.y + BALL_R >= PADDLE_Y && ball.y - BALL_R <= PADDLE_Y + PADDLE_H &&
-              ball.x >= px && ball.x <= px + PADDLE_W
+              ball.y + BALL_R >= PADDLE_Y &&
+              ball.y - BALL_R <= PADDLE_Y + PADDLE_H &&
+              ball.x >= px &&
+              ball.x <= px + PADDLE_W
             ) {
               ball.vy = -Math.abs(ball.vy);
               ball.vx = ((ball.x - paddle.x) / (PADDLE_W / 2)) * 4;
@@ -2347,31 +3141,47 @@
             // Bricks
             bricks.forEach((b) => {
               if (!b.alive) return;
-              const bx2 = b.x + BRICKW, by2 = b.y + BRICKH;
-              if (ball.x + BALL_R > b.x && ball.x - BALL_R < bx2 &&
-                  ball.y + BALL_R > b.y && ball.y - BALL_R < by2) {
-                b.alive = false; score++;
-                const ox = Math.min(Math.abs(ball.x - b.x), Math.abs(ball.x - bx2));
-                const oy = Math.min(Math.abs(ball.y - b.y), Math.abs(ball.y - by2));
-                oy < ox ? ball.vy *= -1 : ball.vx *= -1;
+              const bx2 = b.x + BRICKW,
+                by2 = b.y + BRICKH;
+              if (
+                ball.x + BALL_R > b.x &&
+                ball.x - BALL_R < bx2 &&
+                ball.y + BALL_R > b.y &&
+                ball.y - BALL_R < by2
+              ) {
+                b.alive = false;
+                score++;
+                const ox = Math.min(
+                  Math.abs(ball.x - b.x),
+                  Math.abs(ball.x - bx2),
+                );
+                const oy = Math.min(
+                  Math.abs(ball.y - b.y),
+                  Math.abs(ball.y - by2),
+                );
+                oy < ox ? (ball.vy *= -1) : (ball.vx *= -1);
               }
             });
 
             // Win / Lose
             if (bricks.every((b) => !b.alive)) {
               state = "won";
-              hint.innerHTML = '<span class="f-anton" style="font-size:1.1rem;letter-spacing:.2em;color:#4dff91;">YOU WIN!</span><span class="f-mono" style="font-size:.5rem;opacity:.5;letter-spacing:.2em;">CLICK TO RETRY</span>';
+              hint.innerHTML =
+                '<span class="f-anton" style="font-size:1.1rem;letter-spacing:.2em;color:#4dff91;">YOU WIN!</span><span class="f-mono" style="font-size:.5rem;opacity:.5;letter-spacing:.2em;">CLICK TO RETRY</span>';
               hint.style.display = "flex";
             }
             if (ball.y - BALL_R > H) {
               lives--;
               if (lives <= 0) {
                 state = "dead";
-                hint.innerHTML = '<span class="f-anton" style="font-size:1.1rem;letter-spacing:.2em;color:var(--orange);">GAME OVER</span><span class="f-mono" style="font-size:.5rem;opacity:.5;letter-spacing:.2em;">CLICK TO RETRY</span>';
+                hint.innerHTML =
+                  '<span class="f-anton" style="font-size:1.1rem;letter-spacing:.2em;color:var(--orange);">GAME OVER</span><span class="f-mono" style="font-size:.5rem;opacity:.5;letter-spacing:.2em;">CLICK TO RETRY</span>';
                 hint.style.display = "flex";
               } else {
-                ball.x = W / 2; ball.y = H * 0.58;
-                ball.vx = (Math.random() > 0.5 ? 1 : -1) * 2.8; ball.vy = -3.8;
+                ball.x = W / 2;
+                ball.y = H * 0.58;
+                ball.vx = (Math.random() > 0.5 ? 1 : -1) * 2.8;
+                ball.vy = -3.8;
               }
             }
           }
@@ -2379,16 +3189,20 @@
           // Ball + glow
           ctx.beginPath();
           ctx.arc(ball.x, ball.y, BALL_R + 4, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(255,100,40,0.25)"; ctx.fill();
+          ctx.fillStyle = "rgba(255,100,40,0.25)";
+          ctx.fill();
           ctx.beginPath();
           ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
-          ctx.fillStyle = "#fff"; ctx.fill();
+          ctx.fillStyle = "#fff";
+          ctx.fill();
 
           // HUD
           ctx.fillStyle = "rgba(255,255,255,0.4)";
           ctx.font = '9px "JetBrains Mono"';
-          ctx.textAlign = "left";  ctx.fillText("SCORE " + score, 6, H - 6);
-          ctx.textAlign = "right"; ctx.fillText("♥ ".repeat(lives).trim(), W - 6, H - 6);
+          ctx.textAlign = "left";
+          ctx.fillText("SCORE " + score, 6, H - 6);
+          ctx.textAlign = "right";
+          ctx.fillText("♥ ".repeat(lives).trim(), W - 6, H - 6);
 
           requestAnimationFrame(loop);
         }
@@ -2397,6 +3211,7 @@
 
       // ══════════════════════════════════════════════════════
       // RICH MEDIA 1 — Hire Banner: cycling skill tag
+      // (disabled for reduced-motion; static text shown instead)
       // ══════════════════════════════════════════════════════
       (function () {
         const el = document.getElementById("skill-cycle");
@@ -2408,14 +3223,25 @@
           "FIGMA · ILLUSTRATOR · DESIGN",
           "NODE.JS · REST · SUPABASE",
         ];
+        if (REDUCED_MOTION) {
+          el.textContent = skills.join("  ·  ");
+          el.style.whiteSpace = "normal";
+          return;
+        }
         let idx = 0;
         setInterval(() => {
           idx = (idx + 1) % skills.length;
           gsap.to(el, {
-            opacity: 0, y: -6, duration: 0.28,
+            opacity: 0,
+            y: -6,
+            duration: 0.28,
             onComplete() {
               el.textContent = skills[idx];
-              gsap.fromTo(el, { opacity: 0, y: 7 }, { opacity: 0.45, y: 0, duration: 0.28 });
+              gsap.fromTo(
+                el,
+                { opacity: 0, y: 7 },
+                { opacity: 0.45, y: 0, duration: 0.28 },
+              );
             },
           });
         }, 2600);
@@ -2426,22 +3252,45 @@
       // ══════════════════════════════════════════════════════
       (function () {
         const canvas = document.getElementById("cv-poster");
-        const wrap   = document.getElementById("poster-wrap");
+        const wrap = document.getElementById("poster-wrap");
         if (!canvas || !wrap) return;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
         function sizeCanvas() {
-          const W = wrap.offsetWidth, H = wrap.offsetHeight;
-          canvas.width  = W * dpr; canvas.height = H * dpr;
-          canvas.style.width  = W + "px"; canvas.style.height = H + "px";
+          const W = wrap.offsetWidth,
+            H = wrap.offsetHeight;
+          canvas.width = W * dpr;
+          canvas.height = H * dpr;
+          canvas.style.width = W + "px";
+          canvas.style.height = H + "px";
           return { ctx: canvas.getContext("2d"), W, H };
         }
 
-        const PALETTE = ["#ff4500","#ffffff","#1a1a1a","#ff6b35","#000000","#ff8450"];
-        const WORDS   = ["DESIGN","SYSTEM","BUILD","SHIP","CODE","CREATE","DATA","CRAFT"];
+        const PALETTE = [
+          "#ff4500",
+          "#ffffff",
+          "#1a1a1a",
+          "#ff6b35",
+          "#000000",
+          "#ff8450",
+        ];
+        const WORDS = [
+          "DESIGN",
+          "SYSTEM",
+          "BUILD",
+          "SHIP",
+          "CODE",
+          "CREATE",
+          "DATA",
+          "CRAFT",
+        ];
 
-        function rnd(a, b)  { return a + Math.random() * (b - a); }
-        function pick(arr)  { return arr[Math.floor(Math.random() * arr.length)]; }
+        function rnd(a, b) {
+          return a + Math.random() * (b - a);
+        }
+        function pick(arr) {
+          return arr[Math.floor(Math.random() * arr.length)];
+        }
 
         function generate() {
           const { ctx, W, H } = sizeCanvas();
@@ -2450,40 +3299,61 @@
           ctx.fillRect(0, 0, W, H);
 
           // Grid underlay
-          ctx.globalAlpha = 0.06; ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 0.5;
+          ctx.globalAlpha = 0.06;
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 0.5;
           const gs = Math.floor(rnd(22, 55));
-          for (let x = 0; x < W; x += gs) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-          for (let y = 0; y < H; y += gs) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+          for (let x = 0; x < W; x += gs) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, H);
+            ctx.stroke();
+          }
+          for (let y = 0; y < H; y += gs) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(W, y);
+            ctx.stroke();
+          }
 
           const count = Math.floor(rnd(8, 16));
           for (let i = 0; i < count; i++) {
             const type = Math.floor(rnd(0, 4));
-            const x    = rnd(-20, W + 20);
-            const y    = rnd(-20, H + 20);
+            const x = rnd(-20, W + 20);
+            const y = rnd(-20, H + 20);
             const size = rnd(8, Math.min(W, H) * 0.38);
-            ctx.globalAlpha  = rnd(0.25, 1.0);
-            ctx.fillStyle    = pick(PALETTE);
-            ctx.strokeStyle  = pick(PALETTE);
-            ctx.lineWidth    = rnd(0.5, 3);
+            ctx.globalAlpha = rnd(0.25, 1.0);
+            ctx.fillStyle = pick(PALETTE);
+            ctx.strokeStyle = pick(PALETTE);
+            ctx.lineWidth = rnd(0.5, 3);
             ctx.save();
             ctx.translate(x, y);
             ctx.rotate(rnd(0, Math.PI * 2));
             if (type === 0) {
               ctx.fillRect(-size / 2, -size / 2, size, size * rnd(0.25, 1.6));
             } else if (type === 1) {
-              ctx.beginPath(); ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
+              ctx.beginPath();
+              ctx.arc(0, 0, size / 2, 0, Math.PI * 2);
               Math.random() > 0.5 ? ctx.fill() : ctx.stroke();
             } else if (type === 2) {
-              ctx.beginPath(); ctx.moveTo(-size, 0); ctx.lineTo(size, 0); ctx.stroke();
+              ctx.beginPath();
+              ctx.moveTo(-size, 0);
+              ctx.lineTo(size, 0);
+              ctx.stroke();
             } else {
-              ctx.beginPath(); ctx.moveTo(0, -size / 2); ctx.lineTo(size / 2, size / 2); ctx.lineTo(-size / 2, size / 2); ctx.closePath(); ctx.fill();
+              ctx.beginPath();
+              ctx.moveTo(0, -size / 2);
+              ctx.lineTo(size / 2, size / 2);
+              ctx.lineTo(-size / 2, size / 2);
+              ctx.closePath();
+              ctx.fill();
             }
             ctx.restore();
           }
 
           // Word overlay
           ctx.globalAlpha = 1;
-          ctx.fillStyle   = pick(["#ff4500","#ffffff"]);
+          ctx.fillStyle = pick(["#ff4500", "#ffffff"]);
           const fs = Math.floor(rnd(20, 40));
           ctx.font = `${fs}px Anton, sans-serif`;
           ctx.textAlign = "center";
@@ -2535,11 +3405,16 @@
       });
 
       // ── Phase info ────────────────────────────────────────
-      const PHASE_NAMES  = ["EMBER STORM", "DEEP VOID", "AURORA PRIME", "BLOOD RITE"];
-      const PHASE_COLORS = [0xff7a40,      0x4090ff,    0x40cc80,        0xcc3060];
-      const PW_BASES  = [8.0,  10.0, 6.0, 12.0];
-      const PW_OSCS   = [1.5,   0.8, 1.5,  0.5];
-      const PW_SPEEDS = [0.15, 0.20, 0.10, 0.30];
+      const PHASE_NAMES = [
+        "EMBER STORM",
+        "DEEP VOID",
+        "AURORA PRIME",
+        "BLOOD RITE",
+      ];
+      const PHASE_COLORS = [0xff7a40, 0x4090ff, 0x40cc80, 0xcc3060];
+      const PW_BASES = [8.0, 10.0, 6.0, 12.0];
+      const PW_OSCS = [1.5, 0.8, 1.5, 0.5];
+      const PW_SPEEDS = [0.15, 0.2, 0.1, 0.3];
 
       let lastPhaseIdx = -1;
 
@@ -2549,14 +3424,18 @@
 
       function computePw(timeSec) {
         const seg = getPhaseIdx(timeSec);
-        return PW_BASES[seg] + PW_OSCS[seg] * Math.sin(timeSec * PW_SPEEDS[seg]);
+        return (
+          PW_BASES[seg] + PW_OSCS[seg] * Math.sin(timeSec * PW_SPEEDS[seg])
+        );
       }
 
       function announcePhase(idx) {
-        const el   = document.getElementById("phase-announce");
+        const el = document.getElementById("phase-announce");
         const name = document.getElementById("phase-announce-name");
-        const bar  = document.getElementById("phase-announce-bar");
+        const bar = document.getElementById("phase-announce-bar");
+        if (!el || !name || !bar) return;
         name.textContent = PHASE_NAMES[idx];
+        if (REDUCED_MOTION) return; // skip the toast animation entirely
         bar.style.transition = "none";
         bar.style.width = "0%";
         el.classList.add("visible");
@@ -2570,33 +3449,49 @@
       // ── THREE.JS: Torus rings + particles ─────────────────
       (function () {
         const container = document.getElementById("particle-container");
-        const scene     = new THREE.Scene();
-        const camera    = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const initW = Math.max(container.clientWidth || window.innerWidth, 1);
+        const initH = Math.max(container.clientHeight || window.innerHeight, 1);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          75,
+          initW / initH,
+          0.1,
+          1000,
+        );
         camera.position.z = 60;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, precision: "lowp" });
+        const renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+          precision: "lowp",
+        });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.2));
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(initW, initH, false);
         renderer.setClearColor(0x000000, 0);
-        container.appendChild(renderer.domElement);
+        const pcanvas = renderer.domElement;
+        pcanvas.setAttribute("aria-hidden", "true");
+        pcanvas.style.cssText =
+          "display:block;position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;";
+        container.appendChild(pcanvas);
 
         // 6 orbiting torus rings
         const rings = [];
         const ringPositions = [
-          { x: -28, y:  18, z: -4 },
-          { x:  26, y: -18, z: -6 },
-          { x: -20, y: -24, z:  2 },
-          { x:  24, y:  22, z:  0 },
-          { x: -32, y:   6, z:  4 },
-          { x:  18, y: -30, z: -3 },
+          { x: -28, y: 18, z: -4 },
+          { x: 26, y: -18, z: -6 },
+          { x: -20, y: -24, z: 2 },
+          { x: 24, y: 22, z: 0 },
+          { x: -32, y: 6, z: 4 },
+          { x: 18, y: -30, z: -3 },
         ];
 
         ringPositions.forEach((pos, idx) => {
-          const radius    = 3.2 + (idx % 2) * 0.8;
+          const radius = 3.2 + (idx % 2) * 0.8;
           const thickness = 0.08 + (idx % 2) * 0.04;
-          const geo   = new THREE.TorusGeometry(radius, thickness, 10, 80);
+          const geo = new THREE.TorusGeometry(radius, thickness, 10, 80);
           const edges = new THREE.EdgesGeometry(geo);
-          const mat   = new THREE.LineBasicMaterial({
+          const mat = new THREE.LineBasicMaterial({
             color: 0xff7a40,
             transparent: true,
             opacity: 0.42,
@@ -2611,22 +3506,28 @@
 
         // Particle stream
         const particleCount = 200;
-        const pGeo  = new THREE.BufferGeometry();
-        const pPos  = new Float32Array(particleCount * 3);
-        const pVel  = new Float32Array(particleCount * 3);
+        const pGeo = new THREE.BufferGeometry();
+        const pPos = new Float32Array(particleCount * 3);
+        const pVel = new Float32Array(particleCount * 3);
         const pAges = new Float32Array(particleCount);
         pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
         const pMat = new THREE.PointsMaterial({
-          color: 0xff6b35, size: 0.15, sizeAttenuation: true,
-          transparent: true, opacity: 0.8,
+          color: 0xff6b35,
+          size: 0.15,
+          sizeAttenuation: true,
+          transparent: true,
+          opacity: 0.8,
         });
         const particles = new THREE.Points(pGeo, pMat);
         scene.add(particles);
 
-        scene.add(new THREE.PointLight(0xff4500, 0.5, 0, 0).position.set(0,0,40) && new THREE.PointLight(0xff4500, 0.5));
+        scene.add(
+          new THREE.PointLight(0xff4500, 0.5, 0, 0).position.set(0, 0, 40) &&
+            new THREE.PointLight(0xff4500, 0.5),
+        );
         scene.add(new THREE.AmbientLight(0xffffff, 0.2));
 
-        let pIdx   = 0;
+        let pIdx = 0;
         let startT = null;
         const targetColor = new THREE.Color();
 
@@ -2644,13 +3545,13 @@
             mesh.rotation.z += mesh.rotationSpeed * 0.8;
 
             // Emit particles
-            const angle     = Math.random() * Math.PI * 2;
+            const angle = Math.random() * Math.PI * 2;
             const elevation = Math.random() * Math.PI - Math.PI / 2;
-            const speed     = 0.15 + Math.random() * 0.1;
-            pPos[pIdx * 3]     = mesh.position.x;
+            const speed = 0.15 + Math.random() * 0.1;
+            pPos[pIdx * 3] = mesh.position.x;
             pPos[pIdx * 3 + 1] = mesh.position.y;
             pPos[pIdx * 3 + 2] = mesh.position.z;
-            pVel[pIdx * 3]     = Math.cos(angle) * Math.cos(elevation) * speed;
+            pVel[pIdx * 3] = Math.cos(angle) * Math.cos(elevation) * speed;
             pVel[pIdx * 3 + 1] = Math.sin(elevation) * speed;
             pVel[pIdx * 3 + 2] = Math.sin(angle) * Math.cos(elevation) * speed;
             pAges[pIdx] = 0;
@@ -2661,7 +3562,7 @@
           for (let i = 0; i < particleCount; i++) {
             pAges[i] += 0.02;
             if (pAges[i] < 1) {
-              pPos[i * 3]     *= 0.95;
+              pPos[i * 3] *= 0.95;
               pPos[i * 3 + 1] *= 0.95;
               pPos[i * 3 + 2] *= 0.95;
             } else {
@@ -2675,84 +3576,319 @@
         }
         requestAnimationFrame(animate);
 
-        window.addEventListener("resize", () => {
-          renderer.setSize(window.innerWidth, window.innerHeight);
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
+        // ResizeObserver — sized to its container, not the window
+        const pRO = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            const w = Math.max(1, entry.contentRect.width);
+            const h = Math.max(1, entry.contentRect.height);
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+          }
         });
+        pRO.observe(container);
       })();
 
       // ── THREE.JS: Main GLSL fractal ───────────────────────
       (function () {
-        const wrap     = document.getElementById("fractal-wrap");
-        const scene    = new THREE.Scene();
-        const camera   = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+        const wrap = document.getElementById("fractal-wrap");
+        const scene = new THREE.Scene();
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
         camera.position.z = 1;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+        const renderer = new THREE.WebGLRenderer({
+          antialias: false,
+          alpha: false,
+        });
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-        renderer.setSize(wrap.offsetWidth, wrap.offsetHeight);
         wrap.appendChild(renderer.domElement);
+        // Override CSS !important rules — let renderer fully control canvas size
+        const canvasEl = renderer.domElement;
+        canvasEl.style.cssText =
+          "display:block;position:absolute;top:0;left:0;width:100%;height:100%;";
+        canvasEl.setAttribute("aria-hidden", "true");
+
+        const initialW = Math.max(wrap.clientWidth, 1);
+        const initialH = Math.max(wrap.clientHeight, 1);
+        renderer.setSize(initialW, initialH, false);
 
         const mat = new THREE.ShaderMaterial({
           uniforms: {
-            uTime:  { value: 0 },
-            uRes:   { value: new THREE.Vector2(wrap.offsetWidth, wrap.offsetHeight) },
+            uTime: { value: 0 },
+            uRes: { value: new THREE.Vector2(initialW, initialH) },
             uMouse: { value: new THREE.Vector2(0, 0) },
+            uZoom: { value: 1.0 },
           },
-          vertexShader:   document.getElementById("vert").textContent,
+          vertexShader: document.getElementById("vert").textContent,
           fragmentShader: document.getElementById("frag").textContent,
         });
         scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
 
-        // Mouse lerp
-        let targetX = 0, targetY = 0;
-        let currentX = 0, currentY = 0;
+        // ── Reduced-motion preference ────────────────────────
+        const prefersReducedMotion =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        wrap.addEventListener("mousemove", (e) => {
+        // ── State ────────────────────────────────────────────
+        let paused = false;
+        let focusMode = false;
+        let zoom = 1.0; // shader uniform target
+        let zoomCurrent = 1.0; // smoothed
+        let frozenTime = 0; // accumulated time (so pause/resume is seamless)
+        let lastTs = null;
+
+        // Manual mouse / drag-orbit state
+        let targetX = 0,
+          targetY = 0;
+        let currentX = 0,
+          currentY = 0;
+        let dragging = false;
+        let lastPx = 0,
+          lastPy = 0;
+        // Manual orbit accumulator (in normalized units used as uMouse override)
+        let manualX = 0,
+          manualY = 0;
+
+        // Honor reduced motion: start with auto-rotation suppressed (paused)
+        if (prefersReducedMotion) {
+          paused = true;
+          const pBtn = document.getElementById("pause-toggle");
+          if (pBtn) {
+            pBtn.classList.add("active");
+            pBtn.setAttribute("aria-pressed", "true");
+            pBtn.textContent = "PLAY";
+          }
+        }
+
+        // ── Pointer / hover orbit ────────────────────────────
+        wrap.addEventListener("pointermove", (e) => {
           const r = wrap.getBoundingClientRect();
-          targetX = ((e.clientX - r.left) / r.width  - 0.5) * 2;
-          targetY = ((e.clientY - r.top)  / r.height - 0.5) * 2;
-          document.getElementById("coord-display").innerHTML =
-            "CAM_X&nbsp;" + targetX.toFixed(3) +
-            "<br>CAM_Y&nbsp;" + targetY.toFixed(3);
-        });
-        wrap.addEventListener("mouseleave", () => { targetX = 0; targetY = 0; });
+          const nx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+          const ny = ((e.clientY - r.top) / r.height - 0.5) * 2;
 
-        window.addEventListener("resize", () => {
-          renderer.setSize(wrap.offsetWidth, wrap.offsetHeight);
-          mat.uniforms.uRes.value.set(wrap.offsetWidth, wrap.offsetHeight);
+          if (focusMode && dragging) {
+            const dx = (e.clientX - lastPx) / r.width;
+            const dy = (e.clientY - lastPy) / r.height;
+            manualX += dx * 2.0;
+            manualY += dy * 2.0;
+            // Clamp pitch so we don't flip
+            manualY = Math.max(-1.2, Math.min(1.2, manualY));
+            targetX = manualX;
+            targetY = manualY;
+          } else if (!focusMode) {
+            targetX = nx;
+            targetY = ny;
+          }
+          lastPx = e.clientX;
+          lastPy = e.clientY;
+
+          const cd = document.getElementById("coord-display");
+          if (cd)
+            cd.innerHTML =
+              "CAM_X&nbsp;" +
+              targetX.toFixed(3) +
+              "<br>CAM_Y&nbsp;" +
+              targetY.toFixed(3);
         });
 
-        // FPS
-        let lastTime = performance.now(), frames = 0;
+        wrap.addEventListener("pointerleave", () => {
+          if (!focusMode) {
+            targetX = 0;
+            targetY = 0;
+          }
+          dragging = false;
+        });
+
+        // Drag-to-orbit (works in focus mode)
+        wrap.addEventListener("pointerdown", (e) => {
+          if (focusMode) {
+            dragging = true;
+            lastPx = e.clientX;
+            lastPy = e.clientY;
+            wrap.setPointerCapture && wrap.setPointerCapture(e.pointerId);
+          }
+        });
+        wrap.addEventListener("pointerup", () => {
+          dragging = false;
+        });
+        wrap.addEventListener("pointercancel", () => {
+          dragging = false;
+        });
+
+        // Wheel-to-zoom (only in focus mode — never hijacks scroll otherwise)
+        wrap.addEventListener(
+          "wheel",
+          (e) => {
+            if (!focusMode) return;
+            e.preventDefault();
+            const factor = Math.exp(-e.deltaY * 0.0015);
+            zoom = Math.max(0.4, Math.min(3.5, zoom * factor));
+          },
+          { passive: false },
+        );
+
+        // ── Pinch-to-zoom (touch, focus mode) ────────────────
+        let pinchPrev = 0;
+        wrap.addEventListener(
+          "touchstart",
+          (e) => {
+            if (focusMode && e.touches.length === 2) {
+              const dx = e.touches[0].clientX - e.touches[1].clientX;
+              const dy = e.touches[0].clientY - e.touches[1].clientY;
+              pinchPrev = Math.hypot(dx, dy);
+            }
+          },
+          { passive: true },
+        );
+        wrap.addEventListener(
+          "touchmove",
+          (e) => {
+            if (focusMode && e.touches.length === 2) {
+              e.preventDefault();
+              const dx = e.touches[0].clientX - e.touches[1].clientX;
+              const dy = e.touches[0].clientY - e.touches[1].clientY;
+              const cur = Math.hypot(dx, dy);
+              if (pinchPrev > 0) {
+                zoom = Math.max(0.4, Math.min(3.5, zoom * (cur / pinchPrev)));
+              }
+              pinchPrev = cur;
+            }
+          },
+          { passive: false },
+        );
+        wrap.addEventListener("touchend", () => {
+          pinchPrev = 0;
+        });
+
+        // ── Buttons ──────────────────────────────────────────
+        const btnIn = document.getElementById("zoom-in");
+        const btnOut = document.getElementById("zoom-out");
+        const btnReset = document.getElementById("zoom-reset");
+        const btnPause = document.getElementById("pause-toggle");
+        const btnFocus = document.getElementById("focus-mode-btn");
+
+        btnIn &&
+          btnIn.addEventListener("click", () => {
+            zoom = Math.min(3.5, zoom * 1.25);
+          });
+        btnOut &&
+          btnOut.addEventListener("click", () => {
+            zoom = Math.max(0.4, zoom / 1.25);
+          });
+        btnReset &&
+          btnReset.addEventListener("click", () => {
+            zoom = 1.0;
+            targetX = targetY = 0;
+            manualX = manualY = 0;
+          });
+        btnPause &&
+          btnPause.addEventListener("click", () => {
+            paused = !paused;
+            btnPause.classList.toggle("active", paused);
+            btnPause.setAttribute("aria-pressed", paused ? "true" : "false");
+            btnPause.textContent = paused ? "PLAY" : "PAUSE";
+          });
+        btnFocus &&
+          btnFocus.addEventListener("click", () => {
+            focusMode = !focusMode;
+            wrap.classList.toggle("focus-mode", focusMode);
+            btnFocus.classList.toggle("active", focusMode);
+            btnFocus.setAttribute("aria-pressed", focusMode ? "true" : "false");
+            btnFocus.textContent = focusMode ? "EXIT" : "FOCUS";
+            if (focusMode) {
+              manualX = targetX;
+              manualY = targetY;
+            }
+          });
+
+        // Keyboard: ESC to exit focus mode; arrows to nudge
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && focusMode) {
+            focusMode = false;
+            wrap.classList.remove("focus-mode");
+            btnFocus && btnFocus.classList.remove("active");
+            btnFocus && btnFocus.setAttribute("aria-pressed", "false");
+            btnFocus && (btnFocus.textContent = "FOCUS");
+          }
+          if (focusMode) {
+            const step = 0.08;
+            if (e.key === "ArrowLeft") manualX -= step;
+            if (e.key === "ArrowRight") manualX += step;
+            if (e.key === "ArrowUp") manualY = Math.max(-1.2, manualY - step);
+            if (e.key === "ArrowDown") manualY = Math.min(1.2, manualY + step);
+            if (e.key === "+" || e.key === "=")
+              zoom = Math.min(3.5, zoom * 1.1);
+            if (e.key === "-" || e.key === "_")
+              zoom = Math.max(0.4, zoom / 1.1);
+            if (
+              ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(
+                e.key,
+              )
+            ) {
+              targetX = manualX;
+              targetY = manualY;
+            }
+          }
+        });
+
+        // ── ResizeObserver: bulletproof resize ───────────────
+        const ro = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            const w = Math.max(1, entry.contentRect.width);
+            const h = Math.max(1, entry.contentRect.height);
+            renderer.setSize(w, h, false);
+            mat.uniforms.uRes.value.set(w, h);
+          }
+        });
+        ro.observe(wrap);
+
+        // ── FPS counter ──────────────────────────────────────
+        let lastTime = performance.now(),
+          frames = 0;
 
         function animate(ts) {
-          const timeSec = ts * 0.001;
-          mat.uniforms.uTime.value = timeSec;
+          // Accumulate time only when not paused (so pause is true freeze)
+          if (lastTs !== null && !paused) {
+            frozenTime += (ts - lastTs) * 0.001;
+          }
+          lastTs = ts;
+          mat.uniforms.uTime.value = frozenTime;
 
-          // Smooth mouse
-          currentX += (targetX - currentX) * 0.04;
-          currentY += (targetY - currentY) * 0.04;
+          // Smooth mouse → uMouse
+          currentX += (targetX - currentX) * 0.06;
+          currentY += (targetY - currentY) * 0.06;
           mat.uniforms.uMouse.value.set(currentX, currentY);
 
-          // Phase tracking for HUD
-          const phaseIdx = getPhaseIdx(timeSec);
-          if (phaseIdx !== lastPhaseIdx) {
-            lastPhaseIdx = phaseIdx;
-            document.getElementById("phase-val").textContent = PHASE_NAMES[phaseIdx];
-            announcePhase(phaseIdx);
+          // Smooth zoom
+          zoomCurrent += (zoom - zoomCurrent) * 0.1;
+          mat.uniforms.uZoom.value = zoomCurrent;
+
+          // Phase tracking for HUD (only when running)
+          if (!paused) {
+            const phaseIdx = getPhaseIdx(frozenTime);
+            if (phaseIdx !== lastPhaseIdx) {
+              lastPhaseIdx = phaseIdx;
+              const pVal = document.getElementById("phase-val");
+              if (pVal) pVal.textContent = PHASE_NAMES[phaseIdx];
+              announcePhase(phaseIdx);
+            }
+            const pwEl = document.getElementById("power-val");
+            if (pwEl) pwEl.textContent = computePw(frozenTime).toFixed(2);
           }
 
-          // Power display
-          document.getElementById("power-val").textContent = computePw(timeSec).toFixed(2);
+          // Zoom HUD
+          const zEl = document.getElementById("zoom-val");
+          if (zEl) zEl.textContent = zoomCurrent.toFixed(2);
 
           // FPS
           frames++;
           const now = performance.now();
           if (now - lastTime >= 800) {
-            document.getElementById("fps-val").textContent =
-              Math.round(frames / ((now - lastTime) / 1000));
+            const fpsEl = document.getElementById("fps-val");
+            if (fpsEl)
+              fpsEl.textContent = Math.round(
+                frames / ((now - lastTime) / 1000),
+              );
             frames = 0;
             lastTime = now;
           }
