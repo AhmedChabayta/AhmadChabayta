@@ -8,11 +8,11 @@
     <title>Ahmad Chabayta — Frontend Developer &amp; Creative Technologist</title>
     <meta
       name="description"
-      content="Self-taught frontend developer based in Beirut & Riyadh. Four years of professional work in React, Next.js, WebGL/GLSL shaders, and data engineering. No degree — only the work."
+      content="Self-taught frontend developer based in Beirut, born in Riyadh. Four years of professional work in React, Next.js, WebGL/GLSL shaders, and data engineering. No degree — only the work."
     />
     <meta
       name="keywords"
-      content="Ahmad Chabayta, frontend developer, React, Next.js, TypeScript, WebGL, GLSL, Mandelbulb, raymarching, creative technologist, Beirut, Riyadh, portfolio"
+      content="Ahmad Chabayta, frontend developer, React, Next.js, TypeScript, WebGL, GLSL, Mandelbulb, raymarching, creative technologist, Beirut, Lebanon, portfolio"
     />
     <meta name="author" content="Ahmad Chabayta" />
     <meta name="robots" content="index, follow" />
@@ -35,7 +35,7 @@
     <meta name="twitter:title" content="Ahmad Chabayta — Frontend Developer" />
     <meta
       name="twitter:description"
-      content="Self-taught frontend developer. React, Next.js, live GLSL fractals, and data pipelines. Beirut / Riyadh."
+      content="Self-taught frontend developer. React, Next.js, live GLSL fractals, and data pipelines. Based in Beirut."
     />
 
     <!-- Preconnect -->
@@ -457,6 +457,11 @@
 
       /* ── MOBILE ── */
       @media (max-width: 768px) {
+        section[id="hero"] {
+          padding: 4rem 1.5rem 3rem !important;
+          justify-content: flex-start !important;
+          min-height: auto !important;
+        }
         #fractal-text-overlay {
           padding: 5rem 1.5rem;
         }
@@ -483,6 +488,24 @@
         }
       }
 
+      /* ── Touch-friendly link states (hover + tap/focus) ── */
+      .cta-hire:hover,
+      .cta-hire:focus,
+      .cta-hire:active {
+        transform: scale(1.04);
+        box-shadow: 0 0 20px rgba(255, 69, 0, 0.4);
+      }
+      .contact-link:hover,
+      .contact-link:focus,
+      .contact-link:active {
+        color: #ff4500 !important;
+      }
+      .social-link:hover,
+      .social-link:focus,
+      .social-link:active {
+        opacity: 0.5;
+      }
+
       /* ── Interactive Experiment Canvases ── */
       .demo-canvas-wrap {
         position: relative;
@@ -490,6 +513,9 @@
         border-radius: 6px;
         margin-bottom: 1.5rem;
         background: #050505;
+        touch-action: none;
+        -webkit-user-select: none;
+        user-select: none;
       }
       .demo-canvas-wrap canvas {
         position: absolute;
@@ -623,7 +649,7 @@
               flex-shrink: 0;
             "
           ></span>
-          BASED IN BEIRUT / RIYADH
+          BASED IN BEIRUT · BORN IN RIYADH
         </div>
         <h1
           class="f-anton hero-line"
@@ -934,7 +960,7 @@
           <div class="demo-card reveal">
             <div class="demo-canvas-wrap" style="height: 220px; cursor: crosshair;">
               <canvas id="cv-particles"></canvas>
-              <div class="demo-hint">MOVE MOUSE · CLICK TO BURST</div>
+              <div class="demo-hint">DRAG · TAP TO BURST</div>
             </div>
             <p class="f-mono" style="font-size: 0.65rem; color: var(--orange); margin-bottom: 0.8rem;">CANVAS PHYSICS</p>
             <h4 class="f-anton" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Particle Gravity</h4>
@@ -947,7 +973,7 @@
           <div class="demo-card reveal">
             <div class="demo-canvas-wrap" style="height: 220px; cursor: crosshair;">
               <canvas id="cv-wave"></canvas>
-              <div class="demo-hint">X = FREQUENCY · Y = AMPLITUDE</div>
+              <div class="demo-hint">DRAG · X=FREQ · Y=AMP</div>
             </div>
             <p class="f-mono" style="font-size: 0.65rem; color: var(--orange); margin-bottom: 0.8rem;">GENERATIVE VISUAL</p>
             <h4 class="f-anton" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Wave Synth</h4>
@@ -1029,15 +1055,13 @@
               </div>
             </div>
             <!-- CTA -->
-            <a href="mailto:ahmadchabayta@proton.me" style="
+            <a href="mailto:ahmadchabayta@proton.me" class="cta-hire" style="
               display: inline-flex; align-items: center; gap: 0.75rem; width: fit-content;
               background: var(--orange); color: #000; padding: 0.65rem 1.5rem;
               font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700;
               text-transform: uppercase; letter-spacing: 0.1em; text-decoration: none;
               transition: transform 0.2s ease, box-shadow 0.2s ease;
             "
-            onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 0 20px rgba(255,69,0,0.4)'"
-            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'"
             >HIRE ME &nbsp;→</a>
             <!-- Ticker strip -->
             <div style="
@@ -1050,7 +1074,7 @@
                 animation: ticker 24s linear infinite;
                 font-size: 0.46rem; color: rgba(255,69,0,0.5); letter-spacing: 0.14em;
               ">
-                FRONTEND DEVELOPMENT &nbsp;·&nbsp; REACT &amp; NEXT.JS &nbsp;·&nbsp; GLSL SHADERS &nbsp;·&nbsp; DATA PIPELINES &nbsp;·&nbsp; UI SYSTEMS &nbsp;·&nbsp; OPEN SOURCE &nbsp;·&nbsp; BILINGUAL AR/EN &nbsp;·&nbsp; BEIRUT / RIYADH &nbsp;·&nbsp; AVAILABLE GLOBALLY &nbsp;·&nbsp;&nbsp;&nbsp;&nbsp;FRONTEND DEVELOPMENT &nbsp;·&nbsp; REACT &amp; NEXT.JS &nbsp;·&nbsp; GLSL SHADERS &nbsp;·&nbsp; DATA PIPELINES &nbsp;·&nbsp; UI SYSTEMS &nbsp;·&nbsp; OPEN SOURCE &nbsp;·&nbsp; BILINGUAL AR/EN &nbsp;·&nbsp; BEIRUT / RIYADH &nbsp;·&nbsp; AVAILABLE GLOBALLY &nbsp;·&nbsp;&nbsp;&nbsp;
+                FRONTEND DEVELOPMENT &nbsp;·&nbsp; REACT &amp; NEXT.JS &nbsp;·&nbsp; GLSL SHADERS &nbsp;·&nbsp; DATA PIPELINES &nbsp;·&nbsp; UI SYSTEMS &nbsp;·&nbsp; OPEN SOURCE &nbsp;·&nbsp; BILINGUAL AR/EN &nbsp;·&nbsp; BASED IN BEIRUT &nbsp;·&nbsp; AVAILABLE GLOBALLY &nbsp;·&nbsp;&nbsp;&nbsp;&nbsp;FRONTEND DEVELOPMENT &nbsp;·&nbsp; REACT &amp; NEXT.JS &nbsp;·&nbsp; GLSL SHADERS &nbsp;·&nbsp; DATA PIPELINES &nbsp;·&nbsp; UI SYSTEMS &nbsp;·&nbsp; OPEN SOURCE &nbsp;·&nbsp; BILINGUAL AR/EN &nbsp;·&nbsp; BASED IN BEIRUT &nbsp;·&nbsp; AVAILABLE GLOBALLY &nbsp;·&nbsp;&nbsp;&nbsp;
               </div>
             </div>
           </div>
@@ -1680,29 +1704,25 @@
             <div style="display: flex; flex-direction: column; gap: 1rem">
               <a
                 href="mailto:ahmadchabayta@proton.me"
-                class="f-anton"
+                class="f-anton contact-link"
                 style="
                   font-size: clamp(1rem, 2.5vw, 2rem);
                   color: inherit;
                   text-decoration: none;
                   transition: color 0.3s;
                 "
-                onmouseover="this.style.color='#FF4500'"
-                onmouseout="this.style.color='inherit'"
               >
                 ahmadchabayta@proton.me
               </a>
               <a
                 href="https://wa.me/96170687167"
-                class="f-anton"
+                class="f-anton contact-link"
                 style="
                   font-size: clamp(1rem, 2.5vw, 2rem);
                   color: inherit;
                   text-decoration: none;
                   transition: color 0.3s;
                 "
-                onmouseover="this.style.color='#FF4500'"
-                onmouseout="this.style.color='inherit'"
               >
                 +961 70 687 167
               </a>
@@ -1713,13 +1733,12 @@
             >
               <a
                 href="https://github.com/AhmedChabayta"
+                class="social-link"
                 style="
                   color: inherit;
                   text-decoration: none;
                   transition: opacity 0.2s;
                 "
-                onmouseover="this.style.opacity='0.5'"
-                onmouseout="this.style.opacity='1'"
                 >Github</a
               >
             </div>
@@ -2134,13 +2153,12 @@
           sz: Math.random() * 1.4 + 0.4,
         }));
 
-        wrap.addEventListener("mousemove", (e) => {
+        const setAttractor = (clientX, clientY) => {
           const r = wrap.getBoundingClientRect();
-          mx = e.clientX - r.left;
-          my = e.clientY - r.top;
-        });
-        wrap.addEventListener("mouseleave", () => { mx = W / 2; my = H / 2; });
-        wrap.addEventListener("click", () => {
+          mx = clientX - r.left;
+          my = clientY - r.top;
+        };
+        const triggerBurst = () => {
           bursting  = true;
           burstTimer = 0;
           particles.forEach((p) => {
@@ -2150,6 +2168,14 @@
             p.vx += (dx / dist) * f * 0.08;
             p.vy += (dy / dist) * f * 0.08;
           });
+        };
+        wrap.addEventListener("pointermove", (e) => setAttractor(e.clientX, e.clientY));
+        wrap.addEventListener("pointerdown", (e) => {
+          setAttractor(e.clientX, e.clientY);
+          triggerBurst();
+        });
+        wrap.addEventListener("pointerleave", (e) => {
+          if (e.pointerType !== "touch") { mx = W / 2; my = H / 2; }
         });
 
         function loop() {
@@ -2217,11 +2243,13 @@
 
         let mx = 0.5, my = 0.5, waveTime = 0;
 
-        wrap.addEventListener("mousemove", (e) => {
+        const updateWave = (e) => {
           const r = wrap.getBoundingClientRect();
           mx = (e.clientX - r.left) / r.width;
           my = (e.clientY - r.top)  / r.height;
-        });
+        };
+        wrap.addEventListener("pointermove", updateWave);
+        wrap.addEventListener("pointerdown", updateWave);
 
         function drawLayer(freqMult, ampMult, phase, alpha, lw) {
           const amp  = 12 + ampMult * 58;
@@ -2291,16 +2319,13 @@
               bricks.push({ x: MARGX + c * (BRICKW + BRICKGAP), y: MARGT + r * (BRICKH + BRICKGAP), r, alive: true });
         }
 
-        wrap.addEventListener("mousemove", (e) => {
+        const movePaddle = (clientX) => {
           const rect = wrap.getBoundingClientRect();
-          paddle.x = Math.max(PADDLE_W / 2, Math.min(W - PADDLE_W / 2, e.clientX - rect.left));
-        });
-        wrap.addEventListener("touchmove", (e) => {
-          e.preventDefault();
-          const rect = wrap.getBoundingClientRect();
-          paddle.x = Math.max(PADDLE_W / 2, Math.min(W - PADDLE_W / 2, e.touches[0].clientX - rect.left));
-        }, { passive: false });
-        wrap.addEventListener("click", () => {
+          paddle.x = Math.max(PADDLE_W / 2, Math.min(W - PADDLE_W / 2, clientX - rect.left));
+        };
+        wrap.addEventListener("pointermove", (e) => movePaddle(e.clientX));
+        wrap.addEventListener("pointerdown", (e) => {
+          movePaddle(e.clientX);
           if (state !== "playing") { resetGame(); state = "playing"; hint.style.display = "none"; }
         });
 
@@ -2709,15 +2734,19 @@
         let targetX = 0, targetY = 0;
         let currentX = 0, currentY = 0;
 
-        wrap.addEventListener("mousemove", (e) => {
+        const updateFractal = (e) => {
           const r = wrap.getBoundingClientRect();
           targetX = ((e.clientX - r.left) / r.width  - 0.5) * 2;
           targetY = ((e.clientY - r.top)  / r.height - 0.5) * 2;
           document.getElementById("coord-display").innerHTML =
             "CAM_X&nbsp;" + targetX.toFixed(3) +
             "<br>CAM_Y&nbsp;" + targetY.toFixed(3);
+        };
+        wrap.addEventListener("pointermove", updateFractal);
+        wrap.addEventListener("pointerdown", updateFractal);
+        wrap.addEventListener("pointerleave", (e) => {
+          if (e.pointerType !== "touch") { targetX = 0; targetY = 0; }
         });
-        wrap.addEventListener("mouseleave", () => { targetX = 0; targetY = 0; });
 
         window.addEventListener("resize", () => {
           renderer.setSize(wrap.offsetWidth, wrap.offsetHeight);
