@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: 5 5 5;
+  --foreground: 245 245 245;
+  --orange: 255 69 0;
+  --orange-soft: 255 122 64;
+  --muted: 23 23 23;
+  --muted-foreground: 163 163 163;
+  --border: 38 38 38;
+  --input: 38 38 38;
+  --ring: 255 69 0;
+
+  --card: 10 10 10;
+  --card-foreground: 245 245 245;
+  --popover: 10 10 10;
+  --popover-foreground: 245 245 245;
+  --primary: 255 69 0;
+  --primary-foreground: 5 5 5;
+  --secondary: 23 23 23;
+  --secondary-foreground: 245 245 245;
+  --accent: 23 23 23;
+  --accent-foreground: 255 69 0;
+  --destructive: 220 50 50;
+  --destructive-foreground: 245 245 245;
+
+  --chart-1: 255 69 0;
+  --chart-2: 255 122 64;
+  --chart-3: 64 144 255;
+  --chart-4: 77 255 145;
+  --chart-5: 204 48 96;
+
+  --radius: 0.25rem;
+}
+
+@theme inline {
+  --color-background: rgb(var(--background));
+  --color-foreground: rgb(var(--foreground));
+  --color-orange: rgb(var(--orange));
+  --color-orange-soft: rgb(var(--orange-soft));
+
+  --color-card: rgb(var(--card));
+  --color-card-foreground: rgb(var(--card-foreground));
+  --color-popover: rgb(var(--popover));
+  --color-popover-foreground: rgb(var(--popover-foreground));
+  --color-primary: rgb(var(--primary));
+  --color-primary-foreground: rgb(var(--primary-foreground));
+  --color-secondary: rgb(var(--secondary));
+  --color-secondary-foreground: rgb(var(--secondary-foreground));
+  --color-muted: rgb(var(--muted));
+  --color-muted-foreground: rgb(var(--muted-foreground));
+  --color-accent: rgb(var(--accent));
+  --color-accent-foreground: rgb(var(--accent-foreground));
+  --color-destructive: rgb(var(--destructive));
+  --color-destructive-foreground: rgb(var(--destructive-foreground));
+  --color-border: rgb(var(--border));
+  --color-input: rgb(var(--input));
+  --color-ring: rgb(var(--ring));
+
+  --color-chart-1: rgb(var(--chart-1));
+  --color-chart-2: rgb(var(--chart-2));
+  --color-chart-3: rgb(var(--chart-3));
+  --color-chart-4: rgb(var(--chart-4));
+  --color-chart-5: rgb(var(--chart-5));
+
+  --font-display: var(--font-anton);
+  --font-mono: var(--font-jetbrains);
+  --font-sans: var(--font-inter);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+}
+
+@layer base {
+  * {
+    border-color: rgb(var(--border));
+  }
+  html,
+  body {
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    font-family: var(--font-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background-color: rgb(var(--orange));
+    color: rgb(var(--background));
+  }
+}
+
+@utility f-anton {
+  font-family: var(--font-display), Impact, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+@utility f-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+@utility outline-text {
+  -webkit-text-stroke: 1px rgb(var(--foreground));
+  color: transparent;
+}
+
+@layer utilities {
+  .grain {
+    position: relative;
+    isolation: isolate;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/></svg>");
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--orange)) rgb(var(--background));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
