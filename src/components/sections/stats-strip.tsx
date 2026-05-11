@@ -17,6 +17,7 @@ function Counter({ to, suffix }: { to: number; suffix: string }) {
 
   useEffect(() => {
     if (!inView) return;
+    if (ref.current) ref.current.textContent = "0" + suffix;
     const controls = animate(motionValue, to, {
       duration: 2,
       ease: "easeOut",
@@ -29,7 +30,12 @@ function Counter({ to, suffix }: { to: number; suffix: string }) {
     return () => controls.stop();
   }, [inView, motionValue, to, suffix]);
 
-  return <span ref={ref}>0{suffix}</span>;
+  return (
+    <span ref={ref}>
+      {to}
+      {suffix}
+    </span>
+  );
 }
 
 export function StatsStrip() {
