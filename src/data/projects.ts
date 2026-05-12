@@ -18,14 +18,47 @@ export interface Project {
   role: string;
   stack: ProjectStack[];
   links?: { label: string; href: string }[];
+  /**
+   * If set, the project card opens this live URL in a new tab instead of
+   * routing to the internal project page. Use for external/live deployments.
+   */
+  externalUrl?: string;
   demo: ProjectDemo;
   featured?: boolean;
 }
 
 export const PROJECTS: Project[] = [
   {
-    slug: "mandelbulb-playground",
+    slug: "dashboard-template",
     index: "01",
+    title: "Preview Links",
+    tagline: "A multi-tenant dashboard for managing preview deployments at scale.",
+    summary:
+      "Real-time dashboard that aggregates deployment status, contributor activity and live previews across an org. Built on Next.js App Router + server components, shipping live at previewlinks.xyz.",
+    year: 2026,
+    role: "Design, frontend, data",
+    stack: ["Next.js", "TypeScript", "TanStack Query", "Tailwind"],
+    externalUrl: "https://previewlinks.xyz",
+    demo: { kind: "none" },
+    featured: true,
+  },
+  {
+    slug: "rich-media-builder",
+    index: "02",
+    title: "Rich Media Builder",
+    tagline: "A drag-and-drop composer for editorial-grade rich media units.",
+    summary:
+      "A visual editor that lets non-developers assemble layered hero modules with motion, custom typography and responsive breakpoints — and exports clean HTML/CSS the engineering team can ship.",
+    year: 2026,
+    role: "Design, frontend, motion",
+    stack: ["Next.js", "framer-motion", "TypeScript", "Tailwind"],
+    externalUrl: "https://rich-media-builder-one.vercel.app",
+    demo: { kind: "none" },
+    featured: true,
+  },
+  {
+    slug: "mandelbulb-playground",
+    index: "03",
     title: "Mandelbulb Playground",
     tagline: "Live GLSL raymarcher with parameter sliders & shareable URLs.",
     summary:
@@ -38,7 +71,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "git-pulse",
-    index: "02",
+    index: "04",
     title: "Git Pulse",
     tagline: "Live GitHub activity dashboard built on Recharts + the GitHub API.",
     summary:
@@ -50,8 +83,21 @@ export const PROJECTS: Project[] = [
     featured: true,
   },
   {
+    slug: "pottyfolly",
+    index: "05",
+    title: "Pottyfolly",
+    tagline: "An earlier portfolio experiment — typography-led, image-driven.",
+    summary:
+      "An earlier-generation personal site exploring expressive typographic layouts and image-led storytelling. Still live, kept around as a snapshot.",
+    year: 2024,
+    role: "Design, frontend",
+    stack: ["Next.js", "Tailwind"],
+    externalUrl: "https://pottyfolly-chabays-projects.vercel.app",
+    demo: { kind: "none" },
+  },
+  {
     slug: "component-lab",
-    index: "03",
+    index: "06",
     title: "Component Lab",
     tagline: "A typed React component library with a live prop playground.",
     summary:
@@ -63,7 +109,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "wave-synth",
-    index: "04",
+    index: "07",
     title: "Wave Synth",
     tagline: "Touch-driven multi-layer oscillator visualizer.",
     summary:
@@ -75,7 +121,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "color-extractor",
-    index: "05",
+    index: "08",
     title: "Color Token Extractor",
     tagline: "Drop in an image, get a typed design-token palette.",
     summary:
@@ -87,7 +133,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "fractal-poster-press",
-    index: "06",
+    index: "09",
     title: "Fractal Poster Press",
     tagline: "Generative brutalist poster system, click to print.",
     summary:

@@ -35,21 +35,26 @@ export function ExperimentsSection() {
     <section
       id="experiments"
       aria-labelledby="experiments-heading"
-      className="border-t border-border px-5 py-24 md:px-10 md:py-32"
+      className="border-t border-border px-5 py-32 md:px-10 md:py-44"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-12 flex items-end justify-between gap-6">
-          <h2
-            id="experiments-heading"
-            className="f-anton text-[clamp(2.5rem,7vw,6rem)]"
-          >
-            EXPERIMENTS.
-          </h2>
-          <p className="f-mono hidden text-[0.65rem] text-muted-foreground md:block">
-            / LIVE / INTERACTIVE
+        <div className="mb-20 flex flex-col gap-8 md:mb-28 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-4">
+            <span className="f-mono text-[0.6rem] text-orange">/ 04 — LIVE / INTERACTIVE</span>
+            <h2
+              id="experiments-heading"
+              className="f-anton text-[clamp(3rem,8vw,7rem)]"
+            >
+              EXPERIMENTS.
+            </h2>
+          </div>
+          <p className="f-mono max-w-[28ch] text-[0.65rem] leading-[2] text-muted-foreground">
+            DRAG. TAP. PLAY.
+            <br />
+            EVERY DEMO RUNS LIVE IN YOUR BROWSER.
           </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {CARDS.map(({ eyebrow, title, body, Demo, href }, i) => (
             <motion.article
               key={title}
@@ -57,19 +62,22 @@ export function ExperimentsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, delay: i * 0.08 }}
-              className="flex flex-col gap-4 border border-border bg-card p-5"
+              className="group flex flex-col gap-5 border border-border bg-card p-7 transition-colors hover:border-orange/30"
             >
               <Demo className="aspect-[16/11] w-full" />
-              <p className="f-mono text-[0.6rem] tracking-[0.2em] text-orange">
+              <p className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">
                 {eyebrow}
               </p>
-              <h3 className="f-anton text-2xl">{title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
+              <h3 className="f-anton text-3xl leading-[1.05]">{title}</h3>
+              <p className="text-[0.9rem] leading-[1.75] text-muted-foreground">
+                {body}
+              </p>
               <Link
                 href={href}
-                className="f-mono mt-auto inline-flex items-center gap-2 self-start text-[0.6rem] tracking-[0.2em] text-orange transition-opacity hover:opacity-70 focus-visible:opacity-70 active:opacity-70"
+                className="f-mono mt-auto inline-flex items-center gap-2 self-start text-[0.6rem] tracking-[0.25em] text-orange transition-all hover:gap-3 focus-visible:gap-3 active:gap-3"
               >
-                OPEN →
+                OPEN
+                <span aria-hidden>→</span>
               </Link>
             </motion.article>
           ))}
