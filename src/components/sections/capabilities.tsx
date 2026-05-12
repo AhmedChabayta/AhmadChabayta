@@ -47,18 +47,23 @@ export function CapabilitiesSection() {
     <section
       id="capabilities"
       aria-labelledby="cap-heading"
-      className="border-t border-border px-5 py-24 md:px-10 md:py-32"
+      className="border-t border-border px-5 py-32 md:px-10 md:py-44"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-12 flex items-end justify-between gap-6">
-          <h2
-            id="cap-heading"
-            className="f-anton text-[clamp(2.5rem,7vw,6rem)]"
-          >
-            CAPABILITIES.
-          </h2>
-          <p className="f-mono hidden text-[0.65rem] text-muted-foreground md:block">
-            / WHAT I DO
+        <div className="mb-20 flex flex-col gap-8 md:mb-28 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-4">
+            <span className="f-mono text-[0.6rem] text-orange">/ 02 — DISCIPLINES</span>
+            <h2
+              id="cap-heading"
+              className="f-anton text-[clamp(3rem,8vw,7rem)]"
+            >
+              CAPABILITIES.
+            </h2>
+          </div>
+          <p className="f-mono max-w-[28ch] text-[0.65rem] leading-[2] text-muted-foreground">
+            SIX OVERLAPPING DOMAINS.
+            <br />
+            ONE PERSON. ONE STACK.
           </p>
         </div>
         <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3">
@@ -69,16 +74,23 @@ export function CapabilitiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, delay: i * 0.05 }}
-              className="group flex flex-col gap-4 bg-background p-8 transition-colors hover:bg-card"
+              className="group flex flex-col gap-6 bg-background p-10 transition-colors hover:bg-card md:p-12"
             >
-              <Icon className="size-6 text-orange" strokeWidth={1.5} />
-              <h3 className="f-anton text-2xl leading-tight">{title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
+              <div className="flex items-center justify-between gap-4">
+                <Icon className="size-7 text-orange" strokeWidth={1.25} />
+                <span className="f-mono text-[0.55rem] text-muted-foreground/60">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              </div>
+              <h3 className="f-anton text-3xl leading-[1.05]">{title}</h3>
+              <p className="text-[0.95rem] leading-[1.75] text-muted-foreground">
+                {body}
+              </p>
               <div className="mt-auto flex flex-wrap gap-1.5 pt-4">
                 {stack.map((s) => (
                   <span
                     key={s}
-                    className="f-mono border border-border px-2 py-1 text-[0.55rem] text-muted-foreground transition-colors group-hover:border-orange/30 group-hover:text-orange"
+                    className="f-mono border border-border px-2.5 py-1.5 text-[0.55rem] text-muted-foreground transition-colors group-hover:border-orange/40 group-hover:text-orange"
                   >
                     {s}
                   </span>

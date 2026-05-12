@@ -97,8 +97,16 @@
 @utility f-anton {
   font-family: var(--font-display), Impact, sans-serif;
   font-weight: 400;
-  letter-spacing: -0.02em;
-  line-height: 0.9;
+  letter-spacing: -0.015em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+@utility f-display {
+  font-family: var(--font-display), Impact, sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 0.86;
   text-transform: uppercase;
 }
 
@@ -111,6 +119,16 @@
 @utility outline-text {
   -webkit-text-stroke: 1px rgb(var(--foreground));
   color: transparent;
+}
+
+@utility section-pad {
+  padding-block: clamp(5rem, 9vw, 10rem);
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) {
+  .section-pad {
+    padding-inline: 2.5rem;
+  }
 }
 
 @layer utilities {
@@ -131,6 +149,39 @@
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: rgb(var(--orange)) rgb(var(--background));
+  }
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+  }
+  .marquee-track {
+    animation: marquee-x 38s linear infinite;
+    will-change: transform;
+  }
+  .marquee-track-slow {
+    animation: marquee-x 64s linear infinite;
+    will-change: transform;
+  }
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
 }
 

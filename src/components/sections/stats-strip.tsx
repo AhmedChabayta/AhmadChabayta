@@ -17,6 +17,7 @@ function Counter({ to, suffix }: { to: number; suffix: string }) {
 
   useEffect(() => {
     if (!inView) return;
+    if (ref.current) ref.current.textContent = "0" + suffix;
     const controls = animate(motionValue, to, {
       duration: 2,
       ease: "easeOut",
@@ -29,7 +30,12 @@ function Counter({ to, suffix }: { to: number; suffix: string }) {
     return () => controls.stop();
   }, [inView, motionValue, to, suffix]);
 
-  return <span ref={ref}>0{suffix}</span>;
+  return (
+    <span ref={ref}>
+      {to}
+      {suffix}
+    </span>
+  );
 }
 
 export function StatsStrip() {
@@ -49,12 +55,15 @@ export function StatsStrip() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.5, delay: i * 0.05 }}
-            className="flex flex-col gap-2 border-r border-background/10 px-6 py-12 last:border-r-0 md:px-10 md:py-16"
+            className="flex flex-col gap-5 border-b border-r border-background/10 px-8 py-16 last:border-r-0 md:border-b-0 md:px-12 md:py-24"
           >
-            <span className="f-anton text-[clamp(3rem,7vw,6rem)] leading-none">
+            <span className="f-mono text-[0.55rem] text-background/60">
+              / {String(i + 1).padStart(2, "0")}
+            </span>
+            <span className="f-display text-[clamp(3.5rem,8vw,7rem)] leading-none">
               <Counter to={value} suffix={suffix} />
             </span>
-            <span className="f-mono text-[0.6rem] tracking-[0.2em] text-background/70">
+            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-background/70">
               {label}
             </span>
           </motion.div>

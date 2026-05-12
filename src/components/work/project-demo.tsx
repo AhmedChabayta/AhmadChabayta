@@ -4,9 +4,20 @@ import dynamic from "next/dynamic";
 import type { ProjectDemo as Demo } from "@/data/projects";
 import { WaveSynth } from "@/components/demos/wave-synth";
 
-const Mandelbulb = dynamic(
-  () => import("@/components/demos/mandelbulb").then((m) => m.Mandelbulb),
-  { ssr: false, loading: () => <div className="aspect-[16/10] w-full bg-black" /> },
+const MandelbulbPlayground = dynamic(
+  () =>
+    import("@/components/demos/mandelbulb-playground").then(
+      (m) => m.MandelbulbPlayground,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="grid w-full gap-4 md:grid-cols-[1fr_320px]">
+        <div className="aspect-[16/10] w-full bg-black md:aspect-auto md:min-h-[560px]" />
+        <div className="hidden border border-border bg-card md:block md:min-h-[560px]" />
+      </div>
+    ),
+  },
 );
 
 const GitPulse = dynamic(
@@ -27,7 +38,7 @@ const ColorExtractor = dynamic(
 export function ProjectDemo({ demo }: { demo: Demo }) {
   switch (demo.kind) {
     case "fractal-playground":
-      return <Mandelbulb className="aspect-[16/10] w-full" />;
+      return <MandelbulbPlayground />;
     case "git-pulse":
       return <GitPulse />;
     case "component-lab":

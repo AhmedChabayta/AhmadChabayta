@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { PROJECTS, getProject } from "@/data/projects";
 import { ProjectDemo } from "@/components/work/project-demo";
 
@@ -10,7 +10,11 @@ interface PageProps {
 }
 
 export function generateStaticParams() {
-  return PROJECTS.map((p) => ({ slug: p.slug }));
+  // Only generate case-study pages for projects that aren't an external link
+  // or a dedicated full-page app.
+  return PROJECTS.filter((p) => !p.externalUrl && !p.appHref).map((p) => ({
+    slug: p.slug,
+  }));
 }
 
 export async function generateMetadata({
@@ -33,36 +37,40 @@ export default async function ProjectPage({ params }: PageProps) {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
+  if (project.externalUrl) redirect(project.externalUrl);
+  if (project.appHref) redirect(project.appHref);
 
-  const idx = PROJECTS.findIndex((p) => p.slug === slug);
-  const prev = PROJECTS[(idx - 1 + PROJECTS.length) % PROJECTS.length];
-  const next = PROJECTS[(idx + 1) % PROJECTS.length];
+  const caseStudyProjects = PROJECTS.filter((p) => !p.externalUrl && !p.appHref);
+  const idx = caseStudyProjects.findIndex((p) => p.slug === slug);
+  const prev =
+    caseStudyProjects[(idx - 1 + caseStudyProjects.length) % caseStudyProjects.length];
+  const next = caseStudyProjects[(idx + 1) % caseStudyProjects.length];
 
   return (
-    <article className="px-5 pt-24 pb-24 md:px-10 md:pt-32 md:pb-32">
+    <article className="px-5 pt-32 pb-32 md:px-10 md:pt-44 md:pb-44">
       <div className="mx-auto max-w-6xl">
         <Link
           href="/work"
-          className="f-mono inline-flex items-center gap-2 text-[0.65rem] text-muted-foreground transition-colors hover:text-orange focus-visible:text-orange active:text-orange"
+          className="f-mono inline-flex items-center gap-2 text-[0.65rem] tracking-[0.25em] text-muted-foreground transition-colors hover:text-orange focus-visible:text-orange active:text-orange"
         >
           <ArrowLeft className="size-3" /> ALL WORK
         </Link>
 
-        <header className="mt-8 flex flex-col gap-6">
-          <p className="f-mono text-[0.65rem] text-orange">
+        <header className="mt-12 flex flex-col gap-8 md:mt-16">
+          <p className="f-mono text-[0.65rem] tracking-[0.25em] text-orange">
             {project.index} / {project.year} / {project.role.toUpperCase()}
           </p>
-          <h1 className="f-anton text-[clamp(2.5rem,9vw,8rem)] leading-[0.85]">
+          <h1 className="f-anton text-[clamp(3rem,10vw,10rem)] leading-[0.92]">
             {project.title}
           </h1>
-          <p className="max-w-prose text-lg text-muted-foreground md:text-xl">
+          <p className="max-w-prose text-[1.1rem] leading-[1.7] text-muted-foreground md:text-2xl">
             {project.tagline}
           </p>
-          <div className="flex flex-wrap gap-2 pt-2">
+          <div className="flex flex-wrap gap-2 pt-4">
             {project.stack.map((s) => (
               <span
                 key={s}
-                className="f-mono border border-border px-3 py-1 text-[0.6rem] text-muted-foreground"
+                className="f-mono border border-border px-3 py-1.5 text-[0.6rem] tracking-[0.25em] text-muted-foreground"
               >
                 {s}
               </span>
@@ -70,33 +78,34 @@ export default async function ProjectPage({ params }: PageProps) {
           </div>
         </header>
 
-        <section className="mt-12">
+        <section className="mt-20 md:mt-28">
           <ProjectDemo demo={project.demo} />
         </section>
 
-        <section className="mt-16 grid gap-12 md:grid-cols-3">
+        <section className="mt-24 grid gap-16 md:mt-32 md:grid-cols-3">
           <div className="md:col-span-2">
-            <h2 className="f-mono mb-4 text-[0.65rem] tracking-[0.2em] text-orange">
+            <h2 className="f-mono mb-6 text-[0.65rem] tracking-[0.25em] text-orange">
               / SUMMARY
             </h2>
-            <p className="max-w-prose text-base leading-relaxed text-muted-foreground md:text-lg">
+            <p className="max-w-prose text-[1.05rem] leading-[1.8] text-muted-foreground md:text-lg">
               {project.summary}
             </p>
           </div>
-          <aside className="flex flex-col gap-8">
+          <aside className="flex flex-col gap-10">
             {project.links && project.links.length > 0 && (
               <div>
-                <h3 className="f-mono mb-3 text-[0.6rem] tracking-[0.2em] text-orange">
+                <h3 className="f-mono mb-4 text-[0.6rem] tracking-[0.25em] text-orange">
                   / LINKS
                 </h3>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {project.links.map((l) => (
                     <li key={l.href}>
                       <Link
                         href={l.href}
-                        className="f-mono text-[0.7rem] underline-offset-4 hover:underline focus-visible:underline"
+                        className="f-mono inline-flex items-center gap-2 text-[0.7rem] tracking-[0.2em] underline-offset-4 hover:underline focus-visible:underline"
                       >
                         {l.label}
+                        <ArrowUpRight className="size-3" />
                       </Link>
                     </li>
                   ))}
@@ -104,13 +113,15 @@ export default async function ProjectPage({ params }: PageProps) {
               </div>
             )}
             <div>
-              <h3 className="f-mono mb-3 text-[0.6rem] tracking-[0.2em] text-orange">
+              <h3 className="f-mono mb-3 text-[0.6rem] tracking-[0.25em] text-orange">
                 / ROLE
               </h3>
-              <p className="text-sm text-muted-foreground">{project.role}</p>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                {project.role}
+              </p>
             </div>
             <div>
-              <h3 className="f-mono mb-3 text-[0.6rem] tracking-[0.2em] text-orange">
+              <h3 className="f-mono mb-3 text-[0.6rem] tracking-[0.25em] text-orange">
                 / YEAR
               </h3>
               <p className="text-sm text-muted-foreground">{project.year}</p>
@@ -118,26 +129,26 @@ export default async function ProjectPage({ params }: PageProps) {
           </aside>
         </section>
 
-        <nav className="mt-24 grid gap-4 md:grid-cols-2">
+        <nav className="mt-32 grid gap-6 md:grid-cols-2">
           <Link
             href={`/work/${prev.slug}`}
-            className="group flex flex-col gap-2 border border-border p-6 transition-colors hover:bg-muted focus-visible:bg-muted"
+            className="group flex flex-col gap-3 border border-border p-8 transition-all hover:border-orange/40 hover:bg-muted focus-visible:border-orange/40 focus-visible:bg-muted"
           >
-            <span className="f-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground">
+            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground">
               ← {prev.index} / PREV
             </span>
-            <span className="f-anton text-2xl group-hover:text-orange">
+            <span className="f-anton text-[clamp(1.5rem,3vw,2.5rem)] leading-[1.05] group-hover:text-orange">
               {prev.title}
             </span>
           </Link>
           <Link
             href={`/work/${next.slug}`}
-            className="group flex flex-col items-end gap-2 border border-border p-6 transition-colors hover:bg-muted focus-visible:bg-muted text-right"
+            className="group flex flex-col items-end gap-3 border border-border p-8 text-right transition-all hover:border-orange/40 hover:bg-muted focus-visible:border-orange/40 focus-visible:bg-muted"
           >
-            <span className="f-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground">
+            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground">
               {next.index} / NEXT →
             </span>
-            <span className="f-anton text-2xl group-hover:text-orange">
+            <span className="f-anton text-[clamp(1.5rem,3vw,2.5rem)] leading-[1.05] group-hover:text-orange">
               {next.title}
             </span>
           </Link>
