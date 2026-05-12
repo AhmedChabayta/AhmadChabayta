@@ -8,6 +8,11 @@ export type ProjectDemo =
   | { kind: "color-extractor" }
   | { kind: "none" };
 
+export interface CaseStudySection {
+  heading: string;
+  body: string;
+}
+
 export interface Project {
   slug: string;
   index: string;
@@ -25,6 +30,8 @@ export interface Project {
   externalUrl?: string;
   demo: ProjectDemo;
   featured?: boolean;
+  /** Long-form case study sections rendered on /work/[slug]. */
+  caseStudy?: CaseStudySection[];
 }
 
 export const PROJECTS: Project[] = [
@@ -68,6 +75,28 @@ export const PROJECTS: Project[] = [
     stack: ["Three.js", "GLSL", "TypeScript", "Next.js"],
     demo: { kind: "fractal-playground" },
     featured: true,
+    caseStudy: [
+      {
+        heading: "WHAT IT IS",
+        body: "A live, browser-rendered Mandelbulb — a 3D analogue of the Mandelbrot fractal. Every pixel you see is solved by raymarching: shooting a ray from the camera through that pixel, then stepping along it until it hits the fractal's distance field. No meshes. No textures. Just math.",
+      },
+      {
+        heading: "THE SHADER",
+        body: "The core is a fragment shader written in GLSL ES 1.0 — one screen-filling quad, no per-vertex work, every pixel solved independently on the GPU. The mandelbulb function iterates z = z^n + p in spherical coordinates up to 14 times per ray sample, with an early-exit when the orbit escapes. The escape time produces both the surface position and an 'orbit trap' value used for ambient-occlusion shading.",
+      },
+      {
+        heading: "MAKING IT INTERACTIVE",
+        body: "Every dial in the side panel maps to a single uniform in the shader. Sliding 'power' from 8 to 12 morphs the geometry from a smooth bulb into a writhing thorn-shape, in real time, because each frame re-evaluates the field at the new exponent. Iterations control fidelity vs. framerate. Color core and halo are two sampled RGBs the shader interpolates by orbit-trap depth.",
+      },
+      {
+        heading: "SHAREABLE URLS",
+        body: "Every parameter is serialized into the query string via window.history.replaceState — debounced so dragging a slider doesn't spam the history. Loading the page hydrates the panel from those params. Hit COPY SHARE URL and you get a link that reproduces the exact composition for anyone else, no account, no server.",
+      },
+      {
+        heading: "PERFORMANCE",
+        body: "60fps on most desktops, ~30fps on phones. Caps: device pixel ratio clamped to 1.5x to keep mobile GPUs honest, raymarch max-steps at 70, iter ceiling at 14, antialias off (raymarched edges fake it well enough). The whole thing weighs ~6kb of GLSL and ~140 lines of TypeScript glue.",
+      },
+    ],
   },
   {
     slug: "git-pulse",

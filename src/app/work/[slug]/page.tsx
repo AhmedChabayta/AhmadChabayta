@@ -87,6 +87,26 @@ export default async function ProjectPage({ params }: PageProps) {
             <p className="max-w-prose text-[1.05rem] leading-[1.8] text-muted-foreground md:text-lg">
               {project.summary}
             </p>
+
+            {project.caseStudy && project.caseStudy.length > 0 && (
+              <div className="mt-20 flex flex-col gap-16">
+                {project.caseStudy.map((section, i) => (
+                  <div key={section.heading} className="grid gap-4 md:grid-cols-[80px_1fr] md:gap-10">
+                    <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <h3 className="f-anton mb-4 text-2xl leading-[1.05] md:text-3xl">
+                        {section.heading}
+                      </h3>
+                      <p className="max-w-prose text-[1rem] leading-[1.8] text-muted-foreground md:text-lg">
+                        {section.body}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <aside className="flex flex-col gap-10">
             {project.links && project.links.length > 0 && (
