@@ -126,6 +126,7 @@ export const PROJECTS: Project[] = [
     year: 2026,
     role: "Design, components, docs",
     stack: ["React", "shadcn/ui", "Radix", "Tailwind"],
+    appHref: "/work/component-lab",
     demo: { kind: "component-lab" },
   },
   {
