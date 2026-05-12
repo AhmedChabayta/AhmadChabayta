@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { OrbitalMark } from "@/components/site/orbital-mark";
 
 const lineUp = {
   hidden: { opacity: 0, y: 48 },
@@ -20,14 +21,14 @@ export function Hero() {
       aria-labelledby="hero-heading"
       className="relative flex flex-col justify-end px-5 md:px-10 pt-32 pb-20 md:pt-40 md:pb-28 min-h-[88svh] md:min-h-[100svh]"
     >
-      <div className="pointer-events-none absolute right-5 top-32 hidden flex-col items-end gap-3 md:right-10 md:top-40 md:flex">
-        <span className="f-mono text-[0.55rem] text-orange/80">
-          / 2026 — PORTFOLIO v04
-        </span>
-        <span className="f-mono text-[0.55rem] text-white/30">
-          BEIRUT · 33.8938°N
-        </span>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        transition={{ duration: 1.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="pointer-events-none absolute right-5 top-28 hidden md:right-10 md:top-32 md:block lg:right-16"
+      >
+        <OrbitalMark size={180} />
+      </motion.div>
 
       <div className="w-full max-w-[100rem]">
         <motion.div
