@@ -36,7 +36,8 @@ export default function WorkIndexPage() {
                   target: "_blank" as const,
                   rel: "noreferrer noopener",
                 }
-              : { href: `/work/${p.slug}` };
+              : { href: p.appHref ?? `/work/${p.slug}` };
+            const isApp = Boolean(p.appHref);
             return (
               <li key={p.slug}>
                 <Link
@@ -57,6 +58,11 @@ export default function WorkIndexPage() {
                       <span className="inline-flex items-center gap-1.5 border border-orange/40 px-2 py-1 text-orange">
                         <span className="inline-block size-1.5 animate-pulse rounded-full bg-orange" />
                         LIVE
+                      </span>
+                    ) : isApp ? (
+                      <span className="inline-flex items-center gap-1.5 border border-orange/40 px-2 py-1 text-orange">
+                        <span className="inline-block size-1.5 rounded-full bg-orange" />
+                        APP
                       </span>
                     ) : (
                       <span className="text-muted-foreground">CASE STUDY</span>

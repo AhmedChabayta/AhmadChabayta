@@ -10,8 +10,11 @@ interface PageProps {
 }
 
 export function generateStaticParams() {
-  // Only generate internal case-study pages; external projects redirect.
-  return PROJECTS.filter((p) => !p.externalUrl).map((p) => ({ slug: p.slug }));
+  // Only generate case-study pages for projects that aren't an external link
+  // or a dedicated full-page app.
+  return PROJECTS.filter((p) => !p.externalUrl && !p.appHref).map((p) => ({
+    slug: p.slug,
+  }));
 }
 
 export async function generateMetadata({
@@ -34,14 +37,14 @@ export default async function ProjectPage({ params }: PageProps) {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
-  // If this project is external, send the visitor to the live deployment.
   if (project.externalUrl) redirect(project.externalUrl);
+  if (project.appHref) redirect(project.appHref);
 
-  const internalProjects = PROJECTS.filter((p) => !p.externalUrl);
-  const idx = internalProjects.findIndex((p) => p.slug === slug);
+  const caseStudyProjects = PROJECTS.filter((p) => !p.externalUrl && !p.appHref);
+  const idx = caseStudyProjects.findIndex((p) => p.slug === slug);
   const prev =
-    internalProjects[(idx - 1 + internalProjects.length) % internalProjects.length];
-  const next = internalProjects[(idx + 1) % internalProjects.length];
+    caseStudyProjects[(idx - 1 + caseStudyProjects.length) % caseStudyProjects.length];
+  const next = caseStudyProjects[(idx + 1) % caseStudyProjects.length];
 
   return (
     <article className="px-5 pt-32 pb-32 md:px-10 md:pt-44 md:pb-44">
@@ -87,26 +90,6 @@ export default async function ProjectPage({ params }: PageProps) {
             <p className="max-w-prose text-[1.05rem] leading-[1.8] text-muted-foreground md:text-lg">
               {project.summary}
             </p>
-
-            {project.caseStudy && project.caseStudy.length > 0 && (
-              <div className="mt-20 flex flex-col gap-16">
-                {project.caseStudy.map((section, i) => (
-                  <div key={section.heading} className="grid gap-4 md:grid-cols-[80px_1fr] md:gap-10">
-                    <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3 className="f-anton mb-4 text-2xl leading-[1.05] md:text-3xl">
-                        {section.heading}
-                      </h3>
-                      <p className="max-w-prose text-[1rem] leading-[1.8] text-muted-foreground md:text-lg">
-                        {section.body}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
           <aside className="flex flex-col gap-10">
             {project.links && project.links.length > 0 && (

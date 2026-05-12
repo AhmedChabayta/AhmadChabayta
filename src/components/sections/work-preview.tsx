@@ -13,7 +13,7 @@ function ProjectLinkProps(p: Project) {
       rel: "noreferrer noopener",
     };
   }
-  return { href: `/work/${p.slug}` };
+  return { href: p.appHref ?? `/work/${p.slug}` };
 }
 
 export function WorkPreview() {
@@ -49,6 +49,7 @@ export function WorkPreview() {
         <div className="grid gap-8 md:grid-cols-2">
           {featured.map((p, i) => {
             const isExternal = Boolean(p.externalUrl);
+            const isApp = Boolean(p.appHref);
             return (
               <motion.div
                 key={p.slug}
@@ -73,12 +74,17 @@ export function WorkPreview() {
                       <span className="f-mono hidden text-[0.55rem] tracking-[0.25em] text-muted-foreground md:inline">
                         {p.role.toUpperCase()}
                       </span>
-                      {isExternal && (
+                      {isExternal ? (
                         <span className="f-mono inline-flex items-center gap-1.5 border border-orange/40 px-2 py-1 text-[0.5rem] tracking-[0.25em] text-orange">
                           <span className="inline-block size-1.5 animate-pulse rounded-full bg-orange" />
                           LIVE
                         </span>
-                      )}
+                      ) : isApp ? (
+                        <span className="f-mono inline-flex items-center gap-1.5 border border-orange/40 px-2 py-1 text-[0.5rem] tracking-[0.25em] text-orange">
+                          <span className="inline-block size-1.5 rounded-full bg-orange" />
+                          APP
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                   <div className="relative mt-12">
