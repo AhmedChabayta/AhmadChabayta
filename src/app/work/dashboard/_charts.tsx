@@ -5,7 +5,6 @@ import {
   AreaChart,
   CartesianGrid,
   Cell,
-  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -34,34 +33,28 @@ const tooltipStyle = {
 
 export function DeploysChart() {
   return (
-    <article className="flex h-full flex-col border border-border bg-[#0a0a0a] p-6 md:p-7">
-      <header className="mb-6 flex items-end justify-between gap-4">
+    <article className="flex h-full min-w-0 flex-col border border-border bg-[#0a0a0a] p-4 sm:p-5 md:p-7">
+      <header className="mb-4 flex flex-col gap-3 md:mb-6 md:flex-row md:items-end md:justify-between md:gap-4">
         <div className="flex flex-col gap-1.5">
           <span className="f-mono text-[0.55rem] tracking-[0.25em] text-orange">
             / DEPLOYS · 30D
           </span>
-          <h3 className="f-anton text-2xl leading-tight md:text-3xl">
+          <h3 className="f-anton text-xl leading-tight sm:text-2xl md:text-3xl">
             BUILD CADENCE.
           </h3>
         </div>
-        <div className="flex gap-4">
-          <Legend
-            content={
-              <ul className="f-mono flex gap-4 text-[0.55rem] tracking-[0.2em] text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <span className="inline-block size-2 bg-orange" />
-                  SUCCESS
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="inline-block size-2 bg-destructive" />
-                  FAILED
-                </li>
-              </ul>
-            }
-          />
-        </div>
+        <ul className="f-mono flex gap-4 text-[0.5rem] tracking-[0.2em] text-muted-foreground md:text-[0.55rem]">
+          <li className="flex items-center gap-2">
+            <span className="inline-block size-2 bg-orange" />
+            SUCCESS
+          </li>
+          <li className="flex items-center gap-2">
+            <span className="inline-block size-2 bg-destructive" />
+            FAILED
+          </li>
+        </ul>
       </header>
-      <div className="flex-1 min-h-[260px]">
+      <div className="min-h-[220px] flex-1 md:min-h-[280px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={DEPLOYS_30D} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
             <defs>
@@ -108,16 +101,16 @@ export function DeploysChart() {
 export function StatusDonut() {
   const total = STATUS_DONUT.reduce((sum, s) => sum + s.value, 0);
   return (
-    <article className="flex h-full flex-col border border-border bg-[#0a0a0a] p-6 md:p-7">
-      <header className="mb-6 flex flex-col gap-1.5">
+    <article className="flex h-full min-w-0 flex-col border border-border bg-[#0a0a0a] p-4 sm:p-5 md:p-7">
+      <header className="mb-4 flex flex-col gap-1.5 md:mb-6">
         <span className="f-mono text-[0.55rem] tracking-[0.25em] text-orange">
           / STATUS · 30D
         </span>
-        <h3 className="f-anton text-2xl leading-tight md:text-3xl">
+        <h3 className="f-anton text-xl leading-tight sm:text-2xl md:text-3xl">
           OUTCOMES.
         </h3>
       </header>
-      <div className="relative flex-1 min-h-[260px]">
+      <div className="relative min-h-[220px] flex-1 md:min-h-[260px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie

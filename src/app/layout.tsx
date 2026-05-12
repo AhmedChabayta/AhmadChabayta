@@ -75,10 +75,10 @@ export default function RootLayout({
       className={`${anton.variable} ${jetbrains.variable} ${inter.variable} h-full`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
+      <body className="flex min-h-full w-full flex-col bg-background text-foreground antialiased">
         <ScrollProgress />
         <Nav />
-        <main id="main" className="flex-1">
+        <main id="main" className="w-full min-w-0 flex-1">
           {children}
         </main>
         <Footer />

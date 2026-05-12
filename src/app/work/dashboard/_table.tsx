@@ -58,17 +58,17 @@ export function ProjectsTable() {
     );
 
   return (
-    <article className="border border-border bg-[#0a0a0a] p-6 md:p-7">
-      <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <article className="min-w-0 border border-border bg-[#0a0a0a] p-4 sm:p-5 md:p-7">
+      <header className="mb-4 flex flex-col gap-4 md:mb-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex flex-col gap-1.5">
           <span className="f-mono text-[0.55rem] tracking-[0.25em] text-orange">
             / PROJECTS · {APP_PROJECTS.length}
           </span>
-          <h3 className="f-anton text-2xl leading-tight md:text-3xl">
+          <h3 className="f-anton text-xl leading-tight sm:text-2xl md:text-3xl">
             ALL PROJECTS.
           </h3>
         </div>
-        <div className="flex items-center gap-2 border border-border bg-background/40 px-3 py-2 md:w-72">
+        <div className="flex items-center gap-2 border border-border bg-background/40 px-3 py-2 lg:w-72">
           <Search className="size-3.5 text-muted-foreground" strokeWidth={1.5} />
           <input
             type="search"
@@ -80,7 +80,70 @@ export function ProjectsTable() {
         </div>
       </header>
 
-      <div className="overflow-x-auto">
+      {/* Mobile sort chips */}
+      <div className="-mx-1 mb-3 flex gap-1 overflow-x-auto px-1 md:hidden">
+        <span className="f-mono shrink-0 self-center pr-1 text-[0.5rem] tracking-[0.25em] text-muted-foreground">
+          SORT
+        </span>
+        {(["name", "deploys30d", "errorRate"] as SortKey[]).map((k) => (
+          <button
+            key={k}
+            type="button"
+            onClick={() => toggleSort(k)}
+            className={cn(
+              "f-mono inline-flex shrink-0 items-center gap-1.5 border px-2.5 py-1.5 text-[0.55rem] tracking-[0.2em] transition-colors",
+              sortBy === k
+                ? "border-orange bg-orange/10 text-orange"
+                : "border-border text-muted-foreground",
+            )}
+          >
+            {k === "name" ? "NAME" : k === "deploys30d" ? "DEPLOYS" : "ERROR %"}
+            {sortIcon(k)}
+          </button>
+        ))}
+      </div>
+
+      {/* Mobile card list */}
+      <ul className="flex flex-col divide-y divide-border md:hidden">
+        {rows.map((p) => (
+          <li key={p.slug} className="flex flex-col gap-2.5 py-4 transition-colors hover:bg-[#0f0f0f]">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-2">
+                <span className="inline-block size-1.5 shrink-0 rounded-full bg-orange" />
+                <span className="truncate text-sm">{p.name}</span>
+              </div>
+              <span
+                className={cn(
+                  "f-mono inline-flex shrink-0 items-center gap-1.5 border px-2 py-1 text-[0.5rem] tracking-[0.25em]",
+                  STATUS_PILL[p.status],
+                )}
+              >
+                <span className="inline-block size-1.5 rounded-full bg-current" />
+                {p.status.toUpperCase()}
+              </span>
+            </div>
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-[0.6rem]">
+              <DlItem label="FRAMEWORK" value={p.framework.toUpperCase()} />
+              <DlItem label="REGION" value={p.region} />
+              <DlItem label="DEPLOYS / 30D" value={String(p.deploys30d)} />
+              <DlItem
+                label="ERROR %"
+                value={`${p.errorRate.toFixed(1)}%`}
+                tone={p.errorRate > 1 ? "danger" : p.errorRate > 0 ? "warn" : "muted"}
+              />
+              <DlItem label="LAST DEPLOY" value={p.lastDeploy.toUpperCase()} fullSpan />
+            </dl>
+          </li>
+        ))}
+        {rows.length === 0 && (
+          <li className="f-mono py-10 text-center text-[0.65rem] tracking-[0.25em] text-muted-foreground">
+            NO PROJECTS MATCH “{query}”.
+          </li>
+        )}
+      </ul>
+
+      {/* Desktop table */}
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[640px] border-collapse">
           <thead>
             <tr className="f-mono border-b border-border text-left text-[0.55rem] tracking-[0.25em] text-muted-foreground">
@@ -174,5 +237,34 @@ export function ProjectsTable() {
         </table>
       </div>
     </article>
+  );
+}
+
+function DlItem({
+  label,
+  value,
+  tone = "default",
+  fullSpan,
+}: {
+  label: string;
+  value: string;
+  tone?: "default" | "muted" | "warn" | "danger";
+  fullSpan?: boolean;
+}) {
+  const toneClass: Record<string, string> = {
+    default: "text-foreground",
+    muted: "text-muted-foreground",
+    warn: "text-orange",
+    danger: "text-destructive",
+  };
+  return (
+    <div className={cn("flex flex-col gap-0.5", fullSpan && "col-span-2")}>
+      <dt className="f-mono text-[0.45rem] tracking-[0.25em] text-muted-foreground/70">
+        {label}
+      </dt>
+      <dd className={cn("f-mono text-[0.65rem] tracking-[0.15em]", toneClass[tone])}>
+        {value}
+      </dd>
+    </div>
   );
 }
