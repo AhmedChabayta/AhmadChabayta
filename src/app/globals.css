@@ -185,6 +185,43 @@
   }
 }
 
+@keyframes orbital-spin-cw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbital-spin-ccw {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.orbital-spin-cw {
+  animation: orbital-spin-cw linear infinite;
+}
+.orbital-spin-ccw {
+  animation: orbital-spin-ccw linear infinite;
+}
+.orbital-spin-slow {
+  animation-duration: 48s;
+}
+.orbital-spin-med {
+  animation-duration: 26s;
+}
+.orbital-spin-fast {
+  animation-duration: 14s;
+}
+.orbital-spin-text {
+  animation-duration: 72s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
