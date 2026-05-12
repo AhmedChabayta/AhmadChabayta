@@ -7,19 +7,19 @@ import { cn } from "@/lib/utils";
 
 export function KpiStrip() {
   return (
-    <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid w-full grid-cols-2 gap-px bg-border lg:grid-cols-4">
       {KPIS.map((k) => (
         <article
           key={k.label}
-          className="group relative flex flex-col gap-4 bg-[#0a0a0a] p-6 transition-colors hover:bg-[#0f0f0f] md:p-7"
+          className="group relative flex min-w-0 flex-col gap-3 bg-[#0a0a0a] p-4 transition-colors hover:bg-[#0f0f0f] sm:p-5 md:gap-4 md:p-7"
         >
-          <div className="flex items-start justify-between gap-4">
-            <span className="f-mono text-[0.55rem] tracking-[0.25em] text-muted-foreground">
+          <div className="flex items-start justify-between gap-2">
+            <span className="f-mono truncate text-[0.5rem] tracking-[0.2em] text-muted-foreground md:text-[0.55rem] md:tracking-[0.25em]">
               {k.label}
             </span>
             <span
               className={cn(
-                "f-mono inline-flex items-center gap-1 text-[0.55rem] tracking-[0.2em]",
+                "f-mono inline-flex shrink-0 items-center gap-0.5 text-[0.5rem] tracking-[0.15em] md:gap-1 md:text-[0.55rem] md:tracking-[0.2em]",
                 k.positive ? "text-orange" : "text-destructive",
               )}
             >
@@ -31,10 +31,10 @@ export function KpiStrip() {
               {k.delta}
             </span>
           </div>
-          <span className="f-anton text-[clamp(2.25rem,4vw,3.5rem)] leading-none">
+          <span className="f-anton text-[clamp(1.75rem,7vw,3.5rem)] leading-none">
             {k.value}
           </span>
-          <div className="h-10 w-full">
+          <div className="h-8 w-full md:h-10">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={k.spark} margin={{ top: 2, bottom: 2, left: 0, right: 0 }}>
                 <defs>

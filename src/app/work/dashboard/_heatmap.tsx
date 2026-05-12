@@ -20,17 +20,17 @@ export function Heatmap() {
   }
   const total = HEATMAP_DAYS.reduce((sum, v) => sum + v, 0);
   return (
-    <article className="border border-border bg-[#0a0a0a] p-6 md:p-7">
-      <header className="mb-6 flex items-end justify-between gap-4">
+    <article className="min-w-0 border border-border bg-[#0a0a0a] p-4 sm:p-5 md:p-7">
+      <header className="mb-4 flex flex-col gap-3 md:mb-6 md:flex-row md:items-end md:justify-between md:gap-4">
         <div className="flex flex-col gap-1.5">
           <span className="f-mono text-[0.55rem] tracking-[0.25em] text-orange">
             / ACTIVITY · 365D
           </span>
-          <h3 className="f-anton text-2xl leading-tight md:text-3xl">
+          <h3 className="f-anton text-xl leading-tight sm:text-2xl md:text-3xl">
             CONTRIBUTION FIELD.
           </h3>
         </div>
-        <div className="f-mono text-right text-[0.55rem] tracking-[0.2em] text-muted-foreground">
+        <div className="f-mono flex gap-5 text-[0.55rem] tracking-[0.2em] text-muted-foreground md:flex-col md:gap-1 md:text-right">
           <div>
             <span className="text-foreground">{total}</span> EVENTS
           </div>
@@ -38,17 +38,17 @@ export function Heatmap() {
         </div>
       </header>
 
-      <div className="overflow-x-auto">
-        <div className="inline-flex flex-col gap-1.5">
-          <div className="f-mono flex gap-[3px] pl-7 text-[0.5rem] tracking-[0.2em] text-muted-foreground/70">
+      <div className="-mx-4 overflow-x-auto px-4 sm:-mx-5 sm:px-5 md:mx-0 md:px-0">
+        <div className="inline-flex min-w-full flex-col gap-1.5">
+          <div className="f-mono flex gap-[3px] pl-6 text-[0.5rem] tracking-[0.2em] text-muted-foreground/70 md:pl-7">
             {MONTHS.map((m) => (
               <span key={m} style={{ width: 4 * 4 + 8 }}>
                 {m}
               </span>
             ))}
           </div>
-          <div className="flex gap-1">
-            <div className="f-mono flex flex-col gap-[3px] pr-2 text-[0.45rem] tracking-[0.2em] text-muted-foreground/60">
+          <div className="flex gap-1.5">
+            <div className="f-mono hidden flex-col gap-[3px] pr-2 text-[0.45rem] tracking-[0.2em] text-muted-foreground/60 sm:flex">
               <span style={{ height: 11 }}>MON</span>
               <span style={{ height: 11 }} />
               <span style={{ height: 11 }}>WED</span>
@@ -75,7 +75,7 @@ export function Heatmap() {
         </div>
       </div>
 
-      <div className="mt-6 flex items-center justify-end gap-2">
+      <div className="mt-5 flex items-center justify-end gap-2 md:mt-6">
         <span className="f-mono text-[0.5rem] tracking-[0.25em] text-muted-foreground/70">
           LESS
         </span>

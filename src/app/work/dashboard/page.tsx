@@ -14,29 +14,29 @@ export const metadata: Metadata = {
 
 export default function DashboardPage() {
   return (
-    <div
-      // The global Nav is fixed at top — push dashboard chrome below it.
-      style={{ "--nav-offset": "68px" } as React.CSSProperties}
-      className="pt-[68px] md:pt-[88px]"
-    >
+    <div className="w-full pt-[68px] md:pt-[88px]">
       <DashboardShell>
-        <div className="flex flex-col gap-6 bg-[#050505] p-5 md:gap-7 md:p-8">
+        <div className="flex w-full min-w-0 flex-col gap-4 bg-[#050505] p-4 sm:p-5 md:gap-6 md:p-7 lg:gap-7 lg:p-8">
           <KpiStrip />
 
-          <div className="grid gap-6 lg:grid-cols-3 lg:gap-7">
-            <div className="lg:col-span-2">
+          <div className="grid w-full min-w-0 gap-4 md:gap-6 lg:grid-cols-3 lg:gap-7">
+            <div className="min-w-0 lg:col-span-2">
               <DeploysChart />
             </div>
-            <div>
+            <div className="min-w-0">
               <StatusDonut />
             </div>
           </div>
 
           <Heatmap />
 
-          <div className="grid gap-6 xl:grid-cols-[2fr_1fr] xl:gap-7">
-            <ProjectsTable />
-            <EventFeed />
+          <div className="grid w-full min-w-0 gap-4 md:gap-6 xl:grid-cols-[2fr_1fr] xl:gap-7">
+            <div className="min-w-0">
+              <ProjectsTable />
+            </div>
+            <div className="min-w-0">
+              <EventFeed />
+            </div>
           </div>
         </div>
       </DashboardShell>
