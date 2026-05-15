@@ -165,6 +165,21 @@ export const PROJECTS: Project[] = [
     stack: ["Canvas2D", "TypeScript"],
     demo: { kind: "none" },
   },
+  {
+    slug: "space-invaders",
+    index: "11",
+    title: "Void Invaders",
+    tagline:
+      "Endless evolving arcade shooter — installable PWA, fully offline.",
+    summary:
+      "A classic ship-versus-aliens arcade game rebuilt as an infinite gauntlet: endlessly escalating waves, multi-phase bosses, ten stacking power-ups, combo scoring and destructible bunkers. Every sound and the adaptive soundtrack are synthesized live with the Web Audio API, so it ships as an installable PWA that plays 100% offline with auto-saved progress.",
+    year: 2026,
+    role: "Concept, engine, audio, PWA",
+    stack: ["Canvas2D", "Web Audio", "TypeScript", "PWA"],
+    appHref: "/work/space-invaders",
+    demo: { kind: "none" },
+    featured: true,
+  },
 ];
 
 export function getProject(slug: string): Project | undefined {
