@@ -21,7 +21,7 @@ const CARDS = [
     title: "Particle Gravity",
     body: "120 bodies orbiting your cursor via inverse-square attraction. Tap to detonate an outward burst.",
     Demo: ParticleField,
-    href: "/visuals",
+    href: "/work/particle-gravity",
   },
   {
     eyebrow: "GENERATIVE VISUAL",
@@ -35,7 +35,7 @@ const CARDS = [
     title: "Breakout, 80 lines.",
     body: "A complete breakout game written in vanilla canvas. Drag to play.",
     Demo: BreakoutMicro,
-    href: "/visuals",
+    href: "/work/breakout",
   },
 ];
 

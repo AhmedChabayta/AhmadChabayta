@@ -139,6 +139,7 @@ export const PROJECTS: Project[] = [
     year: 2026,
     role: "Concept, canvas, audio",
     stack: ["Canvas2D", "Web Audio", "Pointer Events"],
+    appHref: "/work/wave-synth",
     demo: { kind: "wave-synth" },
   },
   {
