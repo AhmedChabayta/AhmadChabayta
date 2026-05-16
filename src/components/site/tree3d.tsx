@@ -4,11 +4,11 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 /**
- * Constellation tree. Branches are glowing lines; the canopy is a few
- * thousand soft additive points filling the tree volume — camera-facing
- * sprites, so nothing ever intersects anything. Shader wind + twinkle,
- * grows from sapling to full canopy with scroll, rooted (scale only, no
- * upward drift), transparent canvas.
+ * Constellation tree that actually GROWS — seed -> sprout -> plant ->
+ * tree. Branches extend outward from the root by path-distance as you
+ * scroll (no scaling — the geometry itself lengthens); each canopy point
+ * is "born" only once the branch that carries it has reached it. Lines +
+ * additive points, so nothing ever intersects. Rooted, transparent.
  */
 
 function mulberry32(seed: number) {
@@ -24,36 +24,42 @@ function mulberry32(seed: number) {
 interface Seg {
   a: THREE.Vector3;
   b: THREE.Vector3;
+  t0: number; // normalized path-distance from root at a
+  t1: number; // ...at b
 }
 
 function buildTree() {
   const rnd = mulberry32(20260516);
-  const segs: Seg[] = [];
-  const tips: THREE.Vector3[] = [];
+  const raw: { a: THREE.Vector3; b: THREE.Vector3; d0: number; d1: number }[] =
+    [];
+  const tipsRaw: { p: THREE.Vector3; d: number }[] = [];
+  let maxD = 1;
 
   const grow = (
     start: THREE.Vector3,
     dir: THREE.Vector3,
     len: number,
-    rad: number,
     depth: number,
+    acc: number,
   ) => {
     if (depth > 5 || len < 0.12) return;
     const steps = 4;
     let p = start.clone();
     const d = dir.clone().normalize();
     const segLen = len / steps;
+    let cur = acc;
     for (let i = 0; i < steps; i++) {
       d.x += (rnd() - 0.5) * 0.2;
       d.y += 0.05 - depth * 0.013;
       d.z += (rnd() - 0.5) * 0.2;
       d.normalize();
       const np = p.clone().addScaledVector(d, segLen);
-      segs.push({ a: p.clone(), b: np.clone() });
+      raw.push({ a: p.clone(), b: np.clone(), d0: cur, d1: cur + segLen });
+      cur += segLen;
       p = np;
     }
-    const end = p;
-    if (depth >= 2) tips.push(end.clone());
+    if (cur > maxD) maxD = cur;
+    if (depth >= 2) tipsRaw.push({ p: p.clone(), d: cur });
     const kids = depth < 2 ? 3 : rnd() < 0.45 ? 2 : 3;
     for (let i = 0; i < kids; i++) {
       const axis = new THREE.Vector3(
@@ -66,17 +72,19 @@ function buildTree() {
         .clone()
         .applyAxisAngle(axis, i === 0 ? ang * 0.4 : ang)
         .normalize();
-      grow(
-        end,
-        nd,
-        len * (0.7 + rnd() * 0.16),
-        rad * (0.64 + rnd() * 0.12),
-        depth + 1,
-      );
+      grow(p.clone(), nd, len * (0.7 + rnd() * 0.16), depth + 1, cur);
     }
   };
 
-  grow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0), 2.4, 0.34, 0);
+  grow(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1, 0), 2.4, 0, 0);
+
+  const segs: Seg[] = raw.map((r) => ({
+    a: r.a,
+    b: r.b,
+    t0: r.d0 / maxD,
+    t1: r.d1 / maxD,
+  }));
+  const tips = tipsRaw.map((t) => ({ p: t.p, tg: t.d / maxD }));
   return { segs, tips };
 }
 
@@ -105,8 +113,8 @@ export function Tree3D({ className }: { className?: string }) {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, W / H, 0.1, 100);
-    camera.position.set(0.3, 4.6, 13.5);
-    camera.lookAt(0, 4.3, 0);
+    camera.position.set(0.3, 4.4, 13.5);
+    camera.lookAt(0, 4.1, 0);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
@@ -123,31 +131,29 @@ export function Tree3D({ className }: { className?: string }) {
 
     const { segs, tips } = buildTree();
 
-    // ---------- branches: glowing lines ----------
+    // ---------- branches: glowing lines that EXTEND on growth ----------
     const linePos = new Float32Array(segs.length * 6);
     const lineCol = new Float32Array(segs.length * 6);
     segs.forEach((s, i) => {
-      linePos.set([s.a.x, s.a.y, s.a.z, s.b.x, s.b.y, s.b.z], i * 6);
-      // trunk warm-bone -> tips teal
+      linePos.set([s.a.x, s.a.y, s.a.z, s.a.x, s.a.y, s.a.z], i * 6);
       const ta = Math.min(1, s.a.y / 6);
       const tb = Math.min(1, s.b.y / 6);
-      const ca = [
-        0.85 - ta * 0.55,
-        0.78 - ta * 0.12,
-        0.62 + ta * 0.05,
-      ];
-      const cb = [
-        0.85 - tb * 0.55,
-        0.78 - tb * 0.12,
-        0.62 + tb * 0.05,
-      ];
-      lineCol.set([...ca, ...cb], i * 6);
+      lineCol.set(
+        [
+          0.85 - ta * 0.55,
+          0.78 - ta * 0.12,
+          0.62 + ta * 0.05,
+          0.85 - tb * 0.55,
+          0.78 - tb * 0.12,
+          0.62 + tb * 0.05,
+        ],
+        i * 6,
+      );
     });
     const lineGeo = new THREE.BufferGeometry();
-    lineGeo.setAttribute(
-      "position",
-      new THREE.BufferAttribute(linePos, 3),
-    );
+    const linePosAttr = new THREE.BufferAttribute(linePos, 3);
+    linePosAttr.setUsage(THREE.DynamicDrawUsage);
+    lineGeo.setAttribute("position", linePosAttr);
     lineGeo.setAttribute("color", new THREE.BufferAttribute(lineCol, 3));
     const lineMat = new THREE.LineBasicMaterial({
       vertexColors: true,
@@ -158,7 +164,7 @@ export function Tree3D({ className }: { className?: string }) {
     });
     root.add(new THREE.LineSegments(lineGeo, lineMat));
 
-    // ---------- canopy: additive point constellation ----------
+    // ---------- canopy: additive points, born when branch arrives ------
     const rp = mulberry32(99);
     const PER = 4;
     const N = tips.length * PER;
@@ -166,18 +172,14 @@ export function Tree3D({ className }: { className?: string }) {
     const col = new Float32Array(N * 3);
     const seed = new Float32Array(N);
     const psize = new Float32Array(N);
-    const birth = new Float32Array(N);
-    let yMax = 1;
-    tips.forEach((t) => {
-      if (t.y > yMax) yMax = t.y;
-    });
+    const aborn = new Float32Array(N);
     let k = 0;
     tips.forEach((t) => {
       for (let j = 0; j < PER; j++) {
         const spread = 0.55 + rp() * 0.5;
-        pos[k * 3] = t.x + (rp() + rp() + rp() - 1.5) * spread;
-        pos[k * 3 + 1] = t.y + (rp() + rp() + rp() - 1.5) * spread * 0.85;
-        pos[k * 3 + 2] = t.z + (rp() + rp() + rp() - 1.5) * spread;
+        pos[k * 3] = t.p.x + (rp() + rp() + rp() - 1.5) * spread;
+        pos[k * 3 + 1] = t.p.y + (rp() + rp() + rp() - 1.5) * spread * 0.85;
+        pos[k * 3 + 2] = t.p.z + (rp() + rp() + rp() - 1.5) * spread;
         const warm = rp() < 0.05;
         const c = warm
           ? PALETTE[6]
@@ -187,8 +189,8 @@ export function Tree3D({ className }: { className?: string }) {
         col[k * 3 + 2] = c[2];
         seed[k] = rp() * 6.2831853;
         psize[k] = (warm ? 26 : 13) + rp() * 16;
-        // lower canopy is born first as the tree grows
-        birth[k] = Math.min(0.92, (pos[k * 3 + 1] / yMax) * 0.9 + rp() * 0.12);
+        // born a touch after the branch tip reaches this point
+        aborn[k] = Math.min(0.985, t.tg + 0.01 + rp() * 0.03);
         k++;
       }
     });
@@ -198,7 +200,7 @@ export function Tree3D({ className }: { className?: string }) {
     ptsGeo.setAttribute("aColor", new THREE.BufferAttribute(col, 3));
     ptsGeo.setAttribute("aSeed", new THREE.BufferAttribute(seed, 1));
     ptsGeo.setAttribute("aSize", new THREE.BufferAttribute(psize, 1));
-    ptsGeo.setAttribute("aBirth", new THREE.BufferAttribute(birth, 1));
+    ptsGeo.setAttribute("aBorn", new THREE.BufferAttribute(aborn, 1));
 
     const uniforms = {
       uTime: { value: 0 },
@@ -212,10 +214,11 @@ export function Tree3D({ className }: { className?: string }) {
       blending: THREE.AdditiveBlending,
       vertexShader: `
         attribute vec3 aColor; attribute float aSeed;
-        attribute float aSize; attribute float aBirth;
+        attribute float aSize; attribute float aBorn;
         uniform float uTime; uniform float uGrow; uniform float uH;
         varying vec3 vC; varying float vA;
         void main() {
+          float born = smoothstep(aBorn, aBorn + 0.06, uGrow);
           vec3 p = position;
           vec4 wp = modelMatrix * vec4(p, 1.0);
           float sway = sin(uTime*1.4 + wp.x*0.6 + wp.z*0.45)*0.16
@@ -223,9 +226,10 @@ export function Tree3D({ className }: { className?: string }) {
           p.x += sway * smoothstep(0.0, 5.0, wp.y);
           p.z += sway * 0.6 * smoothstep(0.0, 5.0, wp.y);
           vec4 mv = modelViewMatrix * vec4(p, 1.0);
-          float born = smoothstep(aBirth - 0.12, aBirth + 0.05, uGrow);
           float tw = 0.65 + 0.35 * sin(uTime*2.2 + aSeed*3.0);
-          gl_PointSize = aSize * born * (0.45 + 0.55*tw) * (uH / -mv.z) * 0.012;
+          // pop in: a hair bigger as it sprouts, then settle
+          float pop = born * (1.0 + (1.0 - born) * 0.8);
+          gl_PointSize = aSize * pop * (0.5 + 0.5*tw) * (uH / -mv.z) * 0.012;
           gl_Position = projectionMatrix * mv;
           vC = aColor;
           vA = born * (0.5 + 0.5*tw);
@@ -242,7 +246,7 @@ export function Tree3D({ className }: { className?: string }) {
     });
     root.add(new THREE.Points(ptsGeo, ptsMat));
 
-    // ---------- scroll growth (rooted) ----------
+    // ---------- scroll growth (structural, rooted) ----------
     let target = 0;
     let cur = reduced ? 1 : 0;
     const onScroll = () => {
@@ -254,25 +258,40 @@ export function Tree3D({ className }: { className?: string }) {
 
     const clock = new THREE.Clock();
     let raf = 0;
-    const ease = (x: number) => 1 - Math.pow(1 - x, 3);
+    const ease = (x: number) => 1 - Math.pow(1 - x, 2.4);
+
+    // grow the branch lines by extending each segment's far endpoint
+    const writeBranches = (G: number) => {
+      for (let i = 0; i < segs.length; i++) {
+        const s = segs[i];
+        let r = (G - s.t0) / (s.t1 - s.t0 || 1e-5);
+        r = r < 0 ? 0 : r > 1 ? 1 : r;
+        const o = i * 6;
+        linePos[o] = s.a.x;
+        linePos[o + 1] = s.a.y;
+        linePos[o + 2] = s.a.z;
+        linePos[o + 3] = s.a.x + (s.b.x - s.a.x) * r;
+        linePos[o + 4] = s.a.y + (s.b.y - s.a.y) * r;
+        linePos[o + 5] = s.a.z + (s.b.z - s.a.z) * r;
+      }
+      linePosAttr.needsUpdate = true;
+    };
 
     const frame = () => {
       const t = clock.getElapsedTime();
       cur += (target - cur) * 0.08;
-      const e = ease(cur);
-      root.scale.setScalar(0.2 + e * 0.8);
+      const G = ease(cur);
+      writeBranches(G);
       root.rotation.y = Math.sin(t * 0.12) * 0.06 + 0.16;
       root.rotation.z = Math.sin(t * 0.32) * 0.012;
       uniforms.uTime.value = t;
-      uniforms.uGrow.value = e;
-      lineMat.opacity = 0.18 + e * 0.4;
+      uniforms.uGrow.value = G;
       renderer.render(scene, camera);
       if (!reduced) raf = requestAnimationFrame(frame);
     };
     if (reduced) {
-      root.scale.setScalar(1);
+      writeBranches(1);
       uniforms.uGrow.value = 1;
-      lineMat.opacity = 0.55;
       renderer.render(scene, camera);
     } else {
       raf = requestAnimationFrame(frame);
