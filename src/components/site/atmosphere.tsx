@@ -8,6 +8,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useEffect, useRef } from "react";
+import { WindTree } from "@/components/site/wind-tree";
 
 type RGB = [number, number, number];
 
@@ -175,26 +176,12 @@ export function Atmosphere() {
         </svg>
       </motion.div>
 
-      {/* a single faint botanical sprig — line-art, organic, restrained.
-          recolors with the drift, drifts slowly on scroll. */}
+      {/* the living tree — grows with scroll, sways in the wind */}
       <motion.div
-        className="absolute bottom-[4vh] left-[-4vw] h-[58vh] w-[40vh] opacity-[0.13] md:left-[2vw]"
+        className="absolute bottom-0 left-[-12vw] h-[86vh] w-[62vh] opacity-[0.32] sm:left-[-6vw] md:left-[1vw] md:opacity-[0.4]"
         style={{ y: reduced ? undefined : yLeaf }}
       >
-        <svg
-          viewBox="0 0 320 560"
-          className="h-full w-full"
-          fill="none"
-          stroke="rgb(var(--foreground))"
-          strokeWidth={1.4}
-          strokeLinecap="round"
-        >
-          <path d="M150 552 C 120 470 96 408 118 338 C 134 286 168 246 158 176 C 152 134 168 92 198 44" />
-          <path d="M126 360 C 78 348 44 320 30 270 C 78 268 116 286 138 318 C 150 336 142 352 126 360 Z" />
-          <path d="M150 268 C 196 250 232 214 244 162 C 200 158 162 178 144 214 C 132 238 134 258 150 268 Z" />
-          <path d="M152 176 C 116 158 92 124 86 76 C 124 80 156 104 168 142 C 174 162 168 170 152 176 Z" />
-          <path d="M178 96 C 214 86 240 58 250 16 C 216 14 188 30 174 62 C 166 80 168 90 178 96 Z" />
-        </svg>
+        <WindTree className="h-full w-full" />
       </motion.div>
 
       {/* analog film grain — kills the sterile digital flatness */}
