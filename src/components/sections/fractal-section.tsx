@@ -13,50 +13,45 @@ export function FractalSection() {
     <section
       id="visuals"
       aria-labelledby="visuals-heading"
-      className="relative flex min-h-[100svh] flex-col border-t border-border bg-[radial-gradient(circle_at_52%_40%,rgba(255,69,0,0.12),#000_55%)]"
+      className="relative border-t border-border bg-[radial-gradient(circle_at_50%_45%,rgba(255,69,0,0.10),#000_62%)] px-6 py-40 md:px-10 md:py-56"
     >
-      <div className="relative flex-1">
-        <Mandelbulb className="absolute inset-0" />
-        <div className="pointer-events-none relative z-10 flex h-full flex-col justify-between px-6 py-36 md:px-10 md:py-52">
-          <div>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="f-mono text-[0.65rem] text-orange"
-            >
-              / GLSL · RAYMARCHING · WEBGL · 4-PHASE
-            </motion.p>
-            <motion.h2
-              id="visuals-heading"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, delay: 0.1 }}
-              className="f-display mt-9 max-w-[28ch] text-[clamp(3rem,8.5vw,9rem)]"
-            >
-              COMPUTED
-              <br />
-              IN THE BROWSER.
-            </motion.h2>
-          </div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, delay: 0.4 }}
-            className="mt-16 flex items-end justify-between gap-8 self-stretch"
+      <div className="mx-auto grid max-w-7xl items-center gap-14 md:gap-20 lg:grid-cols-2">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col gap-9"
+        >
+          <p className="f-mono text-[0.65rem] text-orange">
+            / GLSL · RAYMARCHING · WEBGL · 4-PHASE
+          </p>
+          <h2
+            id="visuals-heading"
+            className="f-display text-[clamp(2.75rem,6.5vw,6.5rem)]"
           >
-            <p className="f-mono max-w-[28ch] text-[0.6rem] leading-[2] text-white/40">
-              Rendered live by your GPU. Every pixel solved by raymarching a
-              distance field — no meshes, no textures, just math.
-            </p>
-            <span className="f-mono hidden text-[0.55rem] text-orange/70 md:inline">
-              / 60FPS · WEBGL2
-            </span>
-          </motion.div>
-        </div>
+            COMPUTED
+            <br />
+            IN THE BROWSER.
+          </h2>
+          <p className="f-mono max-w-[42ch] text-[0.65rem] leading-[2.4] text-white/45">
+            Rendered live by your GPU. Every pixel solved by raymarching a
+            distance field — no meshes, no textures, just math.
+          </p>
+          <span className="f-mono text-[0.55rem] tracking-[0.25em] text-orange/70">
+            / 60FPS · WEBGL2
+          </span>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="relative aspect-square w-full overflow-hidden rounded-lg border border-border bg-black shadow-[0_0_80px_-20px_rgba(255,69,0,0.45)] md:aspect-[4/5] lg:aspect-square"
+        >
+          <Mandelbulb className="absolute inset-0" />
+        </motion.div>
       </div>
     </section>
   );
