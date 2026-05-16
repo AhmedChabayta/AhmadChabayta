@@ -15,7 +15,7 @@ export function MarqueeStrip() {
   return (
     <section
       aria-hidden="true"
-      className="relative overflow-hidden border-y border-border bg-background py-7 mask-fade-x"
+      className="relative overflow-hidden border-y border-border bg-background py-10 mask-fade-x md:py-14"
     >
       <div className="marquee-track flex w-max items-center gap-12 whitespace-nowrap will-change-transform md:gap-20">
         {loop.map((p, i) => (

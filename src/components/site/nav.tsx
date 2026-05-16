@@ -17,7 +17,10 @@ export function Nav() {
   return (
     <nav
       aria-label="Primary navigation"
-      className="fixed top-0 left-0 right-0 z-50 mix-blend-difference px-5 py-5 md:px-10 md:py-7 flex items-center justify-between"
+      className="fixed top-0 left-0 right-0 z-50 mix-blend-difference flex items-center justify-between px-6 pb-5 md:px-10 md:pb-7"
+      style={{
+        paddingTop: "max(1.5rem, calc(env(safe-area-inset-top) + 0.75rem))",
+      }}
     >
       <Link
         href="/"

@@ -55,7 +55,7 @@ export function StatsStrip() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.5, delay: i * 0.05 }}
-            className="flex flex-col gap-5 border-b border-r border-background/10 px-8 py-16 last:border-r-0 md:border-b-0 md:px-12 md:py-24"
+            className="flex flex-col gap-6 border-b border-r border-background/10 px-10 py-20 last:border-r-0 md:border-b-0 md:px-16 md:py-28"
           >
             <span className="f-mono text-[0.55rem] text-background/60">
               / {String(i + 1).padStart(2, "0")}

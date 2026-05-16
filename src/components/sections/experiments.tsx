@@ -35,11 +35,11 @@ export function ExperimentsSection() {
     <section
       id="experiments"
       aria-labelledby="experiments-heading"
-      className="border-t border-border px-5 py-32 md:px-10 md:py-44"
+      className="border-t border-border px-6 py-40 md:px-10 md:py-56"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-20 flex flex-col gap-8 md:mb-28 md:flex-row md:items-end md:justify-between">
-          <div className="flex flex-col gap-4">
+        <div className="mb-24 flex flex-col gap-10 md:mb-36 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-5">
             <span className="f-mono text-[0.6rem] text-orange">/ 04 — LIVE / INTERACTIVE</span>
             <h2
               id="experiments-heading"
@@ -54,7 +54,7 @@ export function ExperimentsSection() {
             EVERY DEMO RUNS LIVE IN YOUR BROWSER.
           </p>
         </div>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
           {CARDS.map(({ eyebrow, title, body, Demo, href }, i) => (
             <motion.article
               key={title}
@@ -62,7 +62,7 @@ export function ExperimentsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, delay: i * 0.08 }}
-              className="group flex flex-col gap-5 border border-border bg-card p-7 transition-colors hover:border-orange/30"
+              className="group flex flex-col gap-6 border border-border bg-card p-8 transition-colors hover:border-orange/30 md:p-10"
             >
               <Demo className="aspect-[16/11] w-full" />
               <p className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">

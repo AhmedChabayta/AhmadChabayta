@@ -98,7 +98,7 @@
   font-family: var(--font-display), Impact, sans-serif;
   font-weight: 400;
   letter-spacing: -0.015em;
-  line-height: 0.95;
+  line-height: 1.02;
   text-transform: uppercase;
 }
 
@@ -106,8 +106,10 @@
   font-family: var(--font-display), Impact, sans-serif;
   font-weight: 400;
   letter-spacing: -0.025em;
-  line-height: 0.86;
+  line-height: 0.97;
   text-transform: uppercase;
+  /* stop heavy multi-line headings from kissing — still tight, not cramped */
+  padding-bottom: 0.04em;
 }
 
 @utility f-mono {
@@ -122,8 +124,8 @@
 }
 
 @utility section-pad {
-  padding-block: clamp(5rem, 9vw, 10rem);
-  padding-inline: 1.25rem;
+  padding-block: clamp(6.5rem, 12vw, 14rem);
+  padding-inline: 1.5rem;
 }
 @media (min-width: 768px) {
   .section-pad {

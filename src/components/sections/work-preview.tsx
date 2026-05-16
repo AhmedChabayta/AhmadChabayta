@@ -24,11 +24,11 @@ export function WorkPreview() {
     <section
       id="work-preview"
       aria-labelledby="work-preview-heading"
-      className="border-t border-border px-5 py-32 md:px-10 md:py-44"
+      className="border-t border-border px-6 py-40 md:px-10 md:py-56"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-20 flex flex-col gap-8 md:mb-28 md:flex-row md:items-end md:justify-between">
-          <div className="flex flex-col gap-4">
+        <div className="mb-24 flex flex-col gap-10 md:mb-36 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-5">
             <span className="f-mono text-[0.6rem] text-orange">/ 05 — SELECTED WORK</span>
             <h2
               id="work-preview-heading"
@@ -46,7 +46,7 @@ export function WorkPreview() {
           </Link>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-10 md:grid-cols-2">
           {featured.map((p, i) => {
             const isExternal = Boolean(p.externalUrl);
             const isApp = Boolean(p.appHref);
@@ -60,7 +60,7 @@ export function WorkPreview() {
               >
                 <Link
                   {...ProjectLinkProps(p)}
-                  className="group relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden border border-border bg-card p-10 transition-all hover:border-orange/40 hover:bg-muted focus-visible:border-orange/40 focus-visible:bg-muted md:p-12"
+                  className="group relative flex h-full min-h-[400px] flex-col justify-between overflow-hidden border border-border bg-card p-12 transition-all hover:border-orange/40 hover:bg-muted focus-visible:border-orange/40 focus-visible:bg-muted md:p-16"
                 >
                   <div
                     aria-hidden
@@ -87,14 +87,14 @@ export function WorkPreview() {
                       ) : null}
                     </div>
                   </div>
-                  <div className="relative mt-12">
-                    <h3 className="f-anton text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.02] transition-colors group-hover:text-orange">
+                  <div className="relative mt-16">
+                    <h3 className="f-anton text-[clamp(2rem,4.5vw,3.5rem)] leading-[1.05] transition-colors group-hover:text-orange">
                       {p.title}
                     </h3>
-                    <p className="mt-6 max-w-[40ch] text-[0.95rem] leading-[1.75] text-muted-foreground">
+                    <p className="mt-7 max-w-[40ch] text-[0.95rem] leading-[1.8] text-muted-foreground">
                       {p.tagline}
                     </p>
-                    <div className="mt-8 flex items-end justify-between gap-6">
+                    <div className="mt-10 flex items-end justify-between gap-6">
                       <div className="flex flex-wrap gap-1.5">
                         {p.stack.slice(0, 4).map((s) => (
                           <span
@@ -118,7 +118,7 @@ export function WorkPreview() {
           })}
         </div>
 
-        <ul className="mt-16 divide-y divide-border border-y border-border">
+        <ul className="mt-20 divide-y divide-border border-y border-border md:mt-28">
           {rest.map((p, i) => {
             const isExternal = Boolean(p.externalUrl);
             return (
@@ -131,7 +131,7 @@ export function WorkPreview() {
               >
                 <Link
                   {...ProjectLinkProps(p)}
-                  className="group flex items-center justify-between gap-6 px-4 py-8 transition-colors hover:bg-muted focus-visible:bg-muted md:px-6 md:py-10"
+                  className="group flex items-center justify-between gap-6 px-5 py-10 transition-colors hover:bg-muted focus-visible:bg-muted md:px-7 md:py-14"
                 >
                   <span className="f-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground">
                     {p.index}

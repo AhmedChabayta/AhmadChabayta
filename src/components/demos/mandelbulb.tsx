@@ -268,13 +268,10 @@ export function Mandelbulb({
   }, []);
 
   return (
-    <div className="relative">
+    <div className={cn("relative", className)}>
       <div
         ref={wrapRef}
-        className={cn(
-          "relative w-full overflow-hidden bg-black select-none",
-          className,
-        )}
+        className="absolute inset-0 overflow-hidden bg-black select-none"
       />
       {controls && (
         <div className="pointer-events-auto absolute bottom-3 right-3 flex gap-2 md:bottom-5 md:right-5">

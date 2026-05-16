@@ -19,7 +19,7 @@ export function Hero() {
     <section
       id="hero"
       aria-labelledby="hero-heading"
-      className="relative flex flex-col justify-end px-5 md:px-10 pt-32 pb-20 md:pt-40 md:pb-28 min-h-[88svh] md:min-h-[100svh]"
+      className="relative flex flex-col justify-end px-6 md:px-10 pt-40 pb-28 md:pt-52 md:pb-36 min-h-[92svh] md:min-h-[100svh]"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
@@ -36,7 +36,7 @@ export function Hero() {
           initial="hidden"
           animate="show"
           variants={lineUp}
-          className="f-mono mb-8 flex items-center gap-4 text-[0.65rem] text-orange"
+          className="f-mono mb-10 flex items-center gap-4 text-[0.65rem] text-orange md:mb-14"
         >
           <span className="inline-block h-px w-10 bg-orange" />
           BASED IN BEIRUT · BORN IN RIYADH
@@ -55,7 +55,7 @@ export function Hero() {
           DEVELOPER.
         </motion.h1>
 
-        <div className="mt-8 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 md:mt-12">
+        <div className="mt-12 flex flex-wrap items-end justify-between gap-x-12 gap-y-10 md:mt-20">
           <motion.h2
             custom={2}
             initial="hidden"
@@ -71,7 +71,7 @@ export function Hero() {
             initial="hidden"
             animate="show"
             variants={lineUp}
-            className="f-mono max-w-[22rem] pb-2 text-[0.7rem] leading-[2.2] text-white/40"
+            className="f-mono max-w-[22rem] pb-2 text-[0.7rem] leading-[2.4] text-white/40"
           >
             SELF-TAUGHT ACROSS EVERY DISCIPLINE.
             <br />
@@ -86,18 +86,18 @@ export function Hero() {
           initial="hidden"
           animate="show"
           variants={lineUp}
-          className="mt-14 flex flex-wrap items-center gap-5 md:mt-20"
+          className="mt-16 flex flex-wrap items-center gap-5 md:mt-28 md:gap-6"
         >
           <Link
             href="/work"
-            className="group f-mono inline-flex items-center gap-3 bg-orange px-7 py-4 text-[0.7rem] font-bold uppercase tracking-[0.15em] text-background transition-all hover:scale-[1.04] hover:shadow-[0_0_40px_rgba(255,69,0,0.45)] focus-visible:scale-[1.04] active:scale-[1.04]"
+            className="group f-mono inline-flex items-center gap-3 bg-orange px-9 py-5 text-[0.7rem] font-bold uppercase tracking-[0.15em] text-background transition-all hover:scale-[1.04] hover:shadow-[0_0_40px_rgba(255,69,0,0.45)] focus-visible:scale-[1.04] active:scale-[1.04]"
           >
             See the work
             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
           </Link>
           <Link
             href="mailto:ahmadchabayta@proton.me"
-            className="f-mono inline-flex items-center gap-2 border border-white/15 px-7 py-4 text-[0.7rem] font-bold uppercase tracking-[0.15em] transition-colors hover:border-orange hover:text-orange focus-visible:border-orange focus-visible:text-orange active:border-orange active:text-orange"
+            className="f-mono inline-flex items-center gap-2 border border-white/15 px-9 py-5 text-[0.7rem] font-bold uppercase tracking-[0.15em] transition-colors hover:border-orange hover:text-orange focus-visible:border-orange focus-visible:text-orange active:border-orange active:text-orange"
           >
             Hire me
           </Link>

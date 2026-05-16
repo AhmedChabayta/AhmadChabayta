@@ -47,11 +47,11 @@ export function CapabilitiesSection() {
     <section
       id="capabilities"
       aria-labelledby="cap-heading"
-      className="border-t border-border px-5 py-32 md:px-10 md:py-44"
+      className="border-t border-border px-6 py-40 md:px-10 md:py-56"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-20 flex flex-col gap-8 md:mb-28 md:flex-row md:items-end md:justify-between">
-          <div className="flex flex-col gap-4">
+        <div className="mb-24 flex flex-col gap-10 md:mb-36 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-5">
             <span className="f-mono text-[0.6rem] text-orange">/ 02 — DISCIPLINES</span>
             <h2
               id="cap-heading"
@@ -74,7 +74,7 @@ export function CapabilitiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, delay: i * 0.05 }}
-              className="group flex flex-col gap-6 bg-background p-10 transition-colors hover:bg-card md:p-12"
+              className="group flex flex-col gap-7 bg-background p-12 transition-colors hover:bg-card md:p-16"
             >
               <div className="flex items-center justify-between gap-4">
                 <Icon className="size-7 text-orange" strokeWidth={1.25} />
@@ -86,7 +86,7 @@ export function CapabilitiesSection() {
               <p className="text-[0.95rem] leading-[1.75] text-muted-foreground">
                 {body}
               </p>
-              <div className="mt-auto flex flex-wrap gap-1.5 pt-4">
+              <div className="mt-auto flex flex-wrap gap-2 pt-6">
                 {stack.map((s) => (
                   <span
                     key={s}

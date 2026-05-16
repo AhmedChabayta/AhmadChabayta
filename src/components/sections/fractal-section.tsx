@@ -17,7 +17,7 @@ export function FractalSection() {
     >
       <div className="relative flex-1">
         <Mandelbulb className="absolute inset-0" />
-        <div className="pointer-events-none relative z-10 flex h-full flex-col justify-between px-5 py-32 md:px-10 md:py-44">
+        <div className="pointer-events-none relative z-10 flex h-full flex-col justify-between px-6 py-36 md:px-10 md:py-52">
           <div>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -34,7 +34,7 @@ export function FractalSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, delay: 0.1 }}
-              className="f-display mt-6 max-w-[28ch] text-[clamp(3rem,8.5vw,9rem)]"
+              className="f-display mt-9 max-w-[28ch] text-[clamp(3rem,8.5vw,9rem)]"
             >
               COMPUTED
               <br />
@@ -46,7 +46,7 @@ export function FractalSection() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1.2, delay: 0.4 }}
-            className="mt-12 flex items-end justify-between gap-6 self-stretch"
+            className="mt-16 flex items-end justify-between gap-8 self-stretch"
           >
             <p className="f-mono max-w-[28ch] text-[0.6rem] leading-[2] text-white/40">
               Rendered live by your GPU. Every pixel solved by raymarching a
