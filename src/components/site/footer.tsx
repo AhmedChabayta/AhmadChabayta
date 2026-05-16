@@ -19,24 +19,38 @@ export function Footer() {
           >
             +961 70 687 167
           </Link>
-          <div className="f-mono mt-4 flex gap-10 text-[0.7rem] font-semibold">
+          <div className="f-mono mt-4 flex flex-wrap gap-x-8 gap-y-3 text-[0.7rem] font-semibold">
             <Link
               href="https://github.com/AhmedChabayta"
+              target="_blank"
+              rel="noreferrer noopener"
               className="transition-opacity hover:opacity-50 focus-visible:opacity-50 active:opacity-50"
             >
               Github ↗
             </Link>
             <Link
-              href="/#work"
+              href="/work/space-invaders"
               className="transition-opacity hover:opacity-50 focus-visible:opacity-50 active:opacity-50"
             >
-              Work →
+              Void Invaders →
             </Link>
             <Link
-              href="/#contact"
+              href="/work/dashboard"
               className="transition-opacity hover:opacity-50 focus-visible:opacity-50 active:opacity-50"
             >
-              Contact →
+              Dashboard →
+            </Link>
+            <Link
+              href="/work/mandelbulb-playground"
+              className="transition-opacity hover:opacity-50 focus-visible:opacity-50 active:opacity-50"
+            >
+              Mandelbulb →
+            </Link>
+            <Link
+              href="/work/component-lab"
+              className="transition-opacity hover:opacity-50 focus-visible:opacity-50 active:opacity-50"
+            >
+              Component Lab →
             </Link>
           </div>
         </div>
