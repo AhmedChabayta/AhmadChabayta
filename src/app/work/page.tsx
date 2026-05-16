@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PROJECTS } from "@/data/projects";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { Badge, Container, Eyebrow, Text, Title } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -12,19 +13,17 @@ export const metadata: Metadata = {
 export default function WorkIndexPage() {
   return (
     <div className="px-5 pt-32 pb-32 md:px-10 md:pt-44 md:pb-44">
-      <div className="mx-auto max-w-7xl">
+      <Container>
         <header className="mb-20 flex flex-col gap-6 md:mb-28">
-          <p className="f-mono text-[0.65rem] text-orange">
-            / INDEX · {PROJECTS.length} PROJECTS
-          </p>
-          <h1 className="f-anton text-[clamp(3.5rem,12vw,11rem)] leading-[0.92]">
+          <Eyebrow>/ INDEX · {PROJECTS.length} PROJECTS</Eyebrow>
+          <Title as="h1" size="display">
             WORK.
-          </h1>
-          <p className="mt-4 max-w-prose text-[1.05rem] leading-[1.7] text-muted-foreground md:text-lg">
+          </Title>
+          <Text variant="lead" className="mt-4 max-w-prose">
             Live deployments, interactive demos, and case studies. External
             projects open in a new tab — internal ones unfold into their own
             page.
-          </p>
+          </Text>
         </header>
 
         <ul className="divide-y divide-border border-y border-border">
@@ -47,25 +46,27 @@ export default function WorkIndexPage() {
                   <span className="f-mono col-span-2 text-[0.6rem] tracking-[0.25em] text-muted-foreground md:col-span-1">
                     {p.index}
                   </span>
-                  <span className="f-anton col-span-8 text-[clamp(1.75rem,5vw,3.5rem)] leading-[1.05] transition-colors group-hover:text-orange md:col-span-5">
+                  <Title
+                    as="h2"
+                    size="project"
+                    className="col-span-8 transition-colors group-hover:text-orange md:col-span-5"
+                  >
                     {p.title}
-                  </span>
+                  </Title>
                   <span className="f-mono col-span-12 order-3 text-[0.6rem] tracking-[0.25em] text-muted-foreground md:order-none md:col-span-3">
                     {p.role.toUpperCase()}
                   </span>
-                  <span className="f-mono col-span-2 hidden text-[0.55rem] tracking-[0.25em] md:inline">
+                  <span className="col-span-2 hidden md:inline">
                     {isExternal ? (
-                      <span className="inline-flex items-center gap-1.5 border border-orange/40 px-2 py-1 text-orange">
-                        <span className="inline-block size-1.5 animate-pulse rounded-full bg-orange" />
+                      <Badge tone="accent" dot="pulse">
                         LIVE
-                      </span>
+                      </Badge>
                     ) : isApp ? (
-                      <span className="inline-flex items-center gap-1.5 border border-orange/40 px-2 py-1 text-orange">
-                        <span className="inline-block size-1.5 rounded-full bg-orange" />
+                      <Badge tone="accent" dot="solid">
                         APP
-                      </span>
+                      </Badge>
                     ) : (
-                      <span className="text-muted-foreground">CASE STUDY</span>
+                      <Badge tone="muted">CASE STUDY</Badge>
                     )}
                   </span>
                   <span className="col-span-2 flex items-center justify-end gap-3 md:col-span-1">
@@ -83,7 +84,7 @@ export default function WorkIndexPage() {
             );
           })}
         </ul>
-      </div>
+      </Container>
     </div>
   );
 }

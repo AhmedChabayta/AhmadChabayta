@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
+import { Container, Eyebrow, Section, Text, Title } from "@/components/ui";
 
 const Mandelbulb = dynamic(
   () => import("@/components/demos/mandelbulb").then((m) => m.Mandelbulb),
@@ -10,12 +11,12 @@ const Mandelbulb = dynamic(
 
 export function FractalSection() {
   return (
-    <section
+    <Section
       id="visuals"
       aria-labelledby="visuals-heading"
-      className="relative border-t border-border bg-[radial-gradient(circle_at_50%_45%,rgba(255,69,0,0.10),#000_62%)] px-6 py-40 md:px-10 md:py-56"
+      className="relative bg-[radial-gradient(circle_at_50%_45%,rgba(255,69,0,0.10),#000_62%)]"
     >
-      <div className="mx-auto grid max-w-7xl items-center gap-14 md:gap-20 lg:grid-cols-2">
+      <Container className="grid items-center gap-14 md:gap-20 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -23,24 +24,17 @@ export function FractalSection() {
           transition={{ duration: 0.8 }}
           className="flex flex-col gap-9"
         >
-          <p className="f-mono text-[0.65rem] text-orange">
-            / GLSL · RAYMARCHING · WEBGL · 4-PHASE
-          </p>
-          <h2
-            id="visuals-heading"
-            className="f-display text-[clamp(2.75rem,6.5vw,6.5rem)]"
-          >
+          <Eyebrow>/ GLSL · RAYMARCHING · WEBGL · 4-PHASE</Eyebrow>
+          <Title id="visuals-heading" size="feature">
             COMPUTED
             <br />
             IN THE BROWSER.
-          </h2>
-          <p className="f-mono max-w-[42ch] text-[0.65rem] leading-[2.4] text-white/45">
+          </Title>
+          <Text variant="mono" className="max-w-[42ch] leading-[2.4]">
             Rendered live by your GPU. Every pixel solved by raymarching a
             distance field — no meshes, no textures, just math.
-          </p>
-          <span className="f-mono text-[0.55rem] tracking-[0.25em] text-orange/70">
-            / 60FPS · WEBGL2
-          </span>
+          </Text>
+          <Eyebrow className="text-orange/70">/ 60FPS · WEBGL2</Eyebrow>
         </motion.div>
 
         <motion.div
@@ -52,7 +46,7 @@ export function FractalSection() {
         >
           <Mandelbulb className="absolute inset-0" />
         </motion.div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }

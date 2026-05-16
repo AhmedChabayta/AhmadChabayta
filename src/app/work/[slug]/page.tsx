@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { PROJECTS, getProject } from "@/data/projects";
 import { ProjectDemo } from "@/components/work/project-demo";
+import { Badge, Eyebrow, Text, Title } from "@/components/ui";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -57,23 +58,18 @@ export default async function ProjectPage({ params }: PageProps) {
         </Link>
 
         <header className="mt-12 flex flex-col gap-8 md:mt-16">
-          <p className="f-mono text-[0.65rem] tracking-[0.25em] text-orange">
+          <Eyebrow>
             {project.index} / {project.year} / {project.role.toUpperCase()}
-          </p>
-          <h1 className="f-anton text-[clamp(3rem,10vw,10rem)] leading-[0.92]">
+          </Eyebrow>
+          <Title as="h1" size="display">
             {project.title}
-          </h1>
-          <p className="max-w-prose text-[1.1rem] leading-[1.7] text-muted-foreground md:text-2xl">
+          </Title>
+          <Text variant="lead" className="max-w-prose md:text-2xl">
             {project.tagline}
-          </p>
+          </Text>
           <div className="flex flex-wrap gap-2 pt-4">
             {project.stack.map((s) => (
-              <span
-                key={s}
-                className="f-mono border border-border px-3 py-1.5 text-[0.6rem] tracking-[0.25em] text-muted-foreground"
-              >
-                {s}
-              </span>
+              <Badge key={s}>{s}</Badge>
             ))}
           </div>
         </header>
@@ -84,19 +80,15 @@ export default async function ProjectPage({ params }: PageProps) {
 
         <section className="mt-24 grid gap-16 md:mt-32 md:grid-cols-3">
           <div className="md:col-span-2">
-            <h2 className="f-mono mb-6 text-[0.65rem] tracking-[0.25em] text-orange">
-              / SUMMARY
-            </h2>
-            <p className="max-w-prose text-[1.05rem] leading-[1.8] text-muted-foreground md:text-lg">
+            <Eyebrow className="mb-6">/ SUMMARY</Eyebrow>
+            <Text variant="lead" className="max-w-prose">
               {project.summary}
-            </p>
+            </Text>
           </div>
           <aside className="flex flex-col gap-10">
             {project.links && project.links.length > 0 && (
               <div>
-                <h3 className="f-mono mb-4 text-[0.6rem] tracking-[0.25em] text-orange">
-                  / LINKS
-                </h3>
+                <Eyebrow className="mb-4">/ LINKS</Eyebrow>
                 <ul className="space-y-3">
                   {project.links.map((l) => (
                     <li key={l.href}>
@@ -113,18 +105,16 @@ export default async function ProjectPage({ params }: PageProps) {
               </div>
             )}
             <div>
-              <h3 className="f-mono mb-3 text-[0.6rem] tracking-[0.25em] text-orange">
-                / ROLE
-              </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
+              <Eyebrow className="mb-3">/ ROLE</Eyebrow>
+              <Text variant="body" className="text-sm leading-relaxed">
                 {project.role}
-              </p>
+              </Text>
             </div>
             <div>
-              <h3 className="f-mono mb-3 text-[0.6rem] tracking-[0.25em] text-orange">
-                / YEAR
-              </h3>
-              <p className="text-sm text-muted-foreground">{project.year}</p>
+              <Eyebrow className="mb-3">/ YEAR</Eyebrow>
+              <Text variant="body" className="text-sm">
+                {project.year}
+              </Text>
             </div>
           </aside>
         </section>
@@ -137,9 +127,13 @@ export default async function ProjectPage({ params }: PageProps) {
             <span className="f-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground">
               ← {prev.index} / PREV
             </span>
-            <span className="f-anton text-[clamp(1.5rem,3vw,2.5rem)] leading-[1.05] group-hover:text-orange">
+            <Title
+              as="h2"
+              size="project"
+              className="group-hover:text-orange"
+            >
               {prev.title}
-            </span>
+            </Title>
           </Link>
           <Link
             href={`/work/${next.slug}`}
@@ -148,9 +142,13 @@ export default async function ProjectPage({ params }: PageProps) {
             <span className="f-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground">
               {next.index} / NEXT →
             </span>
-            <span className="f-anton text-[clamp(1.5rem,3vw,2.5rem)] leading-[1.05] group-hover:text-orange">
+            <Title
+              as="h2"
+              size="project"
+              className="group-hover:text-orange"
+            >
               {next.title}
-            </span>
+            </Title>
           </Link>
         </nav>
       </div>

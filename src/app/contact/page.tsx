@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { Eyebrow, Text, Title } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -30,14 +31,14 @@ export default function ContactPage() {
     <div className="px-5 pt-24 pb-24 md:px-10 md:pt-32 md:pb-32">
       <div className="mx-auto flex max-w-5xl flex-col gap-16">
         <header className="flex flex-col gap-4">
-          <p className="f-mono text-[0.65rem] text-orange">/ CONTACT</p>
-          <h1 className="f-anton text-[clamp(3rem,9vw,8rem)] leading-[0.85]">
+          <Eyebrow>/ CONTACT</Eyebrow>
+          <Title as="h1" size="section">
             LET&apos;S TALK.
-          </h1>
-          <p className="max-w-prose text-lg text-muted-foreground">
+          </Title>
+          <Text variant="lead" className="max-w-prose">
             Best for short projects, full-stack frontend hires, or one-off
             interactive builds. Email lands fastest. WhatsApp also works.
-          </p>
+          </Text>
         </header>
 
         <ul className="divide-y divide-border border-y border-border">

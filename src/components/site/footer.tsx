@@ -1,13 +1,12 @@
 import Link from "next/link";
+import { Container, Eyebrow } from "@/components/ui";
 
 export function Footer() {
   return (
     <footer className="border-t border-border bg-background px-5 py-24 md:px-10 md:py-32">
-      <div className="mx-auto grid max-w-7xl gap-16 md:grid-cols-[1.4fr_1fr] md:gap-20">
+      <Container className="grid gap-16 md:grid-cols-[1.4fr_1fr] md:gap-20">
         <div className="flex flex-col gap-8">
-          <p className="f-mono text-[0.6rem] text-orange">
-            / GET IN TOUCH
-          </p>
+          <Eyebrow>/ GET IN TOUCH</Eyebrow>
           <Link
             href="mailto:ahmadchabayta@proton.me"
             className="f-anton text-[clamp(2rem,5vw,4rem)] leading-[1.05] transition-colors hover:text-orange focus-visible:text-orange active:text-orange"
@@ -54,7 +53,7 @@ export function Footer() {
           </p>
           <p className="text-orange/70">BASED IN BEIRUT.</p>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }

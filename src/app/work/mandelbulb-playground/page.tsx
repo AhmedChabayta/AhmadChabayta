@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { MandelbulbPlaygroundClient } from "./_client";
+import { Eyebrow, Stat, StatGrid, Text, Title } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Mandelbulb Playground",
@@ -14,12 +15,12 @@ export default function MandelbulbPage() {
     <div className="pt-[68px] md:pt-[88px]">
       <header className="flex items-center justify-between gap-6 border-b border-border bg-[#070707] px-5 py-4 md:px-8">
         <div className="flex flex-col gap-1">
-          <span className="f-mono text-[0.55rem] tracking-[0.25em] text-muted-foreground/70">
+          <Eyebrow className="text-[0.55rem] text-muted-foreground/70">
             WORKSPACE / SHADERS
-          </span>
-          <h1 className="f-anton text-2xl leading-none md:text-3xl">
+          </Eyebrow>
+          <Title as="h1" size="card">
             MANDELBULB PLAYGROUND.
-          </h1>
+          </Title>
         </div>
         <Link
           href="/work"
@@ -36,42 +37,29 @@ export default function MandelbulbPage() {
 
       <section className="border-t border-border bg-[#070707] px-5 py-16 md:px-8 md:py-24">
         <div className="mx-auto grid max-w-6xl gap-12 md:grid-cols-[200px_1fr]">
-          <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">
-            / ABOUT
-          </span>
+          <Eyebrow>/ ABOUT</Eyebrow>
           <div className="flex flex-col gap-8">
-            <p className="max-w-prose text-[1.05rem] leading-[1.8] text-muted-foreground md:text-lg">
+            <Text variant="lead" className="max-w-prose">
               A live, browser-rendered Mandelbulb — the 3D analogue of the
               Mandelbrot fractal. Every pixel is solved by raymarching through
               a distance field, on the GPU, at 60fps. Every dial in the side
               panel maps to a uniform in the shader; nothing is faked.
-            </p>
-            <p className="max-w-prose text-[1rem] leading-[1.8] text-muted-foreground">
+            </Text>
+            <Text variant="body" className="max-w-prose text-[1rem]">
               Every parameter is also serialized into the URL, debounced via{" "}
               <code className="f-mono text-orange">history.replaceState</code>.
               Hit COPY SHARE URL and you get a link that reproduces the exact
               composition for anyone else — no server, no account.
-            </p>
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-4 border-t border-border pt-6 md:grid-cols-4">
+            </Text>
+            <StatGrid>
               <Stat label="STACK" value="GLSL · Three.js" />
               <Stat label="LINES" value="≈ 420" />
               <Stat label="FPS DESKTOP" value="60" />
               <Stat label="FPS MOBILE" value="≈ 30" />
-            </dl>
+            </StatGrid>
           </div>
         </div>
       </section>
-    </div>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-2">
-      <dt className="f-mono text-[0.55rem] tracking-[0.25em] text-muted-foreground">
-        {label}
-      </dt>
-      <dd className="f-anton text-2xl leading-none">{value}</dd>
     </div>
   );
 }

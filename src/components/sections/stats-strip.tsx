@@ -2,6 +2,7 @@
 
 import { motion, useInView, useMotionValue, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
+import { Container, Section } from "@/components/ui";
 
 const STATS = [
   { value: 4, suffix: "+", label: "YEARS PROFESSIONAL" },
@@ -40,14 +41,15 @@ function Counter({ to, suffix }: { to: number; suffix: string }) {
 
 export function StatsStrip() {
   return (
-    <section
+    <Section
+      pad="none"
       aria-labelledby="stats-heading"
-      className="border-t border-border bg-orange text-background"
+      className="bg-orange text-background"
     >
       <h2 id="stats-heading" className="sr-only">
         Stats
       </h2>
-      <div className="mx-auto grid max-w-7xl grid-cols-2 md:grid-cols-4">
+      <Container className="grid grid-cols-2 md:grid-cols-4">
         {STATS.map(({ value, suffix, label }, i) => (
           <motion.div
             key={label}
@@ -68,7 +70,7 @@ export function StatsStrip() {
             </span>
           </motion.div>
         ))}
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }

@@ -2,6 +2,14 @@
 
 import { motion } from "framer-motion";
 import { Code2, Layers, Database, Palette, Sparkles, Terminal } from "lucide-react";
+import {
+  Badge,
+  Container,
+  Section,
+  SectionHeader,
+  Text,
+  Title,
+} from "@/components/ui";
 
 const CAPABILITIES = [
   {
@@ -44,28 +52,20 @@ const CAPABILITIES = [
 
 export function CapabilitiesSection() {
   return (
-    <section
-      id="capabilities"
-      aria-labelledby="cap-heading"
-      className="border-t border-border px-6 py-40 md:px-10 md:py-56"
-    >
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-24 flex flex-col gap-10 md:mb-36 md:flex-row md:items-end md:justify-between">
-          <div className="flex flex-col gap-5">
-            <span className="f-mono text-[0.6rem] text-orange">/ 02 — DISCIPLINES</span>
-            <h2
-              id="cap-heading"
-              className="f-anton text-[clamp(3rem,8vw,7rem)]"
-            >
-              CAPABILITIES.
-            </h2>
-          </div>
-          <p className="f-mono max-w-[28ch] text-[0.65rem] leading-[2] text-muted-foreground">
-            SIX OVERLAPPING DOMAINS.
-            <br />
-            ONE PERSON. ONE STACK.
-          </p>
-        </div>
+    <Section id="capabilities" aria-labelledby="cap-heading">
+      <Container>
+        <SectionHeader
+          titleId="cap-heading"
+          eyebrow="/ 02 — DISCIPLINES"
+          title="CAPABILITIES."
+          aside={
+            <Text variant="mono" className="max-w-[28ch]">
+              SIX OVERLAPPING DOMAINS.
+              <br />
+              ONE PERSON. ONE STACK.
+            </Text>
+          }
+        />
         <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3">
           {CAPABILITIES.map(({ icon: Icon, title, body, stack }, i) => (
             <motion.article
@@ -82,24 +82,24 @@ export function CapabilitiesSection() {
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
-              <h3 className="f-anton text-3xl leading-[1.05]">{title}</h3>
-              <p className="text-[0.95rem] leading-[1.75] text-muted-foreground">
-                {body}
-              </p>
+              <Title as="h3" size="card">
+                {title}
+              </Title>
+              <Text variant="body">{body}</Text>
               <div className="mt-auto flex flex-wrap gap-2 pt-6">
                 {stack.map((s) => (
-                  <span
+                  <Badge
                     key={s}
-                    className="f-mono border border-border px-2.5 py-1.5 text-[0.55rem] text-muted-foreground transition-colors group-hover:border-orange/40 group-hover:text-orange"
+                    className="group-hover:border-orange/40 group-hover:text-orange"
                   >
                     {s}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             </motion.article>
           ))}
         </div>
-      </div>
-    </section>
+      </Container>
+    </Section>
   );
 }
