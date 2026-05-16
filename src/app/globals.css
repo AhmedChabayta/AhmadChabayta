@@ -4,18 +4,21 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: 5 5 5;
-  --foreground: 245 245 245;
-  --orange: 255 69 0;
-  --orange-soft: 255 122 64;
-  --muted: 23 23 23;
-  --muted-foreground: 163 163 163;
-  --border: 38 38 38;
-  --input: 38 38 38;
-  --ring: 255 69 0;
+  /* Warm "espresso night" base. The Atmosphere component drifts these
+     live on scroll (day <-> night); these are the t=0 night values and
+     the no-JS / reduced-motion fallback. Nothing here is dead black. */
+  --background: 14 11 9;
+  --foreground: 240 233 224;
+  --orange: 255 107 53;
+  --orange-soft: 255 150 99;
+  --muted: 30 24 20;
+  --muted-foreground: 165 152 138;
+  --border: 50 41 34;
+  --input: 50 41 34;
+  --ring: 255 107 53;
 
-  --card: 10 10 10;
-  --card-foreground: 245 245 245;
+  --card: 21 17 14;
+  --card-foreground: 240 233 224;
   --popover: 10 10 10;
   --popover-foreground: 245 245 245;
   --primary: 255 69 0;
@@ -83,9 +86,16 @@
   html {
     scroll-behavior: smooth;
   }
+  html {
+    background-color: rgb(var(--background));
+  }
+  body {
+    /* Transparent so the fixed Atmosphere layer (palette drift + morphing
+       field + grain) shows through behind the content. */
+    background-color: transparent;
+  }
   html,
   body {
-    background-color: rgb(var(--background));
     color: rgb(var(--foreground));
     font-family: var(--font-sans), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;

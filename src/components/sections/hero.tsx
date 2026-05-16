@@ -39,7 +39,7 @@ export function Hero() {
           className="f-mono mb-10 flex items-center gap-4 text-[0.65rem] text-orange md:mb-14"
         >
           <span className="inline-block h-px w-10 bg-orange" />
-          BASED IN BEIRUT · BORN IN RIYADH
+          BASED IN BEIRUT — AVAILABLE WORLDWIDE
         </motion.div>
 
         <motion.div custom={1} initial="hidden" animate="show" variants={lineUp}>
@@ -69,11 +69,11 @@ export function Hero() {
             variants={lineUp}
           >
             <Text variant="mono" className="max-w-[22rem] pb-2">
-              SELF-TAUGHT ACROSS EVERY DISCIPLINE.
+              Design and engineering as one craft.
               <br />
-              FOUR YEARS OF PROFESSIONAL WORK.
+              Interfaces that feel as good as they work.
               <br />
-              NO DEGREE. ONLY THE WORK.
+              Self-taught — the work speaks.
             </Text>
           </motion.div>
         </div>
@@ -105,7 +105,7 @@ export function Hero() {
         transition={{ delay: 1.8, duration: 1.2 }}
         className="pointer-events-none absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
       >
-        <span className="f-mono text-[0.55rem] tracking-[0.3em] text-white/40">
+        <span className="f-mono text-[0.55rem] tracking-[0.3em] text-foreground/40">
           SCROLL
         </span>
         <span className="block h-10 w-px origin-top animate-[scroll-cue_2.4s_ease-in-out_infinite] bg-orange/60" />

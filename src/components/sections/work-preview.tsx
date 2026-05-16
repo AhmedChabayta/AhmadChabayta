@@ -1,9 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { PROJECTS, type Project } from "@/data/projects";
+import { Tilt } from "@/components/motion/reveal";
 import {
   Badge,
   Container,
@@ -49,20 +49,17 @@ export function WorkPreview() {
         />
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {PROJECTS.map((p, i) => {
+          {PROJECTS.map((p) => {
             const isExternal = Boolean(p.externalUrl);
             const s = status(p);
             return (
-              <motion.div
+              <Tilt
                 key={p.slug}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: (i % 3) * 0.06 }}
+                className="group relative h-full overflow-hidden rounded-sm"
               >
                 <Link
                   {...ProjectLinkProps(p)}
-                  className="group flex h-full flex-col gap-5 border border-border bg-card p-7 transition-colors hover:border-orange/40 hover:bg-muted focus-visible:border-orange/40 focus-visible:bg-muted"
+                  className="flex h-full flex-col gap-5 border border-border bg-card p-7 transition-colors hover:border-orange/40 focus-visible:border-orange/40"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <Eyebrow>
@@ -104,7 +101,7 @@ export function WorkPreview() {
                     )}
                   </div>
                 </Link>
-              </motion.div>
+              </Tilt>
             );
           })}
         </div>

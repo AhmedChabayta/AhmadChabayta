@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Nav } from "@/components/site/nav";
 import { Footer } from "@/components/site/footer";
 import { ScrollProgress } from "@/components/site/scroll-progress";
+import { Atmosphere } from "@/components/site/atmosphere";
 
 const anton = Anton({
   variable: "--font-anton",
@@ -77,7 +78,8 @@ export default function RootLayout({
       className={`${anton.variable} ${jetbrains.variable} ${inter.variable} h-full`}
       suppressHydrationWarning
     >
-      <body className="flex min-h-full w-full flex-col bg-background text-foreground antialiased">
+      <body className="flex min-h-full w-full flex-col text-foreground antialiased">
+        <Atmosphere />
         <ScrollProgress />
         <Nav />
         <main id="main" className="w-full min-w-0 flex-1">
