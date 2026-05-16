@@ -56,7 +56,7 @@ export function CapabilitiesSection() {
       <Container>
         <SectionHeader
           titleId="cap-heading"
-          eyebrow="/ 02 — DISCIPLINES"
+          eyebrow="/ 03 — DISCIPLINES"
           title="CAPABILITIES."
           aside={
             <Text variant="mono" className="max-w-[28ch]">

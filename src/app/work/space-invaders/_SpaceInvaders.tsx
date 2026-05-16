@@ -114,7 +114,7 @@ export function SpaceInvaders() {
         >
           <Maximize2 className="size-3" /> Fullscreen
         </button>
-        <Link href="/work" className={ctrl} aria-label="Exit to portfolio">
+        <Link href="/#work" className={ctrl} aria-label="Exit to portfolio">
           <X className="size-3" /> Exit
         </Link>
       </div>

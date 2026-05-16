@@ -80,6 +80,9 @@
   * {
     border-color: rgb(var(--border));
   }
+  html {
+    scroll-behavior: smooth;
+  }
   html,
   body {
     background-color: rgb(var(--background));

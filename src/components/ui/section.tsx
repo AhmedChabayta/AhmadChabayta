@@ -25,6 +25,7 @@ export function Section({
   return (
     <section
       className={cn(
+        "scroll-mt-20 md:scroll-mt-24",
         divider && "border-t border-border",
         PAD[pad],
         className,

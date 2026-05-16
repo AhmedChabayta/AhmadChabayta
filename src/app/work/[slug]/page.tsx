@@ -51,7 +51,7 @@ export default async function ProjectPage({ params }: PageProps) {
     <article className="px-5 pt-32 pb-32 md:px-10 md:pt-44 md:pb-44">
       <div className="mx-auto max-w-6xl">
         <Link
-          href="/work"
+          href="/#work"
           className="f-mono inline-flex items-center gap-2 text-[0.65rem] tracking-[0.25em] text-muted-foreground transition-colors hover:text-orange focus-visible:text-orange active:text-orange"
         >
           <ArrowLeft className="size-3" /> ALL WORK

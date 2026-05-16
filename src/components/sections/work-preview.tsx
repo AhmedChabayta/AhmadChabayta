@@ -6,7 +6,6 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { PROJECTS, type Project } from "@/data/projects";
 import {
   Badge,
-  Button,
   Container,
   Eyebrow,
   Section,
@@ -27,25 +26,22 @@ function ProjectLinkProps(p: Project) {
 }
 
 export function WorkPreview() {
-  const featured = PROJECTS.filter((p) => p.featured).slice(0, 4);
-  const rest = PROJECTS.filter((p) => !p.featured).slice(0, 4);
+  const featured = PROJECTS.filter((p) => p.featured);
+  const rest = PROJECTS.filter((p) => !p.featured);
 
   return (
-    <Section id="work-preview" aria-labelledby="work-preview-heading">
+    <Section id="work" aria-labelledby="work-heading">
       <Container>
         <SectionHeader
-          titleId="work-preview-heading"
-          eyebrow="/ 05 — SELECTED WORK"
+          titleId="work-heading"
+          eyebrow="/ 01 — SELECTED WORK"
           title="THE WORK."
           aside={
-            <Button
-              href="/work"
-              variant="link"
-              className="self-start md:self-end"
-            >
-              ALL PROJECTS
-              <ArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
-            </Button>
+            <Text variant="mono" className="max-w-[28ch] md:text-right">
+              {PROJECTS.length} PROJECTS.
+              <br />
+              LIVE APPS, DEMOS &amp; CASE STUDIES.
+            </Text>
           }
         />
 

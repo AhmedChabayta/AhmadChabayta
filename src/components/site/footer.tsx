@@ -27,13 +27,13 @@ export function Footer() {
               Github ↗
             </Link>
             <Link
-              href="/work"
+              href="/#work"
               className="transition-opacity hover:opacity-50 focus-visible:opacity-50 active:opacity-50"
             >
               Work →
             </Link>
             <Link
-              href="/contact"
+              href="/#contact"
               className="transition-opacity hover:opacity-50 focus-visible:opacity-50 active:opacity-50"
             >
               Contact →

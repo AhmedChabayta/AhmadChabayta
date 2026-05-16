@@ -85,7 +85,7 @@ export function Hero() {
           variants={lineUp}
           className="mt-16 flex flex-wrap items-center gap-5 md:mt-28 md:gap-6"
         >
-          <Button href="/work" variant="primary" size="lg">
+          <Button href="/#work" variant="primary" size="lg">
             See the work
             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
           </Button>

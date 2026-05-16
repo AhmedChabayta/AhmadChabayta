@@ -70,7 +70,7 @@ export function DashboardSidebar({ onClose }: { onClose?: () => void }) {
 
       <div className="border-t border-border p-4">
         <Link
-          href="/work"
+          href="/#work"
           className="f-mono group flex items-center gap-2 text-[0.55rem] tracking-[0.25em] text-muted-foreground transition-colors hover:text-orange focus-visible:text-orange"
         >
           <ChevronLeft className="size-3 transition-transform group-hover:-translate-x-0.5" />
