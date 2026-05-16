@@ -23,6 +23,11 @@ export interface Hooks {
 
 let UID = 1;
 
+/** Ship resting line — kept well above the bottom so a thumb can swipe
+ *  in the clear zone below it without covering the ship. */
+export const groundY = (v: View): number =>
+  v.h - Math.max(132 * v.s, v.h * 0.17);
+
 export class Bullet {
   dead = false;
   hits = new Set<number>();
@@ -75,7 +80,11 @@ export class Player {
   invuln = 1.2;
   fireCd = 0;
   alive = true;
+  // rapid/spread/double/pierce are persistent (1 = owned) — they last
+  // until a hit. score/magnet are timed (seconds remaining).
   buffs: Buffs = { rapid: 0, spread: 0, double: 0, pierce: 0, score: 0, magnet: 0 };
+  private grab = 0;
+  private wasDown = false;
 
   size(v: View): number {
     return 17 * v.s;
@@ -83,10 +92,11 @@ export class Player {
 
   reset(v: View, keepLoadout = false): void {
     this.x = this.tx = v.w / 2;
-    this.y = v.h - 56 * v.s;
+    this.y = groundY(v);
     this.vx = 0;
     this.invuln = 1.4;
     this.alive = true;
+    this.wasDown = false;
     if (!keepLoadout) {
       this.shield = 0;
       this.buffs = { rapid: 0, spread: 0, double: 0, pierce: 0, score: 0, magnet: 0 };
@@ -102,21 +112,24 @@ export class Player {
     hue: number,
   ): void {
     const sz = this.size(v);
-    if (ptr.active) {
-      this.tx = clamp(ptr.x, sz, v.w - sz);
+    if (ptr.down) {
+      // Relative drag: grab anywhere (the clear zone below the ship) and
+      // the ship tracks the swipe delta — no teleport-to-finger snap.
+      if (!this.wasDown) this.grab = this.x - ptr.x;
+      this.tx = clamp(ptr.x + this.grab, sz, v.w - sz);
+    } else if (ptr.active) {
+      this.tx = clamp(ptr.x, sz, v.w - sz); // desktop mouse follow
     } else {
       this.tx = clamp(this.tx + axis * 620 * v.s * dt, sz, v.w - sz);
     }
-    const nx = damp(this.x, this.tx, 18, dt);
+    this.wasDown = ptr.down;
+    const nx = damp(this.x, this.tx, 20, dt);
     this.vx = (nx - this.x) / Math.max(dt, 1e-4);
     this.x = nx;
-    this.y = v.h - 56 * v.s;
+    this.y = groundY(v);
     this.invuln = Math.max(0, this.invuln - dt);
     const b = this.buffs;
-    b.rapid = Math.max(0, b.rapid - dt);
-    b.spread = Math.max(0, b.spread - dt);
-    b.double = Math.max(0, b.double - dt);
-    b.pierce = Math.max(0, b.pierce - dt);
+    // weapons persist until a hit; only score/magnet count down
     b.score = Math.max(0, b.score - dt);
     b.magnet = Math.max(0, b.magnet - dt);
     this.fireCd = Math.max(0, this.fireCd - dt);

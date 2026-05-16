@@ -5,6 +5,7 @@ export type Difficulty = "NORMAL" | "HARD" | "INSANE";
 
 export type GameState =
   | "MENU"
+  | "STORE"
   | "BRIEF"
   | "PLAY"
   | "PAUSE"

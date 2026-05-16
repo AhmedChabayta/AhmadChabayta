@@ -21,6 +21,7 @@ import {
   Bullet,
   Enemy,
   Formation,
+  groundY,
   Player,
   PowerUp,
   type Hooks,
@@ -33,6 +34,24 @@ const POWERS: PowerKind[] = [
   "slow", "nuke", "life", "score", "magnet",
 ];
 const LIFE_STEPS = [15000, 40000, 80000];
+
+interface Upgrade {
+  id: string;
+  name: string;
+  desc: string;
+  max: number;
+  costs: number[];
+}
+// Permanent meta-upgrades — only obtainable from the coin store.
+const UPGRADES: Upgrade[] = [
+  { id: "life", name: "EXTRA LIFE", desc: "+1 starting life", max: 3, costs: [60, 130, 240] },
+  { id: "bomb", name: "MUNITIONS", desc: "+1 starting smart bomb", max: 3, costs: [45, 95, 170] },
+  { id: "twin", name: "TWIN GUNS", desc: "Spawn with twin cannons", max: 1, costs: [220] },
+  { id: "rapid", name: "OVERCLOCK", desc: "Spawn with rapid fire", max: 1, costs: [260] },
+  { id: "aegis", name: "AEGIS", desc: "Respawn with a 2-hit shield", max: 1, costs: [200] },
+  { id: "greed", name: "COIN MAGNET", desc: "+30% coins per level", max: 3, costs: [80, 170, 300] },
+  { id: "veteran", name: "VETERAN", desc: "+8% score per level", max: 3, costs: [90, 190, 320] },
+];
 
 interface Btn {
   id: string;
@@ -76,6 +95,8 @@ export class Game {
   private newHigh = false;
   private lastShotSfx = -1;
   private sinceDrop = 0;
+  private coins = 0;
+  private startShield = 0;
 
   private ui: Btn[] = [];
 
@@ -111,11 +132,17 @@ export class Game {
     this.comboT = 0;
     this.lifeIdx = 0;
     this.sinceDrop = 0;
+    this.coins = 0;
     this.newHigh = false;
+    const up = (id: string): number => this.store.upgrades[id] ?? 0;
+    this.startShield = up("aegis") ? 2 : 0;
     this.player = new Player();
     this.player.reset(this.view);
-    this.player.lives = r ? r.lives : 3;
-    this.player.bombs = r ? r.bombs : 2;
+    this.player.lives = (r ? r.lives : 3) + (r ? 0 : up("life"));
+    this.player.bombs = (r ? r.bombs : 2) + (r ? 0 : up("bomb"));
+    this.player.shield = this.startShield;
+    if (up("twin")) this.player.buffs.double = 1;
+    if (up("rapid")) this.player.buffs.rapid = 1;
     this.bullets = [];
     this.powerups = [];
     this.fx.reset();
@@ -156,18 +183,12 @@ export class Game {
     if (this.rng.chance(0.28)) return; // many sectors have no cover at all
     const n = this.rng.int(2, 4);
     const bw = 11 * 7 * this.view.s;
-    const yJit = this.rng.range(-26, 16) * this.view.s;
+    // sit the cover just above the (raised) ship line
+    const by = groundY(this.view) - (74 + this.rng.range(0, 30)) * this.view.s;
     for (let i = 0; i < n; i++) {
       const slot = ((i + 0.5) / n) * this.view.w - bw / 2;
       const x = slot + this.rng.range(-30, 30) * this.view.s;
-      this.barriers.push(
-        new Barrier(
-          x,
-          this.view.h - 150 * this.view.s + yJit,
-          this.view,
-          this.rng.next(),
-        ),
-      );
+      this.barriers.push(new Barrier(x, by, this.view, this.rng.next()));
     }
   }
 
@@ -182,6 +203,8 @@ export class Game {
     this.store.bestWave = Math.max(this.store.bestWave, this.wave);
     this.store.totalKills += this.kills;
     this.store.gamesPlayed += 1;
+    this.store.coins += this.coins;
+    this.coins = 0;
     this.store.run = null;
     saveStore(this.store);
   }
@@ -196,6 +219,8 @@ export class Game {
         bombs: this.player.bombs,
         difficulty: this.diff,
       };
+      this.store.coins += this.coins;
+      this.coins = 0;
       saveStore(this.store);
     }
   }
@@ -231,6 +256,10 @@ export class Game {
       this.updatePlay(dt, true);
       if (this.deadT <= 0) {
         this.player.reset(this.view);
+        this.player.shield = this.startShield;
+        // purchased weapons are permanent — restore them on respawn
+        if (this.owned("twin")) this.player.buffs.double = 1;
+        if (this.owned("rapid")) this.player.buffs.rapid = 1;
         this.state = "PLAY";
       }
     } else {
@@ -316,6 +345,7 @@ export class Game {
   }
 
   private winWave(): void {
+    this.addCoins(this.spec.isBoss ? 30 : 5);
     this.wave++;
     this.audio.levelUp();
     this.fx.flash(hsla(this.spec.hue + 60, 100, 75), 0.22);
@@ -331,8 +361,19 @@ export class Game {
       : 1;
   }
 
+  private owned(id: string): number {
+    return this.store.upgrades[id] ?? 0;
+  }
+
+  private addCoins(n: number): void {
+    this.coins += Math.max(1, Math.round(n * (1 + 0.3 * this.owned("greed"))));
+  }
+
   private addScore(base: number, x: number, y: number): void {
-    const m = this.mult() * (this.player.buffs.score > 0 ? 2 : 1);
+    const m =
+      this.mult() *
+      (this.player.buffs.score > 0 ? 2 : 1) *
+      (1 + 0.08 * this.owned("veteran"));
     const gained = Math.round(base * m);
     this.score += gained;
     this.fx.text(x, y, `${gained}`, hsla(this.spec.hue + 60, 100, 70), 15 * this.view.s);
@@ -342,6 +383,7 @@ export class Game {
     this.kills++;
     this.combo++;
     this.comboT = 2.6;
+    this.addCoins(1);
     this.addScore(e.score, e.x, e.y);
     this.audio.explode(e.kind === "tank" ? 1.2 : 0.85);
     if (this.combo % 5 === 0) this.audio.combo(Math.min(this.combo, 18));
@@ -402,10 +444,12 @@ export class Game {
     };
     this.fx.text(p.x, p.y - 44, label[k], hsla(200, 100, 75), 18 * this.view.s);
     switch (k) {
-      case "rapid": p.buffs.rapid = 11; break;
-      case "spread": p.buffs.spread = 13; break;
-      case "double": p.buffs.double = 13; break;
-      case "pierce": p.buffs.pierce = 10; break;
+      // weapons are permanent until the player takes a hit
+      case "rapid": p.buffs.rapid = 1; break;
+      case "spread": p.buffs.spread = 1; break;
+      case "double": p.buffs.double = 1; break;
+      case "pierce": p.buffs.pierce = 1; break;
+      // these stay on a timer
       case "score": p.buffs.score = 11; break;
       case "magnet": p.buffs.magnet = 13; break;
       case "shield": p.shield = Math.min(4, p.shield + 2); break;
@@ -488,11 +532,14 @@ export class Game {
         }
       }
       if (b.dead) continue;
-      for (const bar of this.barriers)
-        if (bar.hit(b.x, b.y, b.r)) {
-          b.dead = true;
-          break;
-        }
+      // Bunkers are cover: the player fires OUT through their own bunker;
+      // only enemy fire is blocked and erodes it.
+      if (!b.friendly)
+        for (const bar of this.barriers)
+          if (bar.hit(b.x, b.y, b.r)) {
+            b.dead = true;
+            break;
+          }
     }
     this.bullets = this.bullets.filter((b) => !b.dead);
 
@@ -558,6 +605,8 @@ export class Game {
         if (a === "confirm") this.newRun(Boolean(this.store.run));
         else if (a === "navLeft") this.cycleDiff(-1);
         else if (a === "navRight") this.cycleDiff(1);
+      } else if (this.state === "STORE") {
+        if (a === "pause" || a === "confirm") this.setState("MENU");
       } else if (this.state === "GAMEOVER") {
         if (a === "confirm" || a === "restart") this.newRun(false);
         else if (a === "pause") this.setState("MENU");
@@ -610,9 +659,15 @@ export class Game {
     );
     if (!hit) return;
     this.audio.uiSelect();
+    if (hit.id.startsWith("buy:")) {
+      this.buyUpgrade(hit.id.slice(4));
+      return;
+    }
     switch (hit.id) {
       case "play": this.newRun(false); break;
       case "resume-run": this.newRun(true); break;
+      case "store": this.setState("STORE"); break;
+      case "store-back": this.setState("MENU"); break;
       case "diff": this.cycleDiff(1); break;
       case "mute": this.toggleMute(); break;
       case "flash": this.toggleFlash(); break;
@@ -636,7 +691,7 @@ export class Game {
     ctx.translate(sh.x, sh.y);
     this.fx.drawBack(ctx, v.w, v.h);
 
-    if (this.state !== "MENU") {
+    if (this.state !== "MENU" && this.state !== "STORE") {
       for (const bar of this.barriers) bar.draw(ctx, this.spec.hue + 40);
       for (const p of this.powerups) p.draw(ctx, v);
       if (this.formation) this.formation.draw(ctx, v, this.t);
@@ -654,6 +709,7 @@ export class Game {
       this.drawHUD();
     if (this.state === "BRIEF") this.drawBrief();
     if (this.state === "MENU") this.drawMenu();
+    if (this.state === "STORE") this.drawStore();
     if (this.state === "PAUSE") this.drawPause();
     if (this.state === "GAMEOVER") this.drawGameOver();
 
@@ -729,6 +785,7 @@ export class Game {
       `HI ${Math.max(this.store.highScore, this.score)}`,
       16, 50, 11, hsla(hue + 60, 90, 70), "left",
     );
+    this.text(`◉ ${this.coins}`, 16, 68, 12, "#ffd24d", "left");
     this.text(`WAVE ${this.wave}`, v.w / 2, 30, 16, hsla(hue, 100, 75), "center", 8);
     if (this.mult() > 1)
       this.text(
@@ -752,27 +809,29 @@ export class Game {
     }
     this.text(`◈ ${this.player.bombs}`, v.w - 16, 52, 12, "#ffd24d", "right");
 
-    // buff timer chips
-    const buffs = (
-      [
-        ["RPD", this.player.buffs.rapid, 50],
-        ["SPR", this.player.buffs.spread, 200],
-        ["TWN", this.player.buffs.double, 280],
-        ["PRC", this.player.buffs.pierce, 330],
-        ["x2", this.player.buffs.score, 95],
-        ["MAG", this.player.buffs.magnet, 60],
-        ["SLO", this.slowT, 160],
-      ] as [string, number, number][]
-    ).filter(([, t]) => t > 0);
-    buffs.forEach(([lab, tleft, hh], i) => {
-      const bx = 16 + i * 60;
-      const by = v.h - 22;
-      this.ctx.fillStyle = hsla(hh, 90, 55, 0.25);
-      this.ctx.fillRect(bx, by, 52, 12);
-      this.ctx.fillStyle = hsla(hh, 100, 65, 1);
-      this.ctx.fillRect(bx, by, 52 * clamp(tleft / 13, 0, 1), 12);
-      this.text(lab, bx + 26, by + 10, 9, "#fff", "center");
-    });
+    // weapon chips are steady (own until hit); timed buffs drain
+    const wp = this.player.buffs;
+    const chips: [string, number, number][] = [];
+    if (wp.rapid > 0) chips.push(["RAPID", 1, 50]);
+    if (wp.spread > 0) chips.push(["SPREAD", 1, 200]);
+    if (wp.double > 0) chips.push(["TWIN", 1, 280]);
+    if (wp.pierce > 0) chips.push(["PIERCE", 1, 330]);
+    if (wp.score > 0) chips.push(["x2", clamp(wp.score / 11, 0, 1), 95]);
+    if (wp.magnet > 0) chips.push(["MAGNET", clamp(wp.magnet / 13, 0, 1), 60]);
+    if (this.slowT > 0) chips.push(["SLOW", clamp(this.slowT / 6.5, 0, 1), 160]);
+    if (chips.length) {
+      const gap = 6;
+      const cw = Math.min(72, (v.w - 32 + gap) / chips.length - gap);
+      const by = v.h - 26;
+      chips.forEach(([lab, fill, hh], i) => {
+        const bx = 16 + i * (cw + gap);
+        this.ctx.fillStyle = hsla(hh, 90, 55, 0.22);
+        this.ctx.fillRect(bx, by, cw, 15);
+        this.ctx.fillStyle = hsla(hh, 100, 65, 0.95);
+        this.ctx.fillRect(bx, by, cw * fill, 15);
+        this.text(lab, bx + cw / 2, by + 11, 9, "#fff", "center");
+      });
+    }
 
     if (this.boss && !this.boss.dead) {
       const bw = v.w * 0.6;
@@ -833,24 +892,28 @@ export class Game {
     );
     this.text(
       `HI ${this.store.highScore}   ·   BEST WAVE ${this.store.bestWave}   ·   KILLS ${this.store.totalKills}`,
-      cx, v.h * 0.46, 12, hsla(hue + 60, 80, 75), "center",
+      cx, v.h * 0.44, 12, hsla(hue + 60, 80, 75), "center",
     );
 
     const bw = Math.min(300, v.w * 0.7);
-    let y = v.h * 0.54;
+    let y = v.h * 0.5;
     const run = this.store.run;
     if (run) {
       this.button(
-        "resume-run", `RESUME · WAVE ${run.wave}`, cx, y, bw, 52,
+        "resume-run", `RESUME · WAVE ${run.wave}`, cx, y, bw, 50,
         hue, `SCORE ${run.score} · ${run.lives} LIVES`,
       );
-      y += 66;
-      this.button("play", "NEW GAME", cx, y, bw, 46, hue + 40);
-      y += 60;
+      y += 62;
+      this.button("play", "NEW GAME", cx, y, bw, 44, hue + 40);
+      y += 56;
     } else {
-      this.button("play", "▶  PLAY", cx, y, bw, 56, hue);
-      y += 72;
+      this.button("play", "▶  PLAY", cx, y, bw, 54, hue);
+      y += 68;
     }
+    this.button(
+      "store", `◉  STORE · ${this.store.coins}`, cx, y, bw, 44, 50,
+    );
+    y += 56;
     this.button(
       "diff", `DIFFICULTY · ${this.diff}`, cx, y, bw, 40,
       this.diff === "INSANE" ? 0 : this.diff === "HARD" ? 35 : 160,
@@ -873,6 +936,88 @@ export class Game {
     this.text(
       "Installable · plays fully offline · progress auto-saves",
       cx, y + 32, 10, hsla(hue + 60, 70, 70), "center",
+    );
+  }
+
+  private buyUpgrade(id: string): void {
+    const u = UPGRADES.find((x) => x.id === id);
+    if (!u) return;
+    const lvl = this.owned(id);
+    if (lvl >= u.max) return;
+    const cost = u.costs[lvl];
+    if (this.store.coins < cost) {
+      this.audio.ui();
+      return;
+    }
+    this.store.coins -= cost;
+    this.store.upgrades = { ...this.store.upgrades, [id]: lvl + 1 };
+    saveStore(this.store);
+    this.audio.power("life");
+    this.fx.flash(hsla(140, 100, 70), 0.16);
+  }
+
+  private drawStore(): void {
+    const v = this.view;
+    const cx = v.w / 2;
+    const ctx = this.ctx;
+    ctx.fillStyle = "rgba(2,0,12,0.86)";
+    ctx.fillRect(0, 0, v.w, v.h);
+    this.text("STORE", cx, v.h * 0.11, Math.min(46, v.w * 0.11), "#fff", "center", 16);
+    this.text(
+      `◉ ${this.store.coins} COINS  ·  earn them by playing`,
+      cx, v.h * 0.11 + 26, 12, "#ffd24d", "center",
+    );
+
+    const n = UPGRADES.length;
+    const top = v.h * 0.19;
+    const listH = v.h * 0.62;
+    const rh = Math.min(76, listH / n - 8);
+    const w = Math.min(460, v.w * 0.92);
+    const x = cx - w / 2;
+
+    UPGRADES.forEach((u, i) => {
+      const yy = top + i * (rh + 8);
+      const lvl = this.owned(u.id);
+      const maxed = lvl >= u.max;
+      const cost = maxed ? 0 : u.costs[lvl];
+      const afford = !maxed && this.store.coins >= cost;
+
+      ctx.fillStyle = "rgba(255,255,255,0.04)";
+      ctx.fillRect(x, yy, w, rh);
+      ctx.fillStyle = afford ? hsla(140, 90, 55, 0.6) : "rgba(255,255,255,0.12)";
+      ctx.fillRect(x, yy, 3, rh);
+
+      this.text(u.name, x + 16, yy + rh * 0.42, 15, "#fff", "left", 4);
+      this.text(
+        u.desc,
+        x + 16, yy + rh * 0.74, 10,
+        "rgba(255,255,255,0.55)", "left",
+      );
+      // level pips
+      for (let k = 0; k < u.max; k++) {
+        ctx.fillStyle =
+          k < lvl ? hsla(140, 100, 60, 1) : "rgba(255,255,255,0.18)";
+        ctx.fillRect(x + 16 + k * 12, yy + rh - 12, 8, 4);
+      }
+
+      const bwd = Math.min(108, w * 0.28);
+      const bx = x + w - bwd / 2 - 12;
+      const bh = rh - 20;
+      if (maxed) {
+        this.text("MAXED", bx, yy + rh / 2 + 4, 12, hsla(140, 90, 70), "center");
+      } else {
+        this.button(
+          `buy:${u.id}`,
+          `◉ ${cost}`,
+          bx, yy + 10, bwd, bh,
+          afford ? 140 : 0,
+        );
+      }
+    });
+
+    this.button(
+      "store-back", "◀  BACK", cx, v.h * 0.86,
+      Math.min(240, v.w * 0.6), 44, 280,
     );
   }
 

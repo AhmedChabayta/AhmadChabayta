@@ -23,6 +23,8 @@ export interface Store {
   bestWave: number;
   totalKills: number;
   gamesPlayed: number;
+  coins: number;
+  upgrades: Record<string, number>;
   settings: Settings;
   run: SavedRun | null;
 }
@@ -32,6 +34,8 @@ const DEFAULT: Store = {
   bestWave: 0,
   totalKills: 0,
   gamesPlayed: 0,
+  coins: 0,
+  upgrades: {},
   settings: { muted: false, lowFlash: false, difficulty: "NORMAL" },
   run: null,
 };
@@ -43,6 +47,8 @@ function safeParse(raw: string | null): Store {
     return {
       ...DEFAULT,
       ...p,
+      coins: Math.max(0, Math.floor(p.coins ?? 0)),
+      upgrades: { ...(p.upgrades ?? {}) },
       settings: { ...DEFAULT.settings, ...(p.settings ?? {}) },
       run: p.run ?? null,
     };
