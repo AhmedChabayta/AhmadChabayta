@@ -11,24 +11,25 @@ import { useEffect, useRef } from "react";
 
 type RGB = [number, number, number];
 
-// Warm "day <-> night" path. Nothing is dead black; nothing is clinical
-// white. The whole site's color tokens are interpolated along this as you
-// scroll, so text + surfaces drift together and stay legible.
+// Warm temperature "breathing". It stays in a dark, readable band the
+// whole way — espresso -> umber -> deep amber — so foreground contrast is
+// never sacrificed. The drama is in the warmth + the moving light, not in
+// flipping to a washed-out daylight that murders the type on a real phone.
 const BG: { t: number; c: RGB }[] = [
-  { t: 0.0, c: [14, 11, 9] }, // espresso night
-  { t: 0.3, c: [34, 24, 20] }, // smouldering brown
-  { t: 0.55, c: [120, 86, 68] }, // dusk clay
-  { t: 0.78, c: [206, 170, 140] }, // warm sand
-  { t: 1.0, c: [240, 232, 220] }, // bone paper day
+  { t: 0.0, c: [13, 10, 8] }, // espresso
+  { t: 0.4, c: [22, 16, 13] }, // smouldering
+  { t: 0.7, c: [33, 23, 18] }, // warm umber
+  { t: 1.0, c: [42, 29, 21] }, // deep amber ember
 ];
 const ACCENT: { t: number; c: RGB }[] = [
-  { t: 0.0, c: [255, 107, 53] },
-  { t: 0.55, c: [255, 124, 62] },
-  { t: 1.0, c: [198, 74, 30] },
+  { t: 0.0, c: [255, 112, 58] },
+  { t: 0.55, c: [255, 130, 70] },
+  { t: 1.0, c: [255, 152, 86] },
 ];
 
-const BONE: RGB = [240, 233, 224];
-const INK: RGB = [33, 26, 22];
+// Foreground is constant and bone-warm — guaranteed high contrast on the
+// dark band above, at every scroll position.
+const BONE: RGB = [243, 236, 227];
 
 const lerp = (a: number, b: number, f: number) => a + (b - a) * f;
 const mix = (a: RGB, b: RGB, f: number): RGB => [
@@ -36,13 +37,6 @@ const mix = (a: RGB, b: RGB, f: number): RGB => [
   lerp(a[1], b[1], f),
   lerp(a[2], b[2], f),
 ];
-const smoothstep = (e0: number, e1: number, x: number) => {
-  const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
-  return t * t * (3 - 2 * t);
-};
-const lum = ([r, g, b]: RGB) =>
-  (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
-
 function sample(stops: { t: number; c: RGB }[], t: number): RGB {
   if (t <= stops[0].t) return stops[0].c;
   if (t >= stops[stops.length - 1].t) return stops[stops.length - 1].c;
@@ -62,15 +56,13 @@ function applyPalette(t: number) {
   const root = document.documentElement;
   const bg = sample(BG, t);
   const accent = sample(ACCENT, t);
-  // Legibility flip: foreground swaps bone -> ink across the band where
-  // the background crosses mid-luminance, so contrast stays high.
-  const flip = smoothstep(0.42, 0.62, lum(bg));
-  const fg = mix(BONE, INK, flip);
-  const mutedFg = mix([168, 153, 138], [120, 104, 92], flip);
-  const border = mix([52, 43, 36], [205, 188, 168], flip);
-  const card = mix(bg, fg, 0.05);
-  const muted = mix(bg, fg, 0.1);
-  const accentSoft = mix(accent, [255, 220, 190], 0.35);
+  // Constant high-contrast bone foreground. No flip, no mush.
+  const fg = BONE;
+  const mutedFg = mix(bg, BONE, 0.62); // clearly readable secondary text
+  const border = mix(bg, BONE, 0.16);
+  const card = mix(bg, BONE, 0.05);
+  const muted = mix(bg, BONE, 0.1);
+  const accentSoft = mix(accent, [255, 214, 178], 0.4);
 
   root.style.setProperty("--background", v(bg));
   root.style.setProperty("--foreground", v(fg));
@@ -119,10 +111,10 @@ export function Atmosphere() {
     });
   });
 
-  const yA = useTransform(scrollYProgress, [0, 1], ["-8%", "26%"]);
-  const yB = useTransform(scrollYProgress, [0, 1], ["18%", "-20%"]);
-  const rot = useTransform(scrollYProgress, [0, 1], [0, 38]);
-  const yLeaf = useTransform(scrollYProgress, [0, 1], ["5%", "-14%"]);
+  const yA = useTransform(scrollYProgress, [0, 1], ["-22%", "70%"]);
+  const yB = useTransform(scrollYProgress, [0, 1], ["55%", "-55%"]);
+  const rot = useTransform(scrollYProgress, [0, 1], [-12, 70]);
+  const yLeaf = useTransform(scrollYProgress, [0, 1], ["22%", "-46%"]);
 
   return (
     <div
@@ -146,11 +138,11 @@ export function Atmosphere() {
         <svg
           viewBox="0 0 600 600"
           className="h-full w-full"
-          style={{ filter: "blur(72px)" }}
+          style={{ filter: "blur(44px)" }}
         >
           <motion.path
             d={BLOB_A[0]}
-            fill="rgb(var(--orange) / 0.16)"
+            fill="rgb(var(--orange) / 0.30)"
             animate={reduced ? undefined : { d: [...BLOB_A, BLOB_A[0]] }}
             transition={{
               duration: 28,
@@ -168,11 +160,11 @@ export function Atmosphere() {
         <svg
           viewBox="0 0 600 600"
           className="h-full w-full"
-          style={{ filter: "blur(80px)" }}
+          style={{ filter: "blur(52px)" }}
         >
           <motion.path
             d={BLOB_B[0]}
-            fill="rgb(var(--orange-soft) / 0.12)"
+            fill="rgb(var(--orange-soft) / 0.22)"
             animate={reduced ? undefined : { d: [...BLOB_B, BLOB_B[0]] }}
             transition={{
               duration: 34,
@@ -186,7 +178,7 @@ export function Atmosphere() {
       {/* a single faint botanical sprig — line-art, organic, restrained.
           recolors with the drift, drifts slowly on scroll. */}
       <motion.div
-        className="absolute bottom-[6vh] left-[3vw] hidden h-[52vh] w-[34vh] opacity-[0.06] md:block"
+        className="absolute bottom-[4vh] left-[-4vw] h-[58vh] w-[40vh] opacity-[0.13] md:left-[2vw]"
         style={{ y: reduced ? undefined : yLeaf }}
       >
         <svg

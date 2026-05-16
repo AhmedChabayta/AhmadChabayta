@@ -88,11 +88,16 @@
   }
   html {
     background-color: rgb(var(--background));
+    /* Kill any stray horizontal overflow without creating a scroll
+       container (clip != hidden — no scrollport, no jump). */
+    overflow-x: clip;
   }
   body {
     /* Transparent so the fixed Atmosphere layer (palette drift + morphing
        field + grain) shows through behind the content. */
     background-color: transparent;
+    overflow-x: clip;
+    max-width: 100%;
   }
   html,
   body {
