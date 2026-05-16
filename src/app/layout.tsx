@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Anton, JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Nav } from "@/components/site/nav";
 import { Footer } from "@/components/site/footer";
 import { ScrollProgress } from "@/components/site/scroll-progress";
@@ -82,6 +84,8 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
