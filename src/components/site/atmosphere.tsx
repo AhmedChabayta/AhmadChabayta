@@ -8,7 +8,12 @@ import {
   useTransform,
 } from "framer-motion";
 import { useEffect, useRef } from "react";
-import { WindTree } from "@/components/site/wind-tree";
+import dynamic from "next/dynamic";
+
+const Tree3D = dynamic(
+  () => import("@/components/site/tree3d").then((m) => m.Tree3D),
+  { ssr: false },
+);
 
 type RGB = [number, number, number];
 
@@ -175,10 +180,10 @@ export function Atmosphere() {
         </svg>
       </motion.div>
 
-      {/* the living tree — rooted to the ground, grows with scroll,
+      {/* the living 3D tree — rooted to the ground, grows with scroll,
           sways in the wind. NO scroll translate (it must not drift up). */}
-      <div className="absolute bottom-0 left-[-14vw] h-[94vh] w-[88vh] opacity-[0.3] sm:left-[-8vw] md:left-[-2vw] md:opacity-[0.36]">
-        <WindTree className="h-full w-full" />
+      <div className="absolute bottom-0 left-[-16vw] h-[96vh] w-[104vh] opacity-[0.6] sm:left-[-10vw] md:left-[-4vw] md:opacity-[0.78]">
+        <Tree3D className="relative h-full w-full" />
       </div>
 
       {/* analog film grain — kills the sterile digital flatness */}

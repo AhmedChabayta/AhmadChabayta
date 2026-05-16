@@ -61,7 +61,7 @@ export function WorkPreview() {
               >
                 <Link
                   {...ProjectLinkProps(p)}
-                  className="flex h-full flex-col gap-5 border border-border bg-card p-7 transition-colors hover:border-orange/40 focus-visible:border-orange/40"
+                  className="flex h-full flex-col gap-5 border border-border bg-card/10 p-7 backdrop-blur-md transition-colors hover:border-orange/40 hover:bg-card/20 focus-visible:border-orange/40"
                 >
                   {SHOTS[p.slug] && (
                     <div className="relative -mx-7 -mt-7 mb-1 aspect-[16/10] overflow-hidden border-b border-border">
