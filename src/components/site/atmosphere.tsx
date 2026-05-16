@@ -13,19 +13,19 @@ import { WindTree } from "@/components/site/wind-tree";
 type RGB = [number, number, number];
 
 // Warm temperature "breathing". It stays in a dark, readable band the
-// whole way — espresso -> umber -> deep amber — so foreground contrast is
-// never sacrificed. The drama is in the warmth + the moving light, not in
-// flipping to a washed-out daylight that murders the type on a real phone.
+// whole way — deep teal -> pine -> spruce — so foreground contrast is
+// never sacrificed. Bluish-green night that breathes; the warm orange
+// accent pops complementary on top of it.
 const BG: { t: number; c: RGB }[] = [
-  { t: 0.0, c: [13, 10, 8] }, // espresso
-  { t: 0.4, c: [22, 16, 13] }, // smouldering
-  { t: 0.7, c: [33, 23, 18] }, // warm umber
-  { t: 1.0, c: [42, 29, 21] }, // deep amber ember
+  { t: 0.0, c: [7, 16, 15] }, // near-black teal
+  { t: 0.4, c: [9, 23, 22] }, // deep pine
+  { t: 0.7, c: [11, 31, 30] }, // spruce
+  { t: 1.0, c: [14, 40, 38] }, // deep teal
 ];
 const ACCENT: { t: number; c: RGB }[] = [
-  { t: 0.0, c: [255, 112, 58] },
-  { t: 0.55, c: [255, 130, 70] },
-  { t: 1.0, c: [255, 152, 86] },
+  { t: 0.0, c: [255, 122, 64] },
+  { t: 0.55, c: [255, 138, 78] },
+  { t: 1.0, c: [255, 158, 96] },
 ];
 
 // Foreground is constant and bone-warm — guaranteed high contrast on the
@@ -115,7 +115,6 @@ export function Atmosphere() {
   const yA = useTransform(scrollYProgress, [0, 1], ["-22%", "70%"]);
   const yB = useTransform(scrollYProgress, [0, 1], ["55%", "-55%"]);
   const rot = useTransform(scrollYProgress, [0, 1], [-12, 70]);
-  const yLeaf = useTransform(scrollYProgress, [0, 1], ["22%", "-46%"]);
 
   return (
     <div
@@ -176,13 +175,11 @@ export function Atmosphere() {
         </svg>
       </motion.div>
 
-      {/* the living tree — grows with scroll, sways in the wind */}
-      <motion.div
-        className="absolute bottom-0 left-[-12vw] h-[86vh] w-[62vh] opacity-[0.32] sm:left-[-6vw] md:left-[1vw] md:opacity-[0.4]"
-        style={{ y: reduced ? undefined : yLeaf }}
-      >
+      {/* the living tree — rooted to the ground, grows with scroll,
+          sways in the wind. NO scroll translate (it must not drift up). */}
+      <div className="absolute bottom-0 left-[-14vw] h-[94vh] w-[88vh] opacity-[0.3] sm:left-[-8vw] md:left-[-2vw] md:opacity-[0.36]">
         <WindTree className="h-full w-full" />
-      </motion.div>
+      </div>
 
       {/* analog film grain — kills the sterile digital flatness */}
       <svg className="absolute inset-0 h-full w-full opacity-[0.05] mix-blend-soft-light">
