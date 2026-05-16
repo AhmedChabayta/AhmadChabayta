@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import * as THREE from "three";
 import { Copy, Check, RotateCcw, Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ExperimentShell } from "@/app/work/_experiment-shell";
 
 const MAX_ITER_HARD = 14;
 
@@ -216,7 +217,7 @@ function decode(search: string): Partial<Params> {
   return out;
 }
 
-export function MandelbulbPlayground({ className }: { className?: string }) {
+export function MandelbulbPlayground() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef({ targetX: 0, targetY: 0, paused: false });
@@ -224,6 +225,7 @@ export function MandelbulbPlayground({ className }: { className?: string }) {
   const [params, setParams] = useState<Params>(DEFAULTS);
   const [copied, setCopied] = useState(false);
   const [fps, setFps] = useState(60);
+  const [paused, setPaused] = useState(false);
 
   // Hydrate from URL on mount.
   useEffect(() => {
@@ -378,7 +380,10 @@ export function MandelbulbPlayground({ className }: { className?: string }) {
   const applyPreset = (p: Params) => setParams(p);
   const reset = () => setParams(DEFAULTS);
   const togglePause = () => {
-    stateRef.current.paused = !stateRef.current.paused;
+    setPaused((p) => {
+      stateRef.current.paused = !p;
+      return !p;
+    });
   };
   const copyShare = async () => {
     const url = window.location.origin + window.location.pathname + "?" + encode(params);
@@ -392,107 +397,118 @@ export function MandelbulbPlayground({ className }: { className?: string }) {
   };
 
   return (
-    <div ref={wrapRef} className={cn("relative grid w-full gap-4 md:grid-cols-[1fr_320px]", className)}>
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-black select-none md:aspect-auto md:min-h-[560px]">
-        <div ref={canvasRef} className="absolute inset-0" />
-        <div className="f-mono pointer-events-none absolute top-3 left-3 flex flex-col gap-1 border border-orange/30 bg-black/30 p-2 text-[0.5rem] tracking-[0.2em] text-orange/90 backdrop-blur md:top-4 md:left-4">
-          <span>POWER&nbsp;&nbsp;{params.power.toFixed(2)}</span>
-          <span>ITER&nbsp;&nbsp;&nbsp;{params.iter}</span>
-          <span>CAM&nbsp;&nbsp;&nbsp;&nbsp;{params.camDist.toFixed(2)}</span>
-          <span>FPS&nbsp;&nbsp;&nbsp;&nbsp;{fps}</span>
+    <ExperimentShell
+      label="WORKSPACE / SHADERS"
+      title="MANDELBULB PLAYGROUND"
+      controls={
+        <div className="-mr-1 max-h-[78dvh] space-y-5 overflow-y-auto pr-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">/ PRESETS</span>
+            <button
+              type="button"
+              onClick={reset}
+              className="f-mono inline-flex items-center gap-1.5 text-[0.55rem] tracking-[0.2em] text-white/50 transition-colors hover:text-orange focus-visible:text-orange"
+            >
+              <RotateCcw className="size-3" /> RESET
+            </button>
+          </div>
+          <div className="grid grid-cols-3 gap-1.5">
+            {PRESETS.map((preset) => (
+              <button
+                key={preset.name}
+                type="button"
+                onClick={() => applyPreset(preset.params)}
+                className="f-mono border border-white/15 px-2 py-2 text-[0.55rem] tracking-[0.2em] text-white/50 transition-colors hover:border-orange hover:text-orange focus-visible:border-orange focus-visible:text-orange"
+              >
+                {preset.name}
+              </button>
+            ))}
+          </div>
+
+          <div className="border-t border-white/10 pt-5">
+            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">/ GEOMETRY</span>
+            <div className="mt-3 flex flex-col gap-4">
+              <Slider label="POWER" value={params.power} min={3} max={MAX_ITER_HARD} step={0.05} onChange={(v) => update("power", v)} format={(v) => v.toFixed(2)} />
+              <Slider label="ITERATIONS" value={params.iter} min={2} max={MAX_ITER_HARD} step={1} onChange={(v) => update("iter", Math.round(v))} format={(v) => String(Math.round(v))} />
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-5">
+            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">/ COLOR</span>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <ColorField label="CORE" value={params.colA} onChange={(v) => update("colA", v)} />
+              <ColorField label="HALO" value={params.colB} onChange={(v) => update("colB", v)} />
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-5">
+            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">/ CAMERA</span>
+            <div className="mt-3 flex flex-col gap-4">
+              <Slider label="DISTANCE" value={params.camDist} min={1.5} max={5} step={0.05} onChange={(v) => update("camDist", v)} format={(v) => v.toFixed(2)} />
+              <Slider label="FOG" value={params.fog} min={0} max={1} step={0.02} onChange={(v) => update("fog", v)} format={(v) => v.toFixed(2)} />
+              <Slider label="LIGHT YAW" value={params.lightYaw} min={0} max={Math.PI * 2} step={0.05} onChange={(v) => update("lightYaw", v)} format={(v) => v.toFixed(2)} />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between border-t border-white/10 pt-5">
+            <span className="f-mono text-[0.55rem] tracking-[0.25em] text-white/50">AUTO ROTATE</span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={params.autoRot}
+              onClick={() => update("autoRot", !params.autoRot)}
+              className={cn(
+                "relative h-5 w-10 border transition-colors",
+                params.autoRot ? "border-orange bg-orange/20" : "border-white/20 bg-white/5",
+              )}
+            >
+              <span
+                className={cn(
+                  "absolute top-0.5 size-3.5 bg-orange transition-transform",
+                  params.autoRot ? "translate-x-5" : "translate-x-0.5",
+                )}
+              />
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={copyShare}
+            className="f-mono group mt-1 inline-flex w-full items-center justify-between gap-2 border border-orange bg-orange/5 px-3 py-3 text-[0.6rem] tracking-[0.25em] text-orange transition-colors hover:bg-orange hover:text-background focus-visible:bg-orange focus-visible:text-background"
+          >
+            <span>{copied ? "URL COPIED" : "COPY SHARE URL"}</span>
+            {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+          </button>
         </div>
-        <div className="pointer-events-auto absolute bottom-3 right-3 flex gap-2 md:bottom-4 md:right-4">
+      }
+    >
+      <div ref={wrapRef} className="absolute inset-0 select-none bg-black">
+        <div ref={canvasRef} className="absolute inset-0" />
+        <div
+          className="absolute bottom-3 left-3 flex flex-col items-start gap-2 md:bottom-4 md:left-4"
+          style={{
+            paddingBottom: "max(0rem, env(safe-area-inset-bottom))",
+          }}
+        >
           <button
             type="button"
             onClick={togglePause}
             aria-label="Pause/resume animation"
-            className="f-mono inline-flex items-center gap-1.5 border border-orange/60 bg-black/40 px-2.5 py-1.5 text-[0.55rem] text-orange backdrop-blur transition-colors hover:bg-orange hover:text-background focus-visible:bg-orange focus-visible:text-background"
+            aria-pressed={paused}
+            className="f-mono pointer-events-auto inline-flex items-center gap-1.5 border border-orange/60 bg-black/40 px-2.5 py-1.5 text-[0.55rem] text-orange backdrop-blur transition-colors hover:bg-orange hover:text-background focus-visible:bg-orange focus-visible:text-background"
           >
-            {stateRef.current.paused ? <Play className="size-3" /> : <Pause className="size-3" />}
+            {paused ? <Play className="size-3" /> : <Pause className="size-3" />}
+            {paused ? "RESUME" : "PAUSE"}
           </button>
+          <div className="f-mono pointer-events-none flex flex-col gap-1 border border-orange/30 bg-black/40 p-2 text-[0.5rem] tracking-[0.2em] text-orange/90 backdrop-blur">
+            <span>POWER&nbsp;&nbsp;{params.power.toFixed(2)}</span>
+            <span>ITER&nbsp;&nbsp;&nbsp;{params.iter}</span>
+            <span>CAM&nbsp;&nbsp;&nbsp;&nbsp;{params.camDist.toFixed(2)}</span>
+            <span>FPS&nbsp;&nbsp;&nbsp;&nbsp;{fps}</span>
+          </div>
         </div>
       </div>
-
-      <aside className="flex flex-col gap-5 border border-border bg-card p-5 md:p-6">
-        <div className="flex items-center justify-between gap-2">
-          <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">/ PRESETS</span>
-          <button
-            type="button"
-            onClick={reset}
-            className="f-mono inline-flex items-center gap-1.5 text-[0.55rem] tracking-[0.2em] text-muted-foreground transition-colors hover:text-orange focus-visible:text-orange"
-          >
-            <RotateCcw className="size-3" /> RESET
-          </button>
-        </div>
-        <div className="grid grid-cols-3 gap-1.5">
-          {PRESETS.map((preset) => (
-            <button
-              key={preset.name}
-              type="button"
-              onClick={() => applyPreset(preset.params)}
-              className="f-mono border border-border px-2 py-2 text-[0.55rem] tracking-[0.2em] text-muted-foreground transition-colors hover:border-orange hover:text-orange focus-visible:border-orange focus-visible:text-orange"
-            >
-              {preset.name}
-            </button>
-          ))}
-        </div>
-
-        <div className="border-t border-border pt-5">
-          <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">/ GEOMETRY</span>
-          <div className="mt-3 flex flex-col gap-4">
-            <Slider label="POWER" value={params.power} min={3} max={MAX_ITER_HARD} step={0.05} onChange={(v) => update("power", v)} format={(v) => v.toFixed(2)} />
-            <Slider label="ITERATIONS" value={params.iter} min={2} max={MAX_ITER_HARD} step={1} onChange={(v) => update("iter", Math.round(v))} format={(v) => String(Math.round(v))} />
-          </div>
-        </div>
-
-        <div className="border-t border-border pt-5">
-          <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">/ COLOR</span>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <ColorField label="CORE" value={params.colA} onChange={(v) => update("colA", v)} />
-            <ColorField label="HALO" value={params.colB} onChange={(v) => update("colB", v)} />
-          </div>
-        </div>
-
-        <div className="border-t border-border pt-5">
-          <span className="f-mono text-[0.6rem] tracking-[0.25em] text-orange">/ CAMERA</span>
-          <div className="mt-3 flex flex-col gap-4">
-            <Slider label="DISTANCE" value={params.camDist} min={1.5} max={5} step={0.05} onChange={(v) => update("camDist", v)} format={(v) => v.toFixed(2)} />
-            <Slider label="FOG" value={params.fog} min={0} max={1} step={0.02} onChange={(v) => update("fog", v)} format={(v) => v.toFixed(2)} />
-            <Slider label="LIGHT YAW" value={params.lightYaw} min={0} max={Math.PI * 2} step={0.05} onChange={(v) => update("lightYaw", v)} format={(v) => v.toFixed(2)} />
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between border-t border-border pt-5">
-          <span className="f-mono text-[0.55rem] tracking-[0.25em] text-muted-foreground">AUTO ROTATE</span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={params.autoRot}
-            onClick={() => update("autoRot", !params.autoRot)}
-            className={cn(
-              "relative h-5 w-10 border transition-colors",
-              params.autoRot ? "border-orange bg-orange/20" : "border-border bg-muted",
-            )}
-          >
-            <span
-              className={cn(
-                "absolute top-0.5 size-3.5 bg-orange transition-transform",
-                params.autoRot ? "translate-x-5" : "translate-x-0.5",
-              )}
-            />
-          </button>
-        </div>
-
-        <button
-          type="button"
-          onClick={copyShare}
-          className="f-mono group mt-2 inline-flex items-center justify-between gap-2 border border-orange bg-orange/5 px-3 py-3 text-[0.6rem] tracking-[0.25em] text-orange transition-colors hover:bg-orange hover:text-background focus-visible:bg-orange focus-visible:text-background"
-        >
-          <span>{copied ? "URL COPIED" : "COPY SHARE URL"}</span>
-          {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-        </button>
-      </aside>
-    </div>
+    </ExperimentShell>
   );
 }
 

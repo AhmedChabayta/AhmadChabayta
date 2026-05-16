@@ -10,10 +10,7 @@ export const MandelbulbPlaygroundClient = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="grid w-full gap-4 md:grid-cols-[1fr_320px]">
-        <div className="aspect-[16/10] w-full bg-black md:aspect-auto md:min-h-[560px]" />
-        <div className="hidden border border-border bg-card md:block md:min-h-[560px]" />
-      </div>
+      <div className="fixed inset-0 z-[80] bg-black" />
     ),
   },
 );
