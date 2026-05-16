@@ -7,11 +7,13 @@ export const SpaceInvadersClient = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex w-full flex-col items-center gap-4">
-        <div
-          className="w-full max-w-[680px] animate-pulse rounded-lg border border-border bg-black"
-          style={{ height: "min(82vh, 920px)" }}
-        />
+      <div
+        className="fixed inset-0 z-[80] grid place-items-center bg-black"
+        style={{ height: "100dvh", width: "100vw" }}
+      >
+        <span className="animate-pulse font-mono text-xs uppercase tracking-[0.3em] text-white/40">
+          Loading…
+        </span>
       </div>
     ),
   },

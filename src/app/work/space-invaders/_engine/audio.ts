@@ -42,11 +42,11 @@ export class Audio {
     const ctx = new C();
     this.ctx = ctx;
     const master = ctx.createGain();
-    master.gain.value = this.muted ? 0 : 0.9;
+    master.gain.value = this.muted ? 0 : 0.62;
     master.connect(ctx.destination);
     this.master = master;
     const mg = ctx.createGain();
-    mg.gain.value = 0.55;
+    mg.gain.value = 0.34;
     mg.connect(master);
     this.musicGain = mg;
 
@@ -62,7 +62,7 @@ export class Audio {
     this.muted = m;
     if (this.master && this.ctx) {
       this.master.gain.setTargetAtTime(
-        m ? 0 : 0.9,
+        m ? 0 : 0.62,
         this.ctx.currentTime,
         0.02,
       );
@@ -139,11 +139,11 @@ export class Audio {
 
   // ---- one-shot SFX -------------------------------------------------------
   shoot(): void {
-    this.tone(880, "square", 0.09, 0.16, 0.45);
-    this.tone(1760, "triangle", 0.05, 0.06);
+    // soft, short, low-volume "pew" — easy on the ears under autofire
+    this.tone(540 + Math.random() * 30, "triangle", 0.05, 0.045, 0.55);
   }
   enemyShoot(): void {
-    this.tone(220, "sawtooth", 0.16, 0.1, 0.55);
+    this.tone(190, "triangle", 0.11, 0.05, 0.6);
   }
   explode(scale = 1): void {
     this.burst(0.32 * scale, 0.5, 1600, 0.12);
@@ -184,7 +184,7 @@ export class Audio {
     );
   }
   combo(n: number): void {
-    this.tone(440 + n * 28, "square", 0.06, 0.1, 1.4);
+    this.tone(520 + n * 22, "triangle", 0.06, 0.05, 1.3);
   }
   levelUp(): void {
     [0, 4, 7].forEach((s, i) =>

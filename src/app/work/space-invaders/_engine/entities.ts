@@ -345,6 +345,7 @@ export class Formation {
   snipers = false;
   fastDrop = false;
   reached = false;
+  enter = 1; // 1 → 0 : the formation warps in from above
 
   constructor(
     spec: {
@@ -394,25 +395,32 @@ export class Formation {
     const v = h.view;
     const live = this.enemies.filter((e) => e.hp > 0);
     if (!live.length) return;
-    const speedMul =
-      (1 + (1 - this.aliveFrac) * 1.7) * (h.slowFactor < 1 ? h.slowFactor : 1);
-    this.gx += this.dir * spec.speed * v.s * speedMul * dt;
+    this.enter = Math.max(0, this.enter - dt / 0.8);
+    const entering = this.enter > 0.04;
+    const slide = entering ? this.enter * this.enter * v.h * 0.82 : 0;
 
-    let minX = Infinity;
-    let maxX = -Infinity;
-    for (const e of live) {
-      if (e.state === "form") {
-        const sx = this.originX + e.bx + this.gx;
-        minX = Math.min(minX, sx);
-        maxX = Math.max(maxX, sx);
+    if (!entering) {
+      const speedMul =
+        (1 + (1 - this.aliveFrac) * 1.7) *
+        (h.slowFactor < 1 ? h.slowFactor : 1);
+      this.gx += this.dir * spec.speed * v.s * speedMul * dt;
+
+      let minX = Infinity;
+      let maxX = -Infinity;
+      for (const e of live) {
+        if (e.state === "form") {
+          const sx = this.originX + e.bx + this.gx;
+          minX = Math.min(minX, sx);
+          maxX = Math.max(maxX, sx);
+        }
       }
-    }
-    const margin = 22 * v.s;
-    if (minX < margin || maxX > v.w - margin) {
-      this.dir *= -1;
-      this.gx += this.dir * 6;
-      this.gy += (this.fastDrop ? 30 : 18) * v.s;
-      h.audio.ui();
+      const margin = 22 * v.s;
+      if (minX < margin || maxX > v.w - margin) {
+        this.dir *= -1;
+        this.gx += this.dir * 6;
+        this.gy += (this.fastDrop ? 30 : 18) * v.s;
+        h.audio.ui();
+      }
     }
 
     const t = performance.now() / 1000;
@@ -425,7 +433,7 @@ export class Formation {
             ? Math.sin(t * 2 + e.weavePh) * e.weaveAmp * v.s
             : 0;
         e.x = this.originX + e.bx + this.gx + wob;
-        e.y = this.originY + e.by + this.gy;
+        e.y = this.originY + e.by + this.gy - slide;
       } else {
         e.diveT += dt;
         const tgtX = h.player.x;
@@ -452,7 +460,7 @@ export class Formation {
     }
 
     // promote divers
-    if (this.divers && Math.random() < 0.5 * dt) {
+    if (!entering && this.divers && Math.random() < 0.5 * dt) {
       const cand = live.filter((e) => e.state === "form");
       if (cand.length) {
         const e = cand[(Math.random() * cand.length) | 0];
@@ -463,7 +471,7 @@ export class Formation {
     }
 
     // formation fire — front-most enemy per random column
-    this.fireAcc += spec.fireRate * dt;
+    if (!entering) this.fireAcc += spec.fireRate * dt;
     while (this.fireAcc >= 1) {
       this.fireAcc -= 1;
       const shooters = live.filter((e) => e.state === "form");
@@ -480,7 +488,7 @@ export class Formation {
       }
     }
 
-    if (lowest >= h.player.y - 6 * v.s) this.reached = true;
+    if (!entering && lowest >= h.player.y - 6 * v.s) this.reached = true;
   }
 
   draw(ctx: CanvasRenderingContext2D, v: View, t: number): void {
@@ -627,25 +635,39 @@ export class PowerUp {
   }
   update(dt: number, v: View, player: Player): void {
     this.ph += dt * 5;
+    const dx = player.x - this.x;
+    const dy = player.y - this.y;
+    const d = Math.hypot(dx, dy) || 1;
     const mag = player.buffs.magnet > 0;
+    // Drift gently down; always ease toward the ship a little so they're
+    // easy to grab, and home hard once the magnet is up.
     if (mag) {
-      const dx = player.x - this.x;
-      const dy = player.y - this.y;
-      const d = Math.hypot(dx, dy) || 1;
-      this.x += (dx / d) * 320 * v.s * dt;
-      this.y += (dy / d) * 320 * v.s * dt;
+      this.x += (dx / d) * 360 * v.s * dt;
+      this.y += (dy / d) * 360 * v.s * dt;
     } else {
-      this.y += 95 * v.s * dt;
-      this.x += Math.sin(this.ph) * 18 * v.s * dt;
+      this.y += 60 * v.s * dt;
+      this.x += Math.sin(this.ph) * 14 * v.s * dt;
+      if (d < 170 * v.s) {
+        this.x += (dx / d) * 90 * v.s * dt;
+        this.y += (dy / d) * 60 * v.s * dt;
+      }
     }
     if (this.y > v.h + 30) this.dead = true;
   }
   draw(ctx: CanvasRenderingContext2D, v: View): void {
-    const r = 13 * v.s;
+    const r = 15 * v.s;
     const pul = 0.7 + 0.3 * Math.sin(this.ph * 2);
+    // soft halo so power-ups are unmissable
+    const halo = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 2.6);
+    halo.addColorStop(0, hsla(this.hue, 100, 60, 0.35));
+    halo.addColorStop(1, "rgba(0,0,0,0)");
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.globalCompositeOperation = "lighter";
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 2.6, 0, TAU);
+    ctx.fill();
     ctx.shadowColor = hsla(this.hue, 100, 60, 1);
     ctx.shadowBlur = 18 * pul;
     ctx.strokeStyle = hsla(this.hue, 100, 70, 1);
@@ -675,14 +697,33 @@ export class Barrier {
     public x: number,
     public y: number,
     v: View,
+    seed = 0.5,
   ) {
     this.cw = 7 * v.s;
     this.ch = 7 * v.s;
     this.cells = new Array(this.cols * this.rows).fill(true);
-    // carve a small arch in the underside
-    for (let c = 3; c < 8; c++)
-      for (let r = 5; r < 7; r++)
-        if (Math.abs(c - 5.5) < 2.5 - (6 - r)) this.cells[r * this.cols + c] = false;
+    // Seeded so every bunker looks different — never "always the same".
+    let s = ((seed * 1e6) | 0) || 1;
+    const rnd = (): number => {
+      s = (s * 1103515245 + 12345) & 0x7fffffff;
+      return s / 0x7fffffff;
+    };
+    const archC = 3.5 + rnd() * 4; // arch centre column
+    const archW = 1.6 + rnd() * 1.8; // arch half-width
+    for (let c = 0; c < this.cols; c++)
+      for (let r = 4; r < this.rows; r++)
+        if (Math.abs(c - archC) < archW - (this.rows - 1 - r))
+          this.cells[r * this.cols + c] = false;
+    // knock the top corners off at random + a few stray pits
+    const corner = Math.floor(rnd() * 3);
+    for (let c = 0; c < this.cols; c++)
+      for (let r = 0; r < 2; r++)
+        if (
+          c < corner - r ||
+          c > this.cols - 1 - (corner - r) ||
+          rnd() < 0.06
+        )
+          this.cells[r * this.cols + c] = false;
   }
   private idx(c: number, r: number): number {
     return r * this.cols + c;

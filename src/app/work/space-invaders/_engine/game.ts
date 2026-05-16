@@ -74,6 +74,8 @@ export class Game {
   private deadT = 0;
   private flashHi = 0;
   private newHigh = false;
+  private lastShotSfx = -1;
+  private sinceDrop = 0;
 
   private ui: Btn[] = [];
 
@@ -108,6 +110,7 @@ export class Game {
     this.combo = 0;
     this.comboT = 0;
     this.lifeIdx = 0;
+    this.sinceDrop = 0;
     this.newHigh = false;
     this.player = new Player();
     this.player.reset(this.view);
@@ -122,16 +125,19 @@ export class Game {
 
   private startWave(): void {
     this.spec = makeWave(this.wave, this.diff, this.rng);
-    this.player.reset(this.view, true); // re-center + brief i-frames, keep loadout
+    // Classic flow: the ship carries straight on into the next sector —
+    // keep its position & loadout, just grant brief i-frames.
+    if (!this.player.alive) this.player.reset(this.view);
+    else this.player.invuln = Math.max(this.player.invuln, 1);
     this.fx.setHue(this.spec.hue);
     this.formation = new Formation(this.spec, this.view);
     this.boss = this.spec.isBoss ? new Boss(this.spec.bossTier, this.view) : null;
     this.bullets = this.bullets.filter((b) => b.friendly);
     this.buildBarriers();
     this.audio.setIntensity(this.wave, this.spec.isBoss);
-    this.fx.warp(this.spec.isBoss ? 1.4 : 1);
+    this.briefT = this.spec.isBoss ? 2 : 1.5;
+    this.fx.warpFor(this.briefT * 0.92); // hyperspace streak into the new galaxy
     if (this.spec.isBoss) this.audio.bossWarn();
-    this.briefT = 2.1;
     this.state = "BRIEF";
     this.store.run = {
       wave: this.wave,
@@ -147,11 +153,21 @@ export class Game {
   private buildBarriers(): void {
     this.barriers = [];
     if (this.spec.isBoss) return;
-    const n = 4;
+    if (this.rng.chance(0.28)) return; // many sectors have no cover at all
+    const n = this.rng.int(2, 4);
     const bw = 11 * 7 * this.view.s;
+    const yJit = this.rng.range(-26, 16) * this.view.s;
     for (let i = 0; i < n; i++) {
-      const x = ((i + 0.5) / n) * this.view.w - bw / 2;
-      this.barriers.push(new Barrier(x, this.view.h - 150 * this.view.s, this.view));
+      const slot = ((i + 0.5) / n) * this.view.w - bw / 2;
+      const x = slot + this.rng.range(-30, 30) * this.view.s;
+      this.barriers.push(
+        new Barrier(
+          x,
+          this.view.h - 150 * this.view.s + yJit,
+          this.view,
+          this.rng.next(),
+        ),
+      );
     }
   }
 
@@ -208,7 +224,7 @@ export class Game {
     if (this.state === "PLAY") this.updatePlay(dt);
     else if (this.state === "BRIEF") {
       this.briefT -= dt;
-      this.updateAmbient(dt);
+      this.updatePlay(dt, false, true); // fly forward: live ship, enemies warp in
       if (this.briefT <= 0) this.state = "PLAY";
     } else if (this.state === "DEAD") {
       this.deadT -= dt;
@@ -227,7 +243,7 @@ export class Game {
     this.fx.update(dt, this.view.w, this.view.h);
   }
 
-  private updatePlay(dt: number, frozen = false): void {
+  private updatePlay(dt: number, frozen = false, intro = false): void {
     const v = this.view;
     const h = this.hooks();
     this.slowT = Math.max(0, this.slowT - dt);
@@ -245,7 +261,10 @@ export class Game {
         const shots = this.player.tryShoot(v, this.spec.hue + 60);
         if (shots) {
           this.bullets.push(...shots);
-          this.audio.shoot();
+          if (this.t - this.lastShotSfx > 0.085) {
+            this.audio.shoot();
+            this.lastShotSfx = this.t;
+          }
         }
       }
     }
@@ -265,22 +284,23 @@ export class Game {
       this.formation.update(dt, this.spec, h);
       if (this.formation.reached) return this.gameOver();
     }
-    if (this.boss) this.boss.update(dt, h);
+    if (this.boss && !intro) this.boss.update(dt, h);
 
     for (const p of this.powerups) p.update(dt, v, this.player);
     this.powerups = this.powerups.filter((p) => !p.dead);
 
-    this.collide();
+    if (!intro) this.collide();
 
     if (this.comboT > 0) {
       this.comboT -= dt;
       if (this.comboT <= 0) this.combo = 0;
     }
     if (
-      this.lifeIdx < LIFE_STEPS.length
+      !intro &&
+      (this.lifeIdx < LIFE_STEPS.length
         ? this.score >= LIFE_STEPS[this.lifeIdx]
         : this.score >= LIFE_STEPS[LIFE_STEPS.length - 1] +
-            (this.lifeIdx - LIFE_STEPS.length + 1) * 60000
+            (this.lifeIdx - LIFE_STEPS.length + 1) * 60000)
     ) {
       this.lifeIdx++;
       this.player.lives++;
@@ -290,7 +310,7 @@ export class Game {
 
     const formClear = !this.formation || this.formation.enemies.every((e) => e.hp <= 0);
     const bossClear = !this.boss || this.boss.dead;
-    if (formClear && bossClear) this.winWave();
+    if (!intro && formClear && bossClear) this.winWave();
 
     this.fx.update(dt, v.w, v.h);
   }
@@ -298,8 +318,7 @@ export class Game {
   private winWave(): void {
     this.wave++;
     this.audio.levelUp();
-    this.fx.flash("#ffffff", 0.45);
-    this.fx.shake(0.4);
+    this.fx.flash(hsla(this.spec.hue + 60, 100, 75), 0.22);
     this.startWave();
   }
 
@@ -324,8 +343,8 @@ export class Game {
     this.combo++;
     this.comboT = 2.6;
     this.addScore(e.score, e.x, e.y);
-    this.audio.explode(e.kind === "tank" ? 1.3 : 0.9);
-    this.audio.combo(Math.min(this.combo, 24));
+    this.audio.explode(e.kind === "tank" ? 1.2 : 0.85);
+    if (this.combo % 5 === 0) this.audio.combo(Math.min(this.combo, 18));
     this.fx.burst(e.x, e.y, {
       n: e.kind === "tank" ? 34 : 20,
       hue: e.hue,
@@ -354,8 +373,16 @@ export class Game {
         this.formation?.enemies.push(m);
       }
     }
-    const dropP = e.kind === "tank" ? 0.22 : 0.085;
-    if (Math.random() < dropP) this.dropPower(e.x, e.y);
+    // Generous, with a pity timer so power-ups always keep flowing.
+    this.sinceDrop++;
+    const dropP =
+      e.kind === "tank" ? 0.45
+      : e.kind === "grunt" ? 0.17
+      : 0.26;
+    if (this.sinceDrop >= 8 || Math.random() < dropP) {
+      this.dropPower(e.x, e.y);
+      this.sinceDrop = 0;
+    }
   }
 
   private dropPower(x: number, y: number): void {
@@ -766,20 +793,32 @@ export class Game {
   private drawBrief(): void {
     const v = this.view;
     const hue = this.spec.hue;
+    // Non-blocking title — the live warp + incoming enemies show through.
+    const a = clamp(Math.min(this.briefT, 2 - this.briefT) * 1.6, 0, 1);
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.globalAlpha = a;
     this.text(
-      this.spec.isBoss ? "WARNING" : `WAVE ${this.wave}`,
-      v.w / 2, v.h / 2 - 30, 22, hsla(hue, 100, 75), "center", 14,
+      this.spec.isBoss ? "⚠  WARNING  ⚠" : "ENTERING SECTOR",
+      v.w / 2, v.h * 0.34, 14, hsla(hue + 60, 100, 78), "center", 10,
+    );
+    this.text(
+      `WAVE ${this.wave}`,
+      v.w / 2, v.h * 0.34 + Math.min(46, v.w * 0.1),
+      Math.min(44, v.w * 0.1), "#fff", "center", 16,
     );
     this.text(
       this.spec.name,
-      v.w / 2, v.h / 2 + 10, Math.min(46, v.w * 0.1),
-      "#fff", "center", 18,
+      v.w / 2, v.h * 0.34 + Math.min(74, v.w * 0.16),
+      14, hsla(hue, 100, 78), "center", 8,
     );
     if (this.spec.modifiers.length)
       this.text(
-        this.spec.modifiers.join("  ·  "),
-        v.w / 2, v.h / 2 + 42, 13, hsla(hue + 60, 100, 70), "center",
+        this.spec.modifiers.join("   ·   "),
+        v.w / 2, v.h * 0.34 + Math.min(96, v.w * 0.21),
+        11, hsla(hue + 60, 100, 72), "center",
       );
+    ctx.restore();
   }
 
   private drawMenu(): void {

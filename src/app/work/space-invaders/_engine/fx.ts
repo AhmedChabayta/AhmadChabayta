@@ -53,6 +53,7 @@ export class FX {
   private flashA = 0;
   private warpT = 0;
   private warpDur = 0;
+  private warpHold = 0;
   private W = 0;
   private H = 0;
   private vignette: CanvasGradient | null = null;
@@ -179,6 +180,10 @@ export class FX {
     this.warpDur = 0.7 * strength;
     this.warpT = this.warpDur;
   }
+  /** Sustained hyperspace streak for a fixed duration (wave transition). */
+  warpFor(sec: number): void {
+    this.warpHold = Math.max(this.warpHold, sec);
+  }
 
   shakeOffset(): { x: number; y: number; r: number } {
     const t = this.trauma * this.trauma;
@@ -195,7 +200,11 @@ export class FX {
     this.trauma = Math.max(0, this.trauma - dt * 1.6);
     this.flashA = Math.max(0, this.flashA - dt * 3.4);
     this.warpT = Math.max(0, this.warpT - dt);
-    const warp = this.warpDur > 0 ? this.warpT / this.warpDur : 0;
+    this.warpHold = Math.max(0, this.warpHold - dt);
+    const warp = Math.max(
+      this.warpDur > 0 ? this.warpT / this.warpDur : 0,
+      this.warpHold > 0 ? 1 : 0,
+    );
 
     for (const layer of this.layers)
       for (const st of layer) {
@@ -251,7 +260,7 @@ export class FX {
       ctx.fillStyle = rg;
       ctx.fillRect(n.x - n.r, n.y - n.r, n.r * 2, n.r * 2);
     }
-    const warping = this.warpT > 0;
+    const warping = this.warpT > 0 || this.warpHold > 0;
     for (const layer of this.layers)
       for (const st of layer) {
         const tw = 0.55 + 0.45 * Math.sin(st.tw);
@@ -342,6 +351,7 @@ export class FX {
     this.trauma = 0;
     this.flashA = 0;
     this.warpT = 0;
+    this.warpHold = 0;
   }
 
   invalidate(): void {
