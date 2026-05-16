@@ -222,19 +222,16 @@ export function MandelbulbPlayground() {
   const canvasRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef({ targetX: 0, targetY: 0, paused: false });
   const matRef = useRef<THREE.ShaderMaterial | null>(null);
-  const [params, setParams] = useState<Params>(DEFAULTS);
+  const [params, setParams] = useState<Params>(() => {
+    if (typeof window === "undefined") return DEFAULTS;
+    const fromUrl = decode(window.location.search);
+    return Object.keys(fromUrl).length > 0
+      ? { ...DEFAULTS, ...fromUrl }
+      : DEFAULTS;
+  });
   const [copied, setCopied] = useState(false);
   const [fps, setFps] = useState(60);
   const [paused, setPaused] = useState(false);
-
-  // Hydrate from URL on mount.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const fromUrl = decode(window.location.search);
-    if (Object.keys(fromUrl).length > 0) {
-      setParams((p) => ({ ...p, ...fromUrl }));
-    }
-  }, []);
 
   // Reflect into URL whenever params change (debounced via animation frame).
   useEffect(() => {

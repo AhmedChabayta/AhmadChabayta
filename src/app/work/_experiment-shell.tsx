@@ -39,8 +39,7 @@ export function ExperimentShell({
   return (
     <div
       ref={wrapRef}
-      className="fixed inset-0 z-[80] touch-none overscroll-none bg-black"
-      style={{ height: "100dvh", width: "100vw" }}
+      className="fixed inset-0 z-[80] touch-none overflow-hidden overscroll-none bg-black"
     >
       <div className="absolute inset-0">{children}</div>
 
