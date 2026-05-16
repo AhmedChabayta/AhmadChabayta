@@ -12,7 +12,23 @@ interface Brick {
   alive: boolean;
 }
 
-export function BreakoutMicro({ className }: { className?: string }) {
+export function BreakoutMicro({
+  className,
+  cols = 7,
+  rows = 4,
+  lives = 3,
+  ballSpeed = 1,
+  paddleWidth = 64,
+  restartKey = 0,
+}: {
+  className?: string;
+  cols?: number;
+  rows?: number;
+  lives?: number;
+  ballSpeed?: number;
+  paddleWidth?: number;
+  restartKey?: number;
+}) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hint, setHint] = useState("DRAG TO PLAY");
@@ -33,14 +49,16 @@ export function BreakoutMicro({ className }: { className?: string }) {
     const ctx = canvas.getContext("2d")!;
     ctx.scale(dpr, dpr);
 
-    const COLS = 7;
-    const ROWS = 4;
+    const COLS = Math.max(3, Math.round(cols));
+    const ROWS = Math.max(2, Math.round(rows));
+    const START_LIVES = Math.max(1, Math.round(lives));
+    const SPD = ballSpeed;
     const BRICKH = 14;
     const BRICKGAP = 3;
     const MARGX = 8;
     const MARGT = 22;
     const BRICKW = (W - MARGX * 2 - (COLS - 1) * BRICKGAP) / COLS;
-    const PADDLE_W = 64;
+    const PADDLE_W = paddleWidth;
     const PADDLE_H = 7;
     const PADDLE_Y = H - 22;
     const BALL_R = 5;
@@ -48,25 +66,25 @@ export function BreakoutMicro({ className }: { className?: string }) {
 
     let st: GameState = "idle";
     let score = 0;
-    let lives = 3;
+    let livesLeft = START_LIVES;
     let paddleX = W / 2;
     let ball = {
       x: W / 2,
       y: H * 0.58,
-      vx: (Math.random() > 0.5 ? 1 : -1) * 2.8,
-      vy: -3.8,
+      vx: (Math.random() > 0.5 ? 1 : -1) * 2.8 * SPD,
+      vy: -3.8 * SPD,
     };
     let bricks: Brick[] = [];
 
     const resetGame = () => {
       score = 0;
-      lives = 3;
+      livesLeft = START_LIVES;
       paddleX = W / 2;
       ball = {
         x: W / 2,
         y: H * 0.58,
-        vx: (Math.random() > 0.5 ? 1 : -1) * 2.8,
-        vy: -3.8,
+        vx: (Math.random() > 0.5 ? 1 : -1) * 2.8 * SPD,
+        vy: -3.8 * SPD,
       };
       bricks = [];
       for (let r = 0; r < ROWS; r++) {
@@ -112,7 +130,7 @@ export function BreakoutMicro({ className }: { className?: string }) {
 
       bricks.forEach((b) => {
         if (!b.alive) return;
-        ctx.fillStyle = ROW_COLORS[b.r];
+        ctx.fillStyle = ROW_COLORS[b.r % ROW_COLORS.length];
         ctx.fillRect(b.x, b.y, BRICKW, BRICKH);
         ctx.fillStyle = "rgba(255,255,255,0.14)";
         ctx.fillRect(b.x, b.y, BRICKW, 2);
@@ -146,7 +164,7 @@ export function BreakoutMicro({ className }: { className?: string }) {
           ball.x <= px + PADDLE_W
         ) {
           ball.vy = -Math.abs(ball.vy);
-          ball.vx = ((ball.x - paddleX) / (PADDLE_W / 2)) * 4;
+          ball.vx = ((ball.x - paddleX) / (PADDLE_W / 2)) * 4 * SPD;
         }
 
         bricks.forEach((b) => {
@@ -180,16 +198,16 @@ export function BreakoutMicro({ className }: { className?: string }) {
           setHint("YOU WIN — TAP TO RETRY");
         }
         if (ball.y - BALL_R > H) {
-          lives--;
-          if (lives <= 0) {
+          livesLeft--;
+          if (livesLeft <= 0) {
             st = "dead";
             setState("dead");
             setHint("GAME OVER — TAP TO RETRY");
           } else {
             ball.x = W / 2;
             ball.y = H * 0.58;
-            ball.vx = (Math.random() > 0.5 ? 1 : -1) * 2.8;
-            ball.vy = -3.8;
+            ball.vx = (Math.random() > 0.5 ? 1 : -1) * 2.8 * SPD;
+            ball.vy = -3.8 * SPD;
           }
         }
       }
@@ -208,7 +226,7 @@ export function BreakoutMicro({ className }: { className?: string }) {
       ctx.textAlign = "left";
       ctx.fillText("SCORE " + score, 6, H - 6);
       ctx.textAlign = "right";
-      ctx.fillText("♥ ".repeat(lives).trim(), W - 6, H - 6);
+      ctx.fillText("♥ ".repeat(livesLeft).trim(), W - 6, H - 6);
 
       raf = requestAnimationFrame(loop);
     };
@@ -219,7 +237,7 @@ export function BreakoutMicro({ className }: { className?: string }) {
       wrap.removeEventListener("pointermove", onMove);
       wrap.removeEventListener("pointerdown", onDown);
     };
-  }, []);
+  }, [cols, rows, lives, ballSpeed, paddleWidth, restartKey]);
 
   return (
     <div

@@ -3,9 +3,24 @@
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-export function WaveSynth({ className }: { className?: string }) {
+export function WaveSynth({
+  className,
+  layers = 3,
+  speed = 1,
+  glow = true,
+}: {
+  className?: string;
+  layers?: number;
+  speed?: number;
+  glow?: boolean;
+}) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const live = useRef({ layers, speed, glow });
+
+  useEffect(() => {
+    live.current = { layers, speed, glow };
+  }, [layers, speed, glow]);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -57,15 +72,19 @@ export function WaveSynth({ className }: { className?: string }) {
 
     let raf = 0;
     const loop = () => {
+      const { layers: n, speed: sp, glow: gl } = live.current;
       ctx.fillStyle = "rgba(5,5,5,0.30)";
       ctx.fillRect(0, 0, W, H);
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = gl ? 10 : 0;
       ctx.shadowColor = "rgba(255,69,0,0.35)";
-      drawLayer(mx, 1 - my, 0, 0.9, 1.8);
-      drawLayer(mx, 1 - my, Math.PI * 0.65, 0.55, 1.1);
-      drawLayer(mx, 1 - my, Math.PI * 1.3, 0.28, 0.7);
+      const layerCount = Math.max(1, Math.round(n));
+      for (let i = 0; i < layerCount; i++) {
+        const alpha = Math.max(0.14, 0.9 - i * 0.31);
+        const lw = Math.max(0.5, 1.8 - i * 0.55);
+        drawLayer(mx, 1 - my, i * Math.PI * 0.65, alpha, lw);
+      }
       ctx.shadowBlur = 0;
-      waveTime += 0.022 + mx * 0.04;
+      waveTime += (0.022 + mx * 0.04) * sp;
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);

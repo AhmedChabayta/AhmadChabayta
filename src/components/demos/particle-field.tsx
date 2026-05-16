@@ -11,9 +11,26 @@ interface Particle {
   sz: number;
 }
 
-export function ParticleField({ className }: { className?: string }) {
+export function ParticleField({
+  className,
+  count = 120,
+  gravity = 1,
+  trail = 0.2,
+  paused = false,
+}: {
+  className?: string;
+  count?: number;
+  gravity?: number;
+  trail?: number;
+  paused?: boolean;
+}) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const live = useRef({ gravity, trail, paused });
+
+  useEffect(() => {
+    live.current = { gravity, trail, paused };
+  }, [gravity, trail, paused]);
 
   useEffect(() => {
     const wrap = wrapRef.current;
@@ -35,7 +52,7 @@ export function ParticleField({ className }: { className?: string }) {
     let bursting = false;
     let burstTimer = 0;
 
-    const particles: Particle[] = Array.from({ length: 120 }, () => ({
+    const particles: Particle[] = Array.from({ length: count }, () => ({
       x: Math.random() * W,
       y: Math.random() * H,
       vx: (Math.random() - 0.5) * 1.5,
@@ -80,38 +97,41 @@ export function ParticleField({ className }: { className?: string }) {
 
     let raf = 0;
     const loop = () => {
-      ctx.fillStyle = "rgba(5,5,5,0.20)";
+      const { gravity: g, trail: tr, paused: pz } = live.current;
+      ctx.fillStyle = `rgba(5,5,5,${tr})`;
       ctx.fillRect(0, 0, W, H);
 
       burstTimer++;
       if (burstTimer > 80) bursting = false;
 
       particles.forEach((p) => {
-        if (!bursting) {
-          const dx = mx - p.x;
-          const dy = my - p.y;
-          const dist = Math.sqrt(dx * dx + dy * dy) + 0.001;
-          const f = Math.min(1800 / (dist * dist), 0.9);
-          p.vx += dx * f * 0.001;
-          p.vy += dy * f * 0.001;
+        if (!pz) {
+          if (!bursting) {
+            const dx = mx - p.x;
+            const dy = my - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy) + 0.001;
+            const f = Math.min(1800 / (dist * dist), 0.9);
+            p.vx += dx * f * 0.001 * g;
+            p.vy += dy * f * 0.001 * g;
+          }
+          p.vx *= 0.97;
+          p.vy *= 0.97;
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = W;
+          if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H;
+          if (p.y > H) p.y = 0;
         }
-        p.vx *= 0.97;
-        p.vy *= 0.97;
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = W;
-        if (p.x > W) p.x = 0;
-        if (p.y < 0) p.y = H;
-        if (p.y > H) p.y = 0;
 
         const dx = mx - p.x;
         const dy = my - p.y;
         const d = Math.sqrt(dx * dx + dy * dy);
         const a = Math.min(0.95, 80 / d + 0.08);
-        const g = Math.min(255, 50 + d * 0.4) | 0;
+        const gg = Math.min(255, 50 + d * 0.4) | 0;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.sz, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,${g},0,${a})`;
+        ctx.fillStyle = `rgba(255,${gg},0,${a})`;
         ctx.fill();
       });
 
@@ -147,7 +167,7 @@ export function ParticleField({ className }: { className?: string }) {
       wrap.removeEventListener("pointerdown", onDown);
       wrap.removeEventListener("pointerleave", onLeave);
     };
-  }, []);
+  }, [count]);
 
   return (
     <div
