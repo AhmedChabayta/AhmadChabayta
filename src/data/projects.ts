@@ -1,7 +1,6 @@
 export type ProjectStack = string;
 
 export type ProjectDemo =
-  | { kind: "fractal-playground" }
   | { kind: "git-pulse" }
   | { kind: "component-lab" }
   | { kind: "wave-synth" }
@@ -77,22 +76,8 @@ export const PROJECTS: Project[] = [
     featured: true,
   },
   {
-    slug: "mandelbulb-playground",
-    index: "04",
-    title: "Mandelbulb Playground",
-    tagline: "Live GLSL raymarcher with parameter sliders & shareable URLs.",
-    summary:
-      "A WebGL Mandelbulb that renders in real time, with controls for power, color and camera. Every parameter encodes into the URL so any composition is one link away.",
-    year: 2026,
-    role: "Concept, GLSL, frontend",
-    stack: ["Three.js", "GLSL", "TypeScript", "Next.js"],
-    appHref: "/work/mandelbulb-playground",
-    demo: { kind: "fractal-playground" },
-    featured: true,
-  },
-  {
     slug: "git-pulse",
-    index: "05",
+    index: "04",
     title: "Git Pulse",
     tagline: "Live GitHub activity dashboard built on Recharts + the GitHub API.",
     summary:
@@ -105,7 +90,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "pottyfolly",
-    index: "06",
+    index: "05",
     title: "Pottyfolly",
     tagline: "An earlier portfolio experiment — typography-led, image-driven.",
     summary:
@@ -118,7 +103,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "component-lab",
-    index: "07",
+    index: "06",
     title: "Component Lab",
     tagline: "A typed React component library with a live prop playground.",
     summary:
@@ -131,7 +116,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "wave-synth",
-    index: "08",
+    index: "07",
     title: "Wave Synth",
     tagline: "Touch-driven multi-layer oscillator visualizer.",
     summary:
@@ -144,7 +129,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "color-extractor",
-    index: "09",
+    index: "08",
     title: "Color Token Extractor",
     tagline: "Drop in an image, get a typed design-token palette.",
     summary:
@@ -156,7 +141,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "fractal-poster-press",
-    index: "10",
+    index: "09",
     title: "Fractal Poster Press",
     tagline: "Generative brutalist poster system, click to print.",
     summary:
@@ -168,7 +153,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "space-invaders",
-    index: "11",
+    index: "10",
     title: "Void Invaders",
     tagline:
       "Endless evolving arcade shooter — installable PWA, fully offline.",

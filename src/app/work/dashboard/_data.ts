@@ -142,7 +142,7 @@ export const EVENTS: DeployEvent[] = [
     id: "dpl_a9c",
     project: "ahmad-chabayta",
     commit: "4b0eb9e",
-    message: "Build out Mandelbulb Playground",
+    message: "Procedural tree: scroll-grown canopy",
     status: "success",
     durationSec: 47,
     ago: "12m",

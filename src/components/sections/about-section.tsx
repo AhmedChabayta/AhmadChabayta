@@ -38,8 +38,8 @@ export function AboutSection() {
             </Text>
             <Text variant="lead">
               The range runs from production dashboards like Project Atlas and
-              Preview Links to GPU work like the Mandelbulb raymarcher and a
-              fully offline arcade game synthesized on the Web Audio API.
+              Preview Links to real-time WebGL work and a fully offline arcade
+              game synthesized on the Web Audio API.
               React, Next.js, TypeScript, WebGL — used where they pull weight,
               not for their own sake.
             </Text>

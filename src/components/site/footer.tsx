@@ -41,12 +41,6 @@ export function Footer() {
               Dashboard →
             </Link>
             <Link
-              href="/work/mandelbulb-playground"
-              className="transition-opacity hover:opacity-50 focus-visible:opacity-50 active:opacity-50"
-            >
-              Mandelbulb →
-            </Link>
-            <Link
               href="/work/component-lab"
               className="transition-opacity hover:opacity-50 focus-visible:opacity-50 active:opacity-50"
             >
