@@ -1,7 +1,6 @@
 import { Hero } from "@/components/sections/hero";
 import { MarqueeStrip } from "@/components/sections/marquee-strip";
 import { WorkPreview } from "@/components/sections/work-preview";
-import { FractalSection } from "@/components/sections/fractal-section";
 import { AboutSection } from "@/components/sections/about-section";
 import { CapabilitiesSection } from "@/components/sections/capabilities";
 import { StatsStrip } from "@/components/sections/stats-strip";
@@ -16,9 +15,6 @@ export default function HomePage() {
       <MarqueeStrip />
       <Reveal>
         <WorkPreview />
-      </Reveal>
-      <Reveal>
-        <FractalSection />
       </Reveal>
       <Reveal>
         <AboutSection />

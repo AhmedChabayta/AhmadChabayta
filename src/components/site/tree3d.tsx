@@ -16,7 +16,7 @@ import * as THREE from "three";
  */
 
 const SEED = 0xa17e;
-const DEPTH = 9;
+const DEPTH = 8;
 const HEIGHT = 7;
 
 function mulberry32(a: number) {
@@ -54,7 +54,7 @@ function buildTree(low: boolean) {
   let span = 0;
   for (let i = 0; i <= DEPTH; i++) span += Math.pow(k, i);
   span *= 1.9;
-  const leafMul = low ? 0.45 : 1;
+  const leafMul = low ? 0.34 : 0.62;
 
   const sprinkle = (
     a: THREE.Vector3,
@@ -88,7 +88,7 @@ function buildTree(low: boolean) {
     depth: number,
     path: number,
   ) => {
-    const SUB = 3;
+    const SUB = 2;
     let cp = p.clone();
     let cd = dir.clone().normalize();
     const subLen = len / SUB;
@@ -107,8 +107,8 @@ function buildTree(low: boolean) {
       segs.push({ p: cp.clone(), d: nd.clone(), len: subLen, r0, r1, t0, t1 });
       // leaves along outer/upper limbs (denser the deeper we go)
       if (depth >= 3) {
-        const dens = (depth - 2) * 1.3 * leafMul;
-        sprinkle(cp, np, nd, t0, t1, Math.round(subLen * dens * 44));
+        const dens = (depth - 2) * 1.0 * leafMul;
+        sprinkle(cp, np, nd, t0, t1, Math.round(subLen * dens * 30));
       }
       // tiny seedling leaves near the very base → hero "small plant"
       if (depth === 0 && s === SUB - 1) {
@@ -134,7 +134,7 @@ function buildTree(low: boolean) {
 
     if (depth >= DEPTH || len < 0.04) {
       // terminal: a full rosette of leaves at the tip
-      const cnt = Math.round((18 + rnd() * 16) * leafMul);
+      const cnt = Math.round((12 + rnd() * 10) * leafMul);
       for (let i = 0; i < cnt; i++) {
         const a = (i / cnt) * Math.PI * 2 + rnd();
         const off = new THREE.Vector3(
@@ -247,13 +247,14 @@ export function Tree3D({ className }: { className?: string }) {
       uGrow: { value: 0.0001 },
       uTime: { value: 0 },
       uWind: { value: reduced ? 0 : 1 },
-      uColBase: { value: new THREE.Color(0x243027) },
-      uColTip: { value: new THREE.Color(0x6fc9b4) },
-      uColGlow: { value: new THREE.Color(0xff8a3d) },
-      uLeafLo: { value: new THREE.Color(0x2f6b3a) },
-      uLeafHi: { value: new THREE.Color(0x9ff0c0) },
+      uMature: { value: 0 },
+      uColBase: { value: new THREE.Color(0x6a7d4a) },
+      uColTip: { value: new THREE.Color(0x8fe9d2) },
+      uColGlow: { value: new THREE.Color(0xffb14d) },
+      uLeafLo: { value: new THREE.Color(0x57c163) },
+      uLeafHi: { value: new THREE.Color(0xe6ffe8) },
       uLightDir: { value: new THREE.Vector3(-0.5, 1, 0.6).normalize() },
-      uFog: { value: new THREE.Color(0x06110f) },
+      uFog: { value: new THREE.Color(0x183a30) },
     };
 
     const BASIS = /* glsl */ `
@@ -298,12 +299,12 @@ export function Tree3D({ className }: { className?: string }) {
       vertexShader: /* glsl */ `
         attribute vec3 iStart; attribute vec3 iDir; attribute float iLen;
         attribute vec2 iR; attribute vec2 iT;
-        uniform float uGrow,uTime,uWind;
+        uniform float uGrow,uTime,uWind,uMature;
         varying float vT; varying float vG; varying vec3 vN; varying float vZ;
         ${BASIS}
         void main(){
           float g = clamp((uGrow-iT.x)/max(iT.y-iT.x,1e-4),0.,1.);
-          float r = mix(iR.x,iR.y,position.y);
+          float r = mix(iR.x,iR.y,position.y) * mix(0.42,1.0,uMature);
           vec3 lp = vec3(position.x*r, position.y*iLen*g, position.z*r);
           mat3 M = basis(iDir);
           vec3 wp = iStart + M*lp;
@@ -325,11 +326,11 @@ export function Tree3D({ className }: { className?: string }) {
           if(vG<0.012) discard;
           vec3 col = mix(uColBase,uColTip,smoothstep(0.,1.,vT));
           float ndl = clamp(dot(normalize(vN),normalize(uLightDir)),0.,1.);
-          col *= 0.36+0.82*ndl;
+          col *= 0.85+0.5*ndl;
           col += uColGlow*pow(vT,3.0)*(0.3+0.5*vG);
-          float fog = clamp((vZ-12.)/30.,0.,0.4);
+          float fog = clamp((vZ-16.)/40.,0.,0.18);
           col = mix(col,uFog,fog);
-          gl_FragColor = vec4(col, smoothstep(0.,0.06,vG)*(0.92-fog*0.5));
+          gl_FragColor = vec4(col, smoothstep(0.,0.06,vG));
         }`,
     });
     const branchMesh = new THREE.Mesh(bGeo, branchMat);
@@ -364,9 +365,9 @@ export function Tree3D({ className }: { className?: string }) {
 
     const leafMat = new THREE.ShaderMaterial({
       uniforms,
-      transparent: true,
+      transparent: false,
       side: THREE.DoubleSide,
-      depthWrite: false,
+      depthWrite: true,
       vertexShader: /* glsl */ `
         attribute vec3 iPos; attribute vec3 iDir; attribute float iSize;
         attribute float iT; attribute float iSeed;
@@ -396,7 +397,7 @@ export function Tree3D({ className }: { className?: string }) {
           vec4 mv = viewMatrix*vec4(wp,1.);
           gl_Position = projectionMatrix*mv;
           vUv = position.xy+0.5; vT=iT; vG=g; vZ=-mv.z; vSeed=iSeed;
-          vShade = 0.55+0.45*clamp(dot(nrm,normalize(vec3(-0.5,1.,0.6))),0.,1.);
+          vShade = 0.78+0.32*clamp(dot(nrm,normalize(vec3(-0.5,1.,0.6))),0.,1.);
         }`,
       fragmentShader: /* glsl */ `
         precision highp float;
@@ -405,24 +406,23 @@ export function Tree3D({ className }: { className?: string }) {
         varying vec2 vUv; varying float vT; varying float vG; varying float vZ;
         varying float vShade; varying float vSeed;
         void main(){
-          if(vG<0.02) discard;
+          if(vG<0.04) discard;
           vec2 q = vUv*2.0-1.0;
-          // pointed leaf silhouette + midrib
+          // pointed leaf silhouette — hard cutout (opaque, fast)
           float shape = pow(1.0-abs(q.y),0.55) - abs(q.x)*1.45;
-          if(shape < 0.0) discard;
-          float rib = smoothstep(0.06,0.0,abs(q.x))*0.20;
+          if(shape < 0.06) discard;
+          float rib = smoothstep(0.055,0.0,abs(q.x))*0.16;
           // per-leaf hue variance keeps a big canopy from looking flat
-          vec3 lo = uLeafLo*(0.78+0.5*vSeed);
-          vec3 col = mix(lo,uLeafHi, clamp(vUv.y*0.9+0.1,0.,1.));
+          vec3 lo = uLeafLo*(0.9+0.35*vSeed);
+          vec3 col = mix(lo,uLeafHi, clamp(vUv.y*0.85+0.18,0.,1.));
           col *= vShade;
           col -= rib;
-          // ethereal warm-glow tips + faint living shimmer
-          col += uColGlow*pow(vT,2.2)*0.55;
-          col += uColGlow*0.06*sin(uTime*1.8+vSeed*40.0)*vT;
-          float fog = clamp((vZ-12.)/30.,0.,0.4);
+          // warm-glow tips + faint living shimmer
+          col += uColGlow*pow(vT,2.2)*0.45;
+          col += uColGlow*0.05*sin(uTime*1.8+vSeed*40.0)*vT;
+          float fog = clamp((vZ-18.)/44.,0.,0.16);
           col = mix(col,uFog,fog);
-          float edge = smoothstep(0.0,0.13,shape);
-          gl_FragColor = vec4(col, edge*vG*0.95);
+          gl_FragColor = vec4(col, 1.0);
         }`,
     });
     const leafMesh = new THREE.Mesh(lGeo, leafMat);
@@ -440,9 +440,9 @@ export function Tree3D({ className }: { className?: string }) {
     window.addEventListener("scroll", onScroll, { passive: true });
 
     // start CLOSE & LOW on the sprout → pull back to frame the tree
-    const camFrom = new THREE.Vector3(0.35, 1.05, 4.0);
-    const camTo = new THREE.Vector3(-1.7, 4.2, 17.0);
-    const lookFrom = new THREE.Vector3(0, 0.85, 0);
+    const camFrom = new THREE.Vector3(0.22, 0.6, 2.4);
+    const camTo = new THREE.Vector3(0, 4.2, 17.0);
+    const lookFrom = new THREE.Vector3(0, 0.42, 0);
     const lookTo = new THREE.Vector3(0, 3.5, 0);
     const ease = (x: number) => x * x * (3 - 2 * x);
 
@@ -454,10 +454,13 @@ export function Tree3D({ className }: { className?: string }) {
 
     const apply = (t: number) => {
       const p = ease(curG);
-      uniforms.uGrow.value = 0.045 + p * 0.955;
+      // dwell as a seed/sprout longer, then unfold (natural ontogeny)
+      const growth = Math.pow(p, 1.5);
+      uniforms.uGrow.value = 0.045 + growth * 0.955;
+      uniforms.uMature.value = p; // trunk/limbs thicken as it matures
       uniforms.uTime.value = t;
+      // pure dolly: pull back as it grows — NO orbit/rotation
       camera.position.lerpVectors(camFrom, camTo, p);
-      camera.position.x += Math.sin(t * 0.1 + p * 1.4) * 0.45 * p;
       tmpL.lerpVectors(lookFrom, lookTo, p);
       camera.lookAt(tmpL);
     };

@@ -183,17 +183,17 @@ export function Atmosphere() {
       {/* the living 3D tree — a lower-right accent, rooted to the
           bottom and partly off the right edge so it frames the
           content without sitting behind headline text. */}
-      <div className="absolute -bottom-[6vh] right-[-22vw] h-[98vh] w-[80vh] opacity-[0.32] sm:right-[-14vw] sm:opacity-[0.42] md:right-[-8vw] md:h-[106vh] md:w-[94vh] md:opacity-[0.55]">
+      <div className="absolute -bottom-[6vh] right-[-18vw] h-[100vh] w-[86vh] opacity-[0.7] sm:right-[-10vw] sm:opacity-[0.82] md:right-[-4vw] md:h-[108vh] md:w-[98vh] md:opacity-[0.95]">
         <Tree3D className="relative h-full w-full" />
       </div>
 
-      {/* scrim — dims the left/centre for text, keeps the tree side
-          (right) clear so it can never overpower content. */}
+      {/* light scrim — only a touch of left-side dimming for text;
+          the tree stays bright and pops. */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to left, transparent 0%, rgb(var(--background) / 0.32) 46%, rgb(var(--background) / 0.55) 100%)",
+            "linear-gradient(to left, transparent 0%, transparent 55%, rgb(var(--background) / 0.28) 100%)",
         }}
       />
 
