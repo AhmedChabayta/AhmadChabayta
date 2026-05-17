@@ -22,10 +22,10 @@ export function Card({
   return (
     <div
       className={cn(
-        "border border-border bg-card text-card-foreground",
+        "border border-border/40 bg-card/5 text-card-foreground backdrop-blur-md",
         PAD[pad],
         interactive &&
-          "transition-colors hover:border-orange/40 hover:bg-muted",
+          "transition-colors hover:border-orange/40 hover:bg-card/15",
         className,
       )}
       {...props}
@@ -39,7 +39,10 @@ export function Surface({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("border border-border bg-card", className)}
+      className={cn(
+        "border border-border/40 bg-card/5 backdrop-blur-md",
+        className,
+      )}
       {...props}
     />
   );

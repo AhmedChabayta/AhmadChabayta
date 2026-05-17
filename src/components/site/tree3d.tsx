@@ -45,7 +45,7 @@ export function Tree3D({ className }: { className?: string }) {
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x06110f, 0.022);
 
-    const camera = new THREE.PerspectiveCamera(34, W / H, 0.1, 200);
+    const camera = new THREE.PerspectiveCamera(38, W / H, 0.1, 200);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: !low,
@@ -160,7 +160,7 @@ export function Tree3D({ className }: { className?: string }) {
         // normalize: base on the ground, centered, height ≈ 9 units
         const center = new THREE.Vector3();
         box.getCenter(center);
-        const scl = 9 / (size.y || 1);
+        const scl = 7 / (size.y || 1);
         obj.scale.setScalar(scl);
         obj.position.set(
           -center.x * scl,
@@ -248,10 +248,10 @@ export function Tree3D({ className }: { className?: string }) {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    const camFrom = new THREE.Vector3(0.5, 7.5, 24);
-    const camTo = new THREE.Vector3(-2.2, 4.4, 13);
-    const lookFrom = new THREE.Vector3(0, 5.5, 0);
-    const lookTo = new THREE.Vector3(0, 4.6, 0);
+    const camFrom = new THREE.Vector3(0.5, 5.5, 18);
+    const camTo = new THREE.Vector3(-1.6, 3.8, 12.5);
+    const lookFrom = new THREE.Vector3(0, 4, 0);
+    const lookTo = new THREE.Vector3(0, 3.2, 0);
     const ease = (x: number) => x * x * (3 - 2 * x);
 
     const clock = new THREE.Clock();
@@ -261,7 +261,7 @@ export function Tree3D({ className }: { className?: string }) {
 
     const frame = () => {
       const t = clock.getElapsedTime();
-      curP += (targetP - curP) * 0.07;
+      curP += (targetP - curP) * 0.16;
       const p = ease(curP);
 
       camera.position.lerpVectors(camFrom, camTo, p);

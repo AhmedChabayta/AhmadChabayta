@@ -74,7 +74,7 @@ export function CapabilitiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, delay: i * 0.05 }}
-              className="group flex flex-col gap-7 bg-background p-12 transition-colors hover:bg-card md:p-16"
+              className="group flex flex-col gap-7 border border-border/30 bg-card/5 p-12 backdrop-blur-md transition-colors hover:border-orange/30 hover:bg-card/15 md:p-16"
             >
               <div className="flex items-center justify-between gap-4">
                 <Icon className="size-7 text-orange" strokeWidth={1.25} />

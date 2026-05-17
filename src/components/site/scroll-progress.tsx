@@ -12,8 +12,12 @@ export function ScrollProgress() {
 
   return (
     <motion.div
-      style={{ scaleX: progress }}
-      className="fixed top-0 left-0 right-0 z-[60] h-[2px] origin-left bg-orange"
+      style={{
+        scaleX: progress,
+        boxShadow:
+          "0 0 14px 3px rgb(var(--orange) / 0.4), 0 0 4px 1px rgb(var(--orange) / 0.55)",
+      }}
+      className="fixed top-0 right-0 left-0 z-[60] h-[3px] origin-left bg-gradient-to-r from-orange/10 via-orange/45 to-orange/65 opacity-70 blur-[1.5px]"
       aria-hidden
     />
   );

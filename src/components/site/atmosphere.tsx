@@ -180,18 +180,20 @@ export function Atmosphere() {
         </svg>
       </motion.div>
 
-      {/* the living 3D tree — a quiet lower-left accent that frames the
-          content, never sits behind headline text. NO scroll translate. */}
-      <div className="absolute -bottom-[10vh] left-[-34vw] h-[82vh] w-[82vh] opacity-[0.22] sm:left-[-26vw] sm:opacity-[0.3] md:left-[-18vw] md:h-[88vh] md:w-[88vh] md:opacity-[0.4]">
+      {/* the living 3D tree — a lower-right accent, rooted to the
+          bottom and partly off the right edge so it frames the
+          content without sitting behind headline text. */}
+      <div className="absolute -bottom-[6vh] right-[-22vw] h-[98vh] w-[80vh] opacity-[0.32] sm:right-[-14vw] sm:opacity-[0.42] md:right-[-8vw] md:h-[106vh] md:w-[94vh] md:opacity-[0.55]">
         <Tree3D className="relative h-full w-full" />
       </div>
 
-      {/* scrim — guarantees the tree can never overpower content text */}
+      {/* scrim — dims the left/centre for text, keeps the tree side
+          (right) clear so it can never overpower content. */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(105deg, transparent 0%, rgb(var(--background) / 0.35) 42%, rgb(var(--background) / 0.62) 100%)",
+            "linear-gradient(to left, transparent 0%, rgb(var(--background) / 0.32) 46%, rgb(var(--background) / 0.55) 100%)",
         }}
       />
 
