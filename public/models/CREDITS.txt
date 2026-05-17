@@ -1,8 +1,15 @@
-tree.glb
-  Source : BabylonJS/Assets  (meshes/villagePack/tree3)
-  Repo   : https://github.com/BabylonJS/Assets
-  License: Apache License 2.0  — https://github.com/BabylonJS/Assets/blob/master/LICENSE.md
+PUT YOUR TREE MODEL HERE  ->  public/models/tree.glb
 
-This third-party model is redistributed under the Apache-2.0 license.
-Replace this file with any other .glb (same path) to swap the tree;
-the renderer auto-centers, scales, lights and animates whatever is here.
+The renderer auto-centers, scales, lights, shadows, winds and
+scroll-frames whatever .glb is at that exact path. Until the file
+exists, the scene stays empty and the site is unaffected.
+
+Requirements:
+  - File name must be exactly:  tree.glb
+  - Format: glTF Binary (.glb), UNCOMPRESSED or meshopt-compressed.
+    Draco-compressed .glb is NOT supported yet (tell me and I'll
+    add a Draco decoder).
+  - Any real-world scale / orientation is fine (auto-normalized).
+  - Keep it reasonably sized (ideally < ~25 MB for fast loads).
+
+Replace this model anytime by committing a new tree.glb here.

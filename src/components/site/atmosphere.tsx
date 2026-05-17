@@ -180,11 +180,20 @@ export function Atmosphere() {
         </svg>
       </motion.div>
 
-      {/* the living 3D tree — rooted to the ground, grows with scroll,
-          sways in the wind. NO scroll translate (it must not drift up). */}
-      <div className="absolute bottom-0 left-[-16vw] h-[96vh] w-[104vh] opacity-[0.6] sm:left-[-10vw] md:left-[-4vw] md:opacity-[0.78]">
+      {/* the living 3D tree — a quiet lower-left accent that frames the
+          content, never sits behind headline text. NO scroll translate. */}
+      <div className="absolute -bottom-[10vh] left-[-34vw] h-[82vh] w-[82vh] opacity-[0.22] sm:left-[-26vw] sm:opacity-[0.3] md:left-[-18vw] md:h-[88vh] md:w-[88vh] md:opacity-[0.4]">
         <Tree3D className="relative h-full w-full" />
       </div>
+
+      {/* scrim — guarantees the tree can never overpower content text */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(105deg, transparent 0%, rgb(var(--background) / 0.35) 42%, rgb(var(--background) / 0.62) 100%)",
+        }}
+      />
 
       {/* analog film grain — kills the sterile digital flatness */}
       <svg className="absolute inset-0 h-full w-full opacity-[0.05] mix-blend-soft-light">
