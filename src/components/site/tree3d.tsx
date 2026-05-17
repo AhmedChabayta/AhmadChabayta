@@ -2,27 +2,28 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 /**
- * Cinematic real-asset tree. Drop a model at:
+ * Cinematic real-asset tree.
  *
- *     public/models/tree.glb        (uncompressed or meshopt-compressed)
+ * Loads the user-supplied OBJ at
+ *   public/models/source/olive-tree/olive-tree.obj
+ * and wires PBR materials by hand — the exported .mtl points at dead
+ * absolute Windows texture paths, so we resolve the maps ourselves
+ * from the same folder.
  *
- * Good free sources: Sketchfab "CC0" / "Downloadable" trees, Quaternius
- * (CC0), KhronosGroup samples. Export/keep it as .glb.
- *
- * This wires real lighting: image-based env (no HDRI file needed),
- * a shadow-casting key light + transparent shadow-catcher (so the page
- * background still shows), ACES tone-mapping, fog, foliage wind, and a
- * scroll-driven cinematic camera move. If the asset is missing it fails
- * silently (warns once) — the site is never broken.
+ * Real lighting: image-based env (no HDRI file), shadow-casting key +
+ * teal rim, transparent shadow-catcher (keeps the canvas alpha), ACES
+ * tone-mapping, fog, alpha-cut leaf cards with swaying foliage wind,
+ * and a scroll-driven cinematic camera move. Missing asset → warns
+ * once, scene stays empty, site never breaks.
  */
 
-const MODEL_URL = "/models/tree.glb";
-const FOLIAGE = /leaf|leaves|foliage|canop|needle|pine/i;
+const BASE = "/models/source/olive-tree/";
+const OBJ_URL = `${BASE}olive-tree.obj`;
+const LEAF = /leaf|leaves|branch|card/i;
 
 export function Tree3D({ className }: { className?: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -64,34 +65,31 @@ export function Tree3D({ className }: { className?: string }) {
     dom.setAttribute("aria-hidden", "true");
     wrap.appendChild(dom);
 
-    // image-based lighting without an HDRI file
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
     scene.environment = envRT.texture;
 
-    // dusk key (warm) + teal rim + soft fill
-    const key = new THREE.DirectionalLight(0xffe2bd, 2.4);
-    key.position.set(-6, 11, 7);
+    const key = new THREE.DirectionalLight(0xffe2bd, 2.6);
+    key.position.set(-6, 12, 7);
     key.castShadow = !low;
     key.shadow.mapSize.set(low ? 1024 : 2048, low ? 1024 : 2048);
     key.shadow.camera.near = 1;
     key.shadow.camera.far = 60;
     key.shadow.camera.left = -14;
     key.shadow.camera.right = 14;
-    key.shadow.camera.top = 18;
+    key.shadow.camera.top = 20;
     key.shadow.camera.bottom = -2;
     key.shadow.bias = -0.0012;
     key.shadow.camera.updateProjectionMatrix();
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0x59d6c4, 1.1);
+    const rim = new THREE.DirectionalLight(0x59d6c4, 1.15);
     rim.position.set(7, 5, -8);
     scene.add(rim);
-    scene.add(new THREE.HemisphereLight(0x3b8f80, 0x070f0d, 0.5));
+    scene.add(new THREE.HemisphereLight(0x3b8f80, 0x070f0d, 0.55));
 
     const root = new THREE.Group();
     scene.add(root);
 
-    // transparent shadow catcher — grounds the tree, keeps canvas alpha
     const shadowCatcher = new THREE.Mesh(
       new THREE.PlaneGeometry(60, 60),
       new THREE.ShadowMaterial({ opacity: 0.42 }),
@@ -100,9 +98,11 @@ export function Tree3D({ className }: { className?: string }) {
     shadowCatcher.receiveShadow = true;
     root.add(shadowCatcher);
 
-    // foliage wind, injected per-material
-    const windMats: THREE.Material[] = [];
+    // foliage wind — shared by the leaf material and its shadow-depth
+    // material so the swaying canopy and its shadow stay in sync. The
+    // height gate keeps the trunk base planted.
     const uTime = { value: 0 };
+    const disposables: { dispose(): void }[] = [];
     const addWind = (mat: THREE.Material) => {
       mat.onBeforeCompile = (sh) => {
         sh.uniforms.uTime = uTime;
@@ -116,78 +116,124 @@ export function Tree3D({ className }: { className?: string }) {
             `#include <begin_vertex>
              vec4 wpw = modelMatrix * vec4(transformed,1.0);
              float h = clamp(wpw.y*0.12,0.0,1.0);
-             float s = sin(uTime*1.3 + wpw.x*0.5 + wpw.z*0.4)*0.10
-                     + sin(uTime*2.6 + wpw.y)*0.04;
+             float s = sin(uTime*1.2 + wpw.x*0.5 + wpw.z*0.4)*0.11
+                     + sin(uTime*2.5 + wpw.y)*0.045;
              transformed.x += s * h;
              transformed.z += s * 0.6 * h;`,
           );
       };
-      windMats.push(mat);
     };
 
-    let mixer: THREE.AnimationMixer | null = null;
-    let clipDur = 0;
+    const texLoader = new THREE.TextureLoader().setPath(BASE);
+    const maxAniso = renderer.capabilities.getMaxAnisotropy();
+    let pending = 0;
+    const renderOnce = () => renderer.render(scene, camera);
+    const tex = (file: string, srgb: boolean) => {
+      pending++;
+      const t = texLoader.load(file, () => {
+        pending--;
+        renderOnce();
+      });
+      if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+      t.anisotropy = low ? 1 : Math.min(8, maxAniso);
+      t.wrapS = t.wrapT = THREE.RepeatWrapping;
+      disposables.push(t);
+      return t;
+    };
+
     let loaded = false;
-
-    const loader = new GLTFLoader();
-    loader.setMeshoptDecoder(MeshoptDecoder);
-    loader.load(
-      MODEL_URL,
-      (gltf) => {
-        const model = gltf.scene;
-
-        // normalize: base at y=0, centered, height ≈ 9 units
-        const box = new THREE.Box3().setFromObject(model);
+    new OBJLoader().load(
+      OBJ_URL,
+      (obj) => {
+        // auto-stand: if the model is lying down (footprint >> height),
+        // it was exported Z-up — tip it upright.
+        let box = new THREE.Box3().setFromObject(obj);
         const size = new THREE.Vector3();
-        const center = new THREE.Vector3();
         box.getSize(size);
+        if (size.y < 0.55 * Math.max(size.x, size.z)) {
+          obj.rotation.x = -Math.PI / 2;
+          obj.updateMatrixWorld(true);
+          box = new THREE.Box3().setFromObject(obj);
+          box.getSize(size);
+        }
+
+        // normalize: base on the ground, centered, height ≈ 9 units
+        const center = new THREE.Vector3();
         box.getCenter(center);
         const scl = 9 / (size.y || 1);
-        model.scale.setScalar(scl);
-        model.position.set(
+        obj.scale.setScalar(scl);
+        obj.position.set(
           -center.x * scl,
           -box.min.y * scl,
           -center.z * scl,
         );
 
-        const meshes: THREE.Mesh[] = [];
-        model.traverse((o) => {
+        obj.traverse((o) => {
           const mesh = o as THREE.Mesh;
           if (!mesh.isMesh) return;
           mesh.castShadow = !low;
           mesh.receiveShadow = !low;
           mesh.frustumCulled = true;
-          meshes.push(mesh);
+
+          const oldName =
+            (Array.isArray(mesh.material)
+              ? mesh.material[0]?.name
+              : mesh.material?.name) || mesh.name;
+          const isLeaf = LEAF.test(oldName);
+          (Array.isArray(mesh.material)
+            ? mesh.material
+            : [mesh.material]
+          ).forEach((m) => m?.dispose());
+
+          if (isLeaf) {
+            const mat = new THREE.MeshStandardMaterial({
+              map: tex("olive-branch-cards.jpg", true),
+              alphaMap: tex("olive-branch-cards-alpha.jpg", false),
+              normalMap: low
+                ? null
+                : tex("olive-branch-cards-normal.jpg", false),
+              alphaTest: 0.5,
+              transparent: false,
+              side: THREE.DoubleSide,
+              roughness: 0.72,
+              metalness: 0,
+              envMapIntensity: 0.9,
+            });
+            mesh.material = mat;
+            disposables.push(mat);
+            if (!reduced) addWind(mat);
+            if (!low) {
+              const depth = new THREE.MeshDepthMaterial({
+                depthPacking: THREE.RGBADepthPacking,
+                alphaMap: mat.alphaMap,
+                alphaTest: 0.5,
+              });
+              if (!reduced) addWind(depth);
+              mesh.customDepthMaterial = depth;
+              disposables.push(depth);
+            }
+          } else {
+            const mat = new THREE.MeshStandardMaterial({
+              map: tex("tree-specular.png", true),
+              normalMap: low ? null : tex("tree-normal.png", false),
+              normalScale: new THREE.Vector2(1.4, 1.4),
+              roughness: 0.92,
+              metalness: 0,
+              envMapIntensity: 0.8,
+            });
+            mesh.material = mat;
+            disposables.push(mat);
+          }
         });
-        const matsOf = (m: THREE.Mesh) =>
-          Array.isArray(m.material) ? m.material : [m.material];
-        const named = (m: THREE.Mesh) =>
-          FOLIAGE.test(m.name) ||
-          matsOf(m).some((mat) => mat && FOLIAGE.test(mat.name));
-        // multi-part trees: wind only the foliage. single-mesh trees
-        // (one material, e.g. "tree3"): wind everything — the shader's
-        // height gate keeps the trunk base planted.
-        const hasNamed = meshes.some(named);
-        if (!reduced)
-          meshes.forEach((m) => {
-            if (!hasNamed || named(m))
-              matsOf(m).forEach((mat) => mat && addWind(mat));
-          });
 
-        root.add(model);
-
-        if (gltf.animations.length) {
-          mixer = new THREE.AnimationMixer(model);
-          const act = mixer.clipAction(gltf.animations[0]);
-          act.play();
-          clipDur = gltf.animations[0].duration;
-        }
+        root.add(obj);
         loaded = true;
+        renderOnce();
       },
       undefined,
       () => {
         console.warn(
-          `[Tree3D] No model at ${MODEL_URL} — add an uncompressed/meshopt .glb there. Scene stays empty (site unaffected).`,
+          `[Tree3D] Could not load ${OBJ_URL} — scene stays empty (site unaffected).`,
         );
       },
     );
@@ -202,7 +248,6 @@ export function Tree3D({ className }: { className?: string }) {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    // wide establishing -> intimate hero, with a slow arc
     const camFrom = new THREE.Vector3(0.5, 7.5, 24);
     const camTo = new THREE.Vector3(-2.2, 4.4, 13);
     const lookFrom = new THREE.Vector3(0, 5.5, 0);
@@ -215,8 +260,7 @@ export function Tree3D({ className }: { className?: string }) {
     const tmpL = new THREE.Vector3();
 
     const frame = () => {
-      const dt = clock.getDelta();
-      const t = clock.elapsedTime;
+      const t = clock.getElapsedTime();
       curP += (targetP - curP) * 0.07;
       const p = ease(curP);
 
@@ -228,23 +272,21 @@ export function Tree3D({ className }: { className?: string }) {
 
       root.rotation.y = Math.sin(t * 0.06) * 0.04;
       uTime.value = t;
-      // if the asset ships a growth/idle clip, scrub it to scroll
-      if (mixer) {
-        if (clipDur > 0) mixer.setTime(p * clipDur);
-        else mixer.update(dt);
-      }
       renderer.render(scene, camera);
       if (!reduced) raf = requestAnimationFrame(frame);
     };
+
     if (reduced) {
       curP = 1;
       camera.position.copy(camTo);
       camera.lookAt(lookTo);
-      // render now (empty), and again once the model finishes loading
+      // re-render as the model + textures stream in (bounded ~5s)
+      let ticks = 0;
       const settle = () => {
         if (!alive) return;
         renderer.render(scene, camera);
-        if (!loaded) setTimeout(settle, 250);
+        ticks++;
+        if (ticks < 25 && (!loaded || pending > 0)) setTimeout(settle, 200);
       };
       settle();
     } else {
@@ -273,18 +315,12 @@ export function Tree3D({ className }: { className?: string }) {
       ro.disconnect();
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onVis);
-      mixer?.stopAllAction();
       scene.traverse((o) => {
         const mesh = o as THREE.Mesh;
-        if (!mesh.isMesh) return;
-        mesh.geometry?.dispose();
-        const mats = Array.isArray(mesh.material)
-          ? mesh.material
-          : [mesh.material];
-        mats.forEach((m) => m?.dispose());
+        if (mesh.isMesh) mesh.geometry?.dispose();
       });
+      disposables.forEach((d) => d.dispose());
       shadowCatcher.geometry.dispose();
-      windMats.length = 0;
       envRT.texture.dispose();
       pmrem.dispose();
       renderer.dispose();

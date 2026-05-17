@@ -1,15 +1,16 @@
-PUT YOUR TREE MODEL HERE  ->  public/models/tree.glb
+Active model (rendered by src/components/site/tree3d.tsx):
+  public/models/source/olive-tree/olive-tree.obj  (+ .mtl, textures)
 
-The renderer auto-centers, scales, lights, shadows, winds and
-scroll-frames whatever .glb is at that exact path. Until the file
-exists, the scene stays empty and the site is unaffected.
+User-supplied olive tree (Blender export). Textures are wired in
+code because the .mtl references dead absolute Windows paths:
+  - olive-leaves    -> olive-branch-cards{.jpg,-alpha.jpg,-normal.jpg}
+  - olive-tree-bark -> tree-specular.png (base), tree-normal.png
 
-Requirements:
-  - File name must be exactly:  tree.glb
-  - Format: glTF Binary (.glb), UNCOMPRESSED or meshopt-compressed.
-    Draco-compressed .glb is NOT supported yet (tell me and I'll
-    add a Draco decoder).
-  - Any real-world scale / orientation is fine (auto-normalized).
-  - Keep it reasonably sized (ideally < ~25 MB for fast loads).
+Add the model's real source/author/license here for attribution.
 
-Replace this model anytime by committing a new tree.glb here.
+To swap the tree: replace olive-tree.obj (+ its textures) in that
+folder, or point OBJ_URL/BASE in tree3d.tsx at a new path. The
+renderer auto-stands, centers, scales, lights, shadows and winds it.
+
+NOTE: tree-normal.png / tree-specular.png are ~10 MB each (PNG).
+For faster loads these should be downscaled to ~2K. Ask me to do it.
