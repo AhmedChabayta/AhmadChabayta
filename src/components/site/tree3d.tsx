@@ -150,20 +150,29 @@ export function Tree3D({ className }: { className?: string }) {
           -center.z * scl,
         );
 
+        const meshes: THREE.Mesh[] = [];
         model.traverse((o) => {
           const mesh = o as THREE.Mesh;
           if (!mesh.isMesh) return;
           mesh.castShadow = !low;
           mesh.receiveShadow = !low;
           mesh.frustumCulled = true;
-          const mats = Array.isArray(mesh.material)
-            ? mesh.material
-            : [mesh.material];
-          const foliage =
-            FOLIAGE.test(mesh.name) ||
-            mats.some((m) => m && FOLIAGE.test(m.name));
-          if (foliage && !reduced) mats.forEach((m) => m && addWind(m));
+          meshes.push(mesh);
         });
+        const matsOf = (m: THREE.Mesh) =>
+          Array.isArray(m.material) ? m.material : [m.material];
+        const named = (m: THREE.Mesh) =>
+          FOLIAGE.test(m.name) ||
+          matsOf(m).some((mat) => mat && FOLIAGE.test(mat.name));
+        // multi-part trees: wind only the foliage. single-mesh trees
+        // (one material, e.g. "tree3"): wind everything — the shader's
+        // height gate keeps the trunk base planted.
+        const hasNamed = meshes.some(named);
+        if (!reduced)
+          meshes.forEach((m) => {
+            if (!hasNamed || named(m))
+              matsOf(m).forEach((mat) => mat && addWind(mat));
+          });
 
         root.add(model);
 

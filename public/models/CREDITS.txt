@@ -1,0 +1,8 @@
+tree.glb
+  Source : BabylonJS/Assets  (meshes/villagePack/tree3)
+  Repo   : https://github.com/BabylonJS/Assets
+  License: Apache License 2.0  — https://github.com/BabylonJS/Assets/blob/master/LICENSE.md
+
+This third-party model is redistributed under the Apache-2.0 license.
+Replace this file with any other .glb (same path) to swap the tree;
+the renderer auto-centers, scales, lights and animates whatever is here.
