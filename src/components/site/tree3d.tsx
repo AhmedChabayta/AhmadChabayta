@@ -6,15 +6,17 @@ import * as THREE from "three";
 /**
  * Procedural fractal tree, generated entirely in code — no asset.
  *
- * The tree is FULL and formed from the start (it does not grow). In the
- * hero it sits framed and whole. As the page scrolls the camera orbits
- * around it and zooms up into the canopy, so the recursive self-similar
- * branch + leaf detail reveals itself. Daylight lit (sky ambient + sun
- * + ground bounce), atmospheric haze for depth. Everything sways in the
- * wind. Reduced-motion: scroll still drives the orbit/zoom, no wind.
+ * Hero (scroll 0): the camera sits INSIDE the canopy, a single branch
+ * filling the screen at full detail — bark, leaves, and a couple of
+ * critters (a ladybug + a butterfly) for scale/realism. Scrolling
+ * DOWN dollies straight back (no orbit, no auto-rotation) to reveal
+ * the whole tree, rooted in ground so it never floats and is never
+ * cut off. Daylight lit; wind sway only. Reduced-motion: scroll still
+ * drives the dolly, no wind/flap.
  */
 
 const SEED = 0xa17e;
+const HEIGHT = 7;
 
 function mulberry32(a: number) {
   return () => {
@@ -41,8 +43,6 @@ type Leaf = {
   t: number;
   seed: number;
 };
-
-const HEIGHT = 7;
 
 function buildTree(low: boolean) {
   const rnd = mulberry32(SEED);
@@ -160,8 +160,8 @@ function buildTree(low: boolean) {
   box.getSize(size);
   box.getCenter(ctr);
   const sc = HEIGHT / (size.y || 1);
-  const fix = (v: THREE.Vector3) =>
-    v.set((v.x - ctr.x) * sc, (v.y - box.min.y) * sc, (v.z - ctr.z) * sc);
+  const fix = (vv: THREE.Vector3) =>
+    vv.set((vv.x - ctr.x) * sc, (vv.y - box.min.y) * sc, (vv.z - ctr.z) * sc);
   for (const s of segs) {
     fix(s.p);
     s.len *= sc;
@@ -172,7 +172,26 @@ function buildTree(low: boolean) {
     fix(l.p);
     l.size *= sc;
   }
-  return { segs, leaves };
+
+  // pick a hero focal branch — mid-canopy, toward the +Z front so the
+  // close-up has the rest of the tree behind it and faces the camera.
+  const anchor = new THREE.Vector3(1.1, 4.5, 2.0);
+  let bestSeg = segs[0];
+  let best = Infinity;
+  const mid = new THREE.Vector3();
+  for (const s of segs) {
+    if (s.t < 0.42 || s.t > 0.82) continue;
+    mid.copy(s.p).addScaledVector(s.d, s.len * 0.5);
+    const dd = mid.distanceToSquared(anchor);
+    if (dd < best) {
+      best = dd;
+      bestSeg = s;
+    }
+  }
+  const focal = bestSeg.p
+    .clone()
+    .addScaledVector(bestSeg.d, bestSeg.len * 0.5);
+  return { segs, leaves, focal, focalDir: bestSeg.d.clone().normalize() };
 }
 
 export function Tree3D({ className }: { className?: string }) {
@@ -192,7 +211,9 @@ export function Tree3D({ className }: { className?: string }) {
     let H = Math.max(wrap.clientHeight, 1);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, W / H, 0.1, 200);
+    const HAZE = new THREE.Color(0xcddcec);
+    scene.fog = new THREE.Fog(HAZE.getHex(), 14, 60);
+    const camera = new THREE.PerspectiveCamera(46, W / H, 0.05, 200);
     const renderer = new THREE.WebGLRenderer({
       antialias: !low,
       alpha: true,
@@ -209,12 +230,13 @@ export function Tree3D({ className }: { className?: string }) {
     dom.setAttribute("aria-hidden", "true");
     wrap.appendChild(dom);
 
-    const { segs, leaves } = buildTree(low);
+    const { segs, leaves, focal, focalDir } = buildTree(low);
 
+    const SUN = new THREE.Vector3(-0.42, 0.84, 0.46).normalize();
     const uniforms = {
       uTime: { value: 0 },
       uWind: { value: reduced ? 0 : 1 },
-      uSun: { value: new THREE.Vector3(-0.42, 0.84, 0.46).normalize() },
+      uSun: { value: SUN },
       uSunCol: { value: new THREE.Color(0xfff1d6) },
       uSky: { value: new THREE.Color(0x9fc4e8) },
       uGround: { value: new THREE.Color(0x4a3d28) },
@@ -222,8 +244,15 @@ export function Tree3D({ className }: { className?: string }) {
       uBarkHi: { value: new THREE.Color(0x7a5d3e) },
       uLeafLo: { value: new THREE.Color(0x2f5d27) },
       uLeafHi: { value: new THREE.Color(0x8fc04a) },
-      uHaze: { value: new THREE.Color(0xcddcec) },
+      uHaze: { value: HAZE },
     };
+
+    // lights only touch the standard-material props (ground, critters);
+    // the tree uses its own shaders and ignores them.
+    scene.add(new THREE.HemisphereLight(0xbdd9f2, 0x4a3d28, 1.0));
+    const sunLight = new THREE.DirectionalLight(0xfff1d6, 1.9);
+    sunLight.position.copy(SUN).multiplyScalar(12);
+    scene.add(sunLight);
 
     const BASIS = /* glsl */ `
       mat3 basis(vec3 d){
@@ -233,6 +262,34 @@ export function Tree3D({ className }: { className?: string }) {
         vec3 b = cross(d,t);
         return mat3(t,d,b);
       }`;
+
+    // ---------- ground (so the tree is rooted, never floating) ----------
+    const groundMat = new THREE.MeshStandardMaterial({
+      color: 0x55733a,
+      roughness: 1,
+      metalness: 0,
+    });
+    const ground = new THREE.Mesh(
+      new THREE.CircleGeometry(140, 48),
+      groundMat,
+    );
+    ground.rotation.x = -Math.PI / 2;
+    scene.add(ground);
+    // soft contact darkening at the base
+    const contactMat = new THREE.ShaderMaterial({
+      transparent: true,
+      depthWrite: false,
+      uniforms: {},
+      vertexShader: `varying vec2 vU; void main(){ vU=uv;
+        gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+      fragmentShader: `precision mediump float; varying vec2 vU;
+        void main(){ float d=distance(vU,vec2(0.5));
+          gl_FragColor=vec4(0.,0.,0., smoothstep(0.5,0.0,d)*0.42); }`,
+    });
+    const contact = new THREE.Mesh(new THREE.CircleGeometry(2.4, 32), contactMat);
+    contact.rotation.x = -Math.PI / 2;
+    contact.position.y = 0.012;
+    scene.add(contact);
 
     // ---------- branches ----------
     const N = segs.length;
@@ -388,7 +445,96 @@ export function Tree3D({ className }: { className?: string }) {
     leafMesh.frustumCulled = false;
     scene.add(leafMesh);
 
-    // ---------- scroll-driven orbit + zoom ----------
+    // ---------- critters on the focal branch (scale + realism) ----------
+    const axis = focalDir.clone();
+    const wUp = new THREE.Vector3(0, 1, 0);
+    const side = new THREE.Vector3().crossVectors(axis, wUp);
+    if (side.lengthSq() < 1e-4) side.set(1, 0, 0);
+    side.normalize();
+    const nUp = new THREE.Vector3().crossVectors(side, axis).normalize();
+
+    const critterGeos: THREE.BufferGeometry[] = [];
+    const critterMats: THREE.Material[] = [];
+
+    // ladybug — sits on top of the branch
+    const ladybug = new THREE.Group();
+    const lbBodyG = new THREE.SphereGeometry(0.07, 18, 14);
+    const lbBodyM = new THREE.MeshStandardMaterial({
+      color: 0xc62828,
+      roughness: 0.35,
+    });
+    const lbBody = new THREE.Mesh(lbBodyG, lbBodyM);
+    lbBody.scale.set(1, 0.62, 1.25);
+    ladybug.add(lbBody);
+    const blackM = new THREE.MeshStandardMaterial({
+      color: 0x0c0c0c,
+      roughness: 0.5,
+    });
+    const lbHeadG = new THREE.SphereGeometry(0.034, 12, 10);
+    const lbHead = new THREE.Mesh(lbHeadG, blackM);
+    lbHead.position.set(0, 0.005, 0.085);
+    ladybug.add(lbHead);
+    const spotG = new THREE.SphereGeometry(0.014, 8, 8);
+    for (const sp of [
+      [0.032, 0.03, 0.0],
+      [-0.032, 0.03, 0.0],
+      [0.03, 0.025, -0.05],
+      [-0.03, 0.025, -0.05],
+      [0, 0.045, 0.03],
+    ] as const) {
+      const m = new THREE.Mesh(spotG, blackM);
+      m.position.set(sp[0], sp[1], sp[2]);
+      ladybug.add(m);
+    }
+    critterGeos.push(lbBodyG, lbHeadG, spotG);
+    critterMats.push(lbBodyM, blackM);
+
+    const lbBasis = new THREE.Matrix4().makeBasis(side, nUp, axis);
+    const lbQuat = new THREE.Quaternion().setFromRotationMatrix(lbBasis);
+    ladybug.quaternion.copy(lbQuat);
+    ladybug.position.copy(focal).addScaledVector(nUp, 0.06);
+    scene.add(ladybug);
+
+    // butterfly — perched just off the branch, wings flap
+    const butterfly = new THREE.Group();
+    const bfBodyG = new THREE.CapsuleGeometry(0.012, 0.12, 4, 8);
+    const bfBodyM = new THREE.MeshStandardMaterial({
+      color: 0x241a12,
+      roughness: 0.6,
+    });
+    const bfBody = new THREE.Mesh(bfBodyG, bfBodyM);
+    bfBody.rotation.x = Math.PI / 2;
+    butterfly.add(bfBody);
+    const wingM = new THREE.MeshStandardMaterial({
+      color: 0xe07b2c,
+      roughness: 0.4,
+      side: THREE.DoubleSide,
+      emissive: 0x3a1e06,
+      emissiveIntensity: 0.35,
+    });
+    const wingG = new THREE.PlaneGeometry(0.17, 0.13);
+    const wingL = new THREE.Group();
+    const wingLMesh = new THREE.Mesh(wingG, wingM);
+    wingLMesh.position.x = -0.085;
+    wingL.add(wingLMesh);
+    const wingR = new THREE.Group();
+    const wingRMesh = new THREE.Mesh(wingG, wingM);
+    wingRMesh.position.x = 0.085;
+    wingR.add(wingRMesh);
+    butterfly.add(wingL, wingR);
+    critterGeos.push(bfBodyG, wingG);
+    critterMats.push(bfBodyM, wingM);
+
+    const bfBasis = new THREE.Matrix4().makeBasis(side, nUp, axis);
+    butterfly.quaternion.setFromRotationMatrix(bfBasis);
+    const bfHome = focal
+      .clone()
+      .addScaledVector(nUp, 0.22)
+      .addScaledVector(side, 0.16);
+    butterfly.position.copy(bfHome);
+    scene.add(butterfly);
+
+    // ---------- scroll-driven dolly (NO orbit / NO auto-rotation) ----------
     let target = 0;
     let cur = 0;
     const onScroll = () => {
@@ -398,27 +544,38 @@ export function Tree3D({ className }: { className?: string }) {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
+    const center = new THREE.Vector3(0, HEIGHT * 0.52, 0);
+    // fixed view direction (camera→subject). No azimuth change ever.
+    const viewDir = new THREE.Vector3(0.34, 0.16, 1).normalize();
     const ease = (x: number) => x * x * (3 - 2 * x);
     const clock = new THREE.Clock();
+    const look = new THREE.Vector3();
+    const pos = new THREE.Vector3();
     let raf = 0;
     let alive = true;
     let reducedCleanup: (() => void) | null = null;
 
     const apply = (time: number) => {
       const p = ease(cur);
-      // p=0: frame the WHOLE tree (fit to the limiting axis so it never
-      // crops on portrait phones). Scroll then orbits + zooms in + climbs
-      // into the canopy to reveal the recursive detail.
+      // p=0: macro on the focal branch. p=1: whole tree, fit so it is
+      // never cut off (limiting axis + margin), with ground in frame.
       const vHalf = (camera.fov * Math.PI) / 360;
       const hHalf = Math.atan(Math.tan(vHalf) * camera.aspect);
-      const fit = (HEIGHT * 0.62) / Math.tan(Math.min(vHalf, hHalf)) + 1.5;
-      const radius = fit + (4.0 - fit) * p;
-      const az = -0.35 + p * 2.5;
-      const camY = 3.0 + p * 3.2;
-      const lookY = 3.2 + p * 1.9;
-      camera.position.set(Math.sin(az) * radius, camY, Math.cos(az) * radius);
-      camera.lookAt(0, lookY, 0);
+      const fitFar = (HEIGHT * 0.62) / Math.tan(Math.min(vHalf, hHalf)) + 2.0;
+      const dist = 0.9 + (fitFar - 0.9) * p;
+      look.copy(focal).lerp(center, ease(p));
+      pos.copy(look).addScaledVector(viewDir, dist);
+      camera.position.copy(pos);
+      camera.lookAt(look);
       uniforms.uTime.value = time;
+
+      if (!reduced) {
+        const flap = Math.sin(time * 7.0) * 0.9 + 0.5;
+        wingL.rotation.y = flap;
+        wingR.rotation.y = -flap;
+        butterfly.position.copy(bfHome);
+        butterfly.position.y += Math.sin(time * 1.6) * 0.012;
+      }
     };
 
     const frame = () => {
@@ -471,6 +628,12 @@ export function Tree3D({ className }: { className?: string }) {
       lGeo.dispose();
       branchMat.dispose();
       leafMat.dispose();
+      ground.geometry.dispose();
+      groundMat.dispose();
+      contact.geometry.dispose();
+      contactMat.dispose();
+      critterGeos.forEach((g) => g.dispose());
+      critterMats.forEach((m) => m.dispose());
       renderer.dispose();
       dom.remove();
     };
