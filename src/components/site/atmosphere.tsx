@@ -64,29 +64,30 @@ function applyPalette(t: number) {
 
 // ── The signal: ONE line, one meaningful shape per section ──────────
 const PTS = 10;
-// Each shape is a recognizable glyph for its section (10 pts → spline):
-//  0 CODE </>     hero — frontend developer
-//  1 WINDOW       work — the screens/products he ships
-//  2 PIN          about — who & where (Beirut / Riyadh)
-//  3 STACK        capabilities — the layered tech stack
-//  4 BAR CHART    stats — the numbers
-//  5 WAVE         experiments — live interactive demos
-//  6 ENVELOPE     contact — reach out
+// One continuous line. It starts as an underscore, then as you scroll
+// it morphs into a card, then a clean glyph per section (10 pts):
+//  0 UNDERSCORE  hero — the cursor / "the work speaks"
+//  1 CARD        work — it becomes the project card
+//  2 PIN         about — who & where (Beirut / Riyadh)
+//  3 STACK       capabilities — the layered tech stack
+//  4 BAR CHART   stats — the numbers
+//  5 WAVE        experiments — live interactive demos
+//  6 ENVELOPE    contact — reach out
 const SHAPES: number[][] = [
-  // CODE  </>
-  [38, 22, 22, 36, 12, 50, 22, 64, 38, 78, 52, 70, 48, 30, 62, 22, 86, 50, 62, 78],
-  // WINDOW (rounded screen outline)
-  [20, 30, 50, 28, 80, 30, 82, 50, 80, 72, 50, 74, 20, 72, 18, 50, 20, 38, 35, 30],
+  // UNDERSCORE (flat cursor line)
+  [24, 64, 31, 64, 38, 64, 45, 64, 52, 64, 59, 64, 66, 64, 73, 64, 80, 64, 86, 64],
+  // CARD (clean rounded rectangle)
+  [30, 30, 50, 28, 70, 30, 74, 45, 74, 62, 70, 72, 50, 74, 30, 72, 26, 57, 26, 42],
   // PIN (teardrop)
-  [50, 92, 40, 72, 28, 58, 26, 42, 36, 28, 50, 24, 64, 28, 74, 42, 72, 58, 58, 74],
+  [50, 90, 41, 74, 32, 60, 30, 44, 38, 30, 50, 26, 62, 30, 70, 44, 68, 60, 59, 75],
   // STACK (three layered tiers)
-  [20, 32, 50, 44, 80, 32, 80, 48, 50, 60, 20, 48, 20, 64, 50, 76, 80, 64, 80, 80],
+  [28, 40, 50, 37, 72, 40, 72, 50, 50, 53, 28, 50, 28, 60, 50, 63, 72, 60, 72, 66],
   // BAR CHART (rising skyline)
-  [10, 80, 24, 80, 24, 60, 40, 60, 40, 42, 56, 42, 56, 26, 74, 26, 90, 26, 90, 80],
+  [14, 76, 14, 56, 32, 56, 32, 42, 50, 42, 50, 30, 68, 30, 68, 22, 86, 22, 86, 76],
   // WAVE (oscilloscope)
-  [7, 50, 17, 30, 28, 50, 39, 70, 50, 50, 61, 30, 72, 50, 83, 70, 92, 50, 97, 42],
+  [12, 50, 21, 35, 30, 50, 39, 65, 50, 50, 61, 35, 70, 50, 79, 65, 88, 50, 94, 45],
   // ENVELOPE (body + flap)
-  [18, 34, 50, 34, 82, 34, 82, 68, 50, 68, 18, 68, 18, 40, 40, 52, 60, 52, 82, 40],
+  [24, 36, 50, 36, 76, 36, 76, 64, 50, 64, 24, 64, 24, 42, 40, 52, 60, 52, 76, 42],
 ];
 const N = SHAPES.length;
 const sstep = (x: number) => x * x * (3 - 2 * x);

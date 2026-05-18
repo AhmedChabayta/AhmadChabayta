@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useInView, useReducedMotion } from "framer-motion";
-import { useRef } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { PROJECTS, type Project } from "@/data/projects";
 import { SHOTS } from "@/data/shots.generated";
@@ -35,50 +33,6 @@ function status(p: Project): { label: string; dot?: "pulse" | "solid" } {
   return { label: "CASE STUDY" };
 }
 
-/**
- * The site's signal line, now structural: as a card scrolls in, one
- * continuous stroke draws itself around the real content — the line
- * forming into the card frame.
- */
-function DrawnFrame({ delay }: { delay: number }) {
-  const reduced = useReducedMotion();
-  const ref = useRef<SVGSVGElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-8% 0px -8% 0px" });
-  const on = reduced || inView;
-  return (
-    <svg
-      ref={ref}
-      aria-hidden
-      className="pointer-events-none absolute inset-0 z-10 h-full w-full"
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
-      fill="none"
-    >
-      <rect
-        x="1.1"
-        y="1.1"
-        width="97.8"
-        height="97.8"
-        rx="2.4"
-        pathLength={1}
-        stroke="rgb(var(--orange))"
-        strokeWidth={2}
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-        strokeDasharray={1}
-        style={{
-          strokeDashoffset: on ? 0 : 1,
-          opacity: on ? 0.85 : 0,
-          filter: "drop-shadow(0 0 6px rgb(var(--orange) / 0.5))",
-          transition: reduced
-            ? "none"
-            : `stroke-dashoffset 1.15s cubic-bezier(.22,1,.36,1) ${delay}s, opacity .4s ease ${delay}s`,
-        }}
-      />
-    </svg>
-  );
-}
-
 export function WorkPreview() {
   return (
     <Section id="work" aria-labelledby="work-heading">
@@ -96,8 +50,8 @@ export function WorkPreview() {
           }
         />
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {PROJECTS.map((p, i) => {
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+          {PROJECTS.map((p) => {
             const isExternal = Boolean(p.externalUrl);
             const s = status(p);
             return (
@@ -105,7 +59,6 @@ export function WorkPreview() {
                 key={p.slug}
                 className="group relative h-full overflow-hidden rounded-sm"
               >
-                <DrawnFrame delay={(i % 3) * 0.12} />
                 <Link
                   {...ProjectLinkProps(p)}
                   className="flex h-full flex-col gap-5 border border-border/40 bg-card/5 p-7 backdrop-blur-md transition-colors hover:border-orange/40 hover:bg-card/15 focus-visible:border-orange/40"
