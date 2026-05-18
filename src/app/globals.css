@@ -87,9 +87,7 @@
     scroll-behavior: smooth;
   }
   html {
-    /* Daylight fallback so iOS overscroll matches the sky backdrop
-       rather than flashing the dark panel token. */
-    background-color: #bdd6ec;
+    background-color: rgb(var(--background));
     /* Kill any stray horizontal overflow without creating a scroll
        container (clip != hidden — no scrollport, no jump). */
     overflow-x: clip;

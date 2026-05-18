@@ -25,11 +25,7 @@ export function Section({
   return (
     <section
       className={cn(
-        "relative isolate scroll-mt-20 md:scroll-mt-24",
-        // Hybrid translucent: dark glass panel over the daylight
-        // sky + tree backdrop.
-        "bg-[rgb(var(--background)/0.72)] backdrop-blur-md",
-        "supports-[backdrop-filter]:bg-[rgb(var(--background)/0.55)]",
+        "scroll-mt-20 md:scroll-mt-24",
         divider && "border-t border-border",
         PAD[pad],
         className,
