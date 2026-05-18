@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { PROJECTS, type Project } from "@/data/projects";
 import { SHOTS } from "@/data/shots.generated";
@@ -33,6 +34,44 @@ function status(p: Project): { label: string; dot?: "pulse" | "solid" } {
   return { label: "CASE STUDY" };
 }
 
+/**
+ * The site's signal line, now structural: as a card scrolls in, one
+ * continuous stroke draws itself around the real content — the line
+ * forming into the card frame.
+ */
+function DrawnFrame({ delay }: { delay: number }) {
+  const reduced = useReducedMotion();
+  return (
+    <svg
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      fill="none"
+    >
+      <motion.rect
+        x="1.1"
+        y="1.1"
+        width="97.8"
+        height="97.8"
+        rx="2.4"
+        stroke="rgb(var(--orange))"
+        strokeWidth={1.5}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+        style={{ filter: "drop-shadow(0 0 5px rgb(var(--orange) / 0.45))" }}
+        initial={reduced ? { opacity: 0.5 } : { pathLength: 0, opacity: 0 }}
+        whileInView={reduced ? { opacity: 0.5 } : { pathLength: 1, opacity: 0.62 }}
+        viewport={{ once: true, margin: "-12%" }}
+        transition={{
+          pathLength: { duration: 1.15, ease: [0.22, 1, 0.36, 1], delay },
+          opacity: { duration: 0.35, delay },
+        }}
+      />
+    </svg>
+  );
+}
+
 export function WorkPreview() {
   return (
     <Section id="work" aria-labelledby="work-heading">
@@ -51,7 +90,7 @@ export function WorkPreview() {
         />
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {PROJECTS.map((p) => {
+          {PROJECTS.map((p, i) => {
             const isExternal = Boolean(p.externalUrl);
             const s = status(p);
             return (
@@ -59,6 +98,7 @@ export function WorkPreview() {
                 key={p.slug}
                 className="group relative h-full overflow-hidden rounded-sm"
               >
+                <DrawnFrame delay={(i % 3) * 0.12} />
                 <Link
                   {...ProjectLinkProps(p)}
                   className="flex h-full flex-col gap-5 border border-border/40 bg-card/5 p-7 backdrop-blur-md transition-colors hover:border-orange/40 hover:bg-card/15 focus-visible:border-orange/40"
