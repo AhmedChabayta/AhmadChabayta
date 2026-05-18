@@ -5,10 +5,10 @@ import { useEffect, useRef } from "react";
 import { Container, Section } from "@/components/ui";
 
 const STATS = [
-  { value: 4, suffix: "+", label: "YEARS PROFESSIONAL" },
-  { value: 300, suffix: "k+", label: "LINES SHIPPED" },
-  { value: 200, suffix: "+", label: "RICH MEDIA & APPS" },
-  { value: 2, suffix: "", label: "SPOKEN LANGUAGES" },
+  { value: 4, suffix: "+", label: "YEARS OF EXPERIENCE" },
+  { value: 300, suffix: "k+", label: "LINES OF CODE SHIPPED" },
+  { value: 200, suffix: "+", label: "RICH MEDIA & APPLICATIONS" },
+  { value: 2, suffix: "", label: "LANGUAGES SPOKEN" },
 ];
 
 function Counter({ to, suffix }: { to: number; suffix: string }) {
