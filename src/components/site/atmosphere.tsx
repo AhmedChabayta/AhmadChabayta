@@ -6,12 +6,12 @@ import {
   useReducedMotion,
   useScroll,
   useTransform,
+  type MotionValue,
 } from "framer-motion";
 import { useEffect, useRef, type ReactNode } from "react";
 
 type RGB = [number, number, number];
 
-// Original "espresso night" drift — dark, readable band the whole way.
 const BG: { t: number; c: RGB }[] = [
   { t: 0.0, c: [7, 16, 15] },
   { t: 0.4, c: [9, 23, 22] },
@@ -49,27 +49,20 @@ function applyPalette(t: number) {
   const bg = sample(BG, t);
   const accent = sample(ACCENT, t);
   const fg = BONE;
-  const mutedFg = mix(bg, BONE, 0.62);
-  const border = mix(bg, BONE, 0.16);
-  const card = mix(bg, BONE, 0.05);
-  const muted = mix(bg, BONE, 0.1);
-  const accentSoft = mix(accent, [255, 214, 178], 0.4);
   root.style.setProperty("--background", v(bg));
   root.style.setProperty("--foreground", v(fg));
-  root.style.setProperty("--card", v(card));
+  root.style.setProperty("--card", v(mix(bg, BONE, 0.05)));
   root.style.setProperty("--card-foreground", v(fg));
-  root.style.setProperty("--muted", v(muted));
-  root.style.setProperty("--muted-foreground", v(mutedFg));
-  root.style.setProperty("--border", v(border));
-  root.style.setProperty("--input", v(border));
+  root.style.setProperty("--muted", v(mix(bg, BONE, 0.1)));
+  root.style.setProperty("--muted-foreground", v(mix(bg, BONE, 0.62)));
+  root.style.setProperty("--border", v(mix(bg, BONE, 0.16)));
+  root.style.setProperty("--input", v(mix(bg, BONE, 0.16)));
   root.style.setProperty("--orange", v(accent));
-  root.style.setProperty("--orange-soft", v(accentSoft));
+  root.style.setProperty("--orange-soft", v(mix(accent, [255, 214, 178], 0.4)));
   root.style.setProperty("--ring", v(accent));
 }
 
-// ── The signal ──────────────────────────────────────────────────────
-// ONE continuous line. Each scroll section morphs it into a shape that
-// MEANS that section.
+// ── The signal: ONE line, one meaningful shape per section ──────────
 const PTS = 10;
 const SHAPES: number[][] = [
   [8, 84, 18, 82, 28, 77, 38, 72, 48, 64, 57, 55, 66, 45, 75, 34, 84, 24, 93, 13],
@@ -80,6 +73,7 @@ const SHAPES: number[][] = [
   [7, 50, 17, 31, 28, 50, 39, 69, 50, 50, 61, 31, 72, 50, 83, 69, 92, 50, 97, 41],
   [18, 88, 30, 80, 40, 64, 28, 56, 48, 50, 44, 38, 64, 40, 60, 26, 84, 32, 90, 14],
 ];
+const N = SHAPES.length;
 const sstep = (x: number) => x * x * (3 - 2 * x);
 function toPath(p: number[]): string {
   const x = (i: number) => p[Math.max(0, Math.min(PTS - 1, i)) * 2];
@@ -95,102 +89,115 @@ function toPath(p: number[]): string {
   return d;
 }
 
-// ── Jinx / Arcane punk-cyberpunk graffiti kit ───────────────────────
+// ── Jinx / Arcane punk-cyberpunk doodle kit ─────────────────────────
 const PINK = "#ff2e88";
 const CYAN = "#1ce6ff";
 const BONEC = "#efe7da";
+const ORG = "rgb(var(--orange))";
 
 const DOODLES: Record<string, ReactNode> = {
   x: (
     <svg viewBox="0 0 40 40" fill="none">
-      <path d="M5 6 L34 33 M7 4 L36 31" stroke={PINK} strokeWidth="3.4" strokeLinecap="round" />
-      <path d="M35 6 L6 33 M37 4 L8 31" stroke={PINK} strokeWidth="3.4" strokeLinecap="round" />
+      <path d="M5 6 L34 33 M7 4 L36 31" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" />
+      <path d="M35 6 L6 33 M37 4 L8 31" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" />
     </svg>
   ),
   o: (
     <svg viewBox="0 0 46 46" fill="none">
-      <path
-        d="M24 4 C36 3 43 14 41 24 C39 36 25 43 14 39 C3 35 2 18 11 9 C15 5 19 5 25 5"
-        stroke={CYAN}
-        strokeWidth="3.2"
-        strokeLinecap="round"
-      />
+      <path d="M24 4 C36 3 43 14 41 24 C39 36 25 43 14 39 C3 35 2 18 11 9 C15 5 19 5 25 5" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" />
     </svg>
   ),
   bomb: (
     <svg viewBox="0 0 56 56" fill="none">
-      <circle cx="26" cy="36" r="15" stroke="rgb(var(--orange))" strokeWidth="3" />
-      <path d="M26 21 C27 14 33 12 36 7" stroke="rgb(var(--orange))" strokeWidth="3" strokeLinecap="round" />
-      <g className="atmo-spark">
-        <path d="M36 7 l3 -5 M36 7 l6 1 M36 7 l-2 -6 M36 7 l6 -4" stroke={PINK} strokeWidth="2.4" strokeLinecap="round" />
-        <circle cx="37" cy="6" r="3" fill={PINK} />
-      </g>
-      <path d="M19 31 q4 -5 9 -2" stroke="rgb(var(--orange))" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="26" cy="36" r="15" stroke="currentColor" strokeWidth="3" />
+      <path d="M26 21 C27 14 33 12 36 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <path d="M36 7 l3 -5 M36 7 l6 1 M36 7 l-2 -6 M36 7 l6 -4" stroke={PINK} strokeWidth="2.4" strokeLinecap="round" />
+      <circle cx="37" cy="6" r="3" fill={PINK} />
+      <path d="M19 31 q4 -5 9 -2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
   ),
   monkey: (
-    <svg viewBox="0 0 60 64" fill="none" stroke={PINK} strokeWidth="2.8">
+    <svg viewBox="0 0 60 64" fill="none" stroke="currentColor" strokeWidth="2.8">
       <circle cx="30" cy="20" r="14" />
       <circle cx="13" cy="16" r="6" />
       <circle cx="47" cy="16" r="6" />
-      <circle cx="25" cy="18" r="1.6" fill={PINK} />
-      <circle cx="35" cy="18" r="1.6" fill={PINK} />
+      <circle cx="25" cy="18" r="1.6" fill="currentColor" />
+      <circle cx="35" cy="18" r="1.6" fill="currentColor" />
       <path d="M24 26 q6 6 12 0" strokeLinecap="round" />
       <rect x="18" y="35" width="24" height="20" rx="4" />
       <path d="M30 35 v-3 M42 45 h7 M49 41 l4 4 -4 4" strokeLinecap="round" />
     </svg>
   ),
   skull: (
-    <svg viewBox="0 0 52 56" fill="none" stroke={BONEC} strokeWidth="2.8">
+    <svg viewBox="0 0 52 56" fill="none" stroke="currentColor" strokeWidth="2.8">
       <path d="M26 6 C40 6 45 18 43 28 C42 33 38 35 38 40 L14 40 C14 35 10 33 9 28 C7 18 12 6 26 6Z" />
-      <circle cx="19" cy="26" r="4.5" fill={BONEC} />
-      <circle cx="33" cy="26" r="4.5" fill={BONEC} />
+      <circle cx="19" cy="26" r="4.5" fill="currentColor" />
+      <circle cx="33" cy="26" r="4.5" fill="currentColor" />
       <path d="M26 31 l-2 6 h4 Z M19 42 v6 M26 42 v7 M33 42 v6" strokeLinecap="round" />
-      <path d="M6 50 L46 12 M6 12 L46 50" stroke={BONEC} strokeWidth="2.2" opacity="0.7" />
+      <path d="M6 50 L46 12 M6 12 L46 50" strokeWidth="2.2" opacity="0.7" />
     </svg>
   ),
   bolt: (
     <svg viewBox="0 0 34 56" fill="none">
-      <path d="M20 2 L5 32 L16 32 L12 54 L30 22 L18 22 Z" fill={CYAN} stroke={CYAN} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M20 2 L5 32 L16 32 L12 54 L30 22 L18 22 Z" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   ),
   heart: (
     <svg viewBox="0 0 44 40" fill="none">
-      <path
-        d="M22 37 C6 26 3 15 9 8 C14 2 21 5 22 12 C23 5 30 2 35 8 C41 15 38 26 22 37 Z"
-        stroke={PINK}
-        strokeWidth="3"
-        strokeLinejoin="round"
-      />
+      <path d="M22 37 C6 26 3 15 9 8 C14 2 21 5 22 12 C23 5 30 2 35 8 C41 15 38 26 22 37 Z" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />
     </svg>
   ),
   spark: (
     <svg viewBox="0 0 40 40" fill="none">
-      <path d="M20 2 C21 14 26 19 38 20 C26 21 21 26 20 38 C19 26 14 21 2 20 C14 19 19 14 20 2 Z" fill={CYAN} />
+      <path d="M20 2 C21 14 26 19 38 20 C26 21 21 26 20 38 C19 26 14 21 2 20 C14 19 19 14 20 2 Z" fill="currentColor" />
     </svg>
   ),
   ammo: (
-    <svg viewBox="0 0 56 28" fill="none" stroke="rgb(var(--orange))" strokeWidth="2.4">
+    <svg viewBox="0 0 56 28" fill="none" stroke="currentColor" strokeWidth="2.4">
       <path d="M4 6 h10 a8 8 0 0 1 0 16 h-10 Z" />
       <path d="M22 6 h10 a8 8 0 0 1 0 16 h-10 Z" />
       <path d="M40 6 h8 a8 8 0 0 1 0 16 h-8 Z" />
     </svg>
   ),
   crosshair: (
-    <svg viewBox="0 0 56 56" fill="none" stroke={CYAN} strokeWidth="2.2">
+    <svg viewBox="0 0 56 56" fill="none" stroke="currentColor" strokeWidth="2.2">
       <circle cx="28" cy="28" r="20" />
-      <circle cx="28" cy="28" r="3" fill={CYAN} />
+      <circle cx="28" cy="28" r="3" fill="currentColor" />
       <path d="M28 2 v12 M28 42 v12 M2 28 h12 M42 28 h12" strokeLinecap="round" />
     </svg>
   ),
   scribble: (
-    <svg viewBox="0 0 80 40" fill="none" stroke={BONEC} strokeWidth="2.4" strokeLinecap="round">
+    <svg viewBox="0 0 80 40" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeDasharray="1 6">
       <path d="M4 28 C14 6 22 6 26 22 C30 36 38 36 44 20 C49 6 58 8 62 24 C65 34 72 32 76 22" />
+    </svg>
+  ),
+  pin: (
+    <svg viewBox="0 0 44 56" fill="none" stroke="currentColor" strokeWidth="3">
+      <path d="M22 53 C10 38 6 28 6 20 A16 16 0 0 1 38 20 C38 28 34 38 22 53 Z" strokeLinejoin="round" />
+      <circle cx="22" cy="20" r="6" fill="currentColor" />
+    </svg>
+  ),
+  plane: (
+    <svg viewBox="0 0 56 56" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinejoin="round">
+      <path d="M52 4 L6 24 L24 30 L30 50 L38 28 Z" />
+      <path d="M24 30 L52 4" />
+    </svg>
+  ),
+  code: (
+    <svg viewBox="0 0 64 44" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8 L6 22 L18 36" />
+      <path d="M46 8 L58 22 L46 36" />
+      <path d="M37 6 L27 38" />
+    </svg>
+  ),
+  arrow: (
+    <svg viewBox="0 0 40 56" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 30 L20 14 L34 30 M6 48 L20 32 L34 48" />
     </svg>
   ),
 };
 
-type Item = {
+type Def = {
   k: keyof typeof DOODLES | "text";
   txt?: string;
   top: string;
@@ -198,51 +205,127 @@ type Item = {
   size: number;
   rot: number;
   op: number;
-  depth: 0 | 1 | 2 | 3; // scroll-parallax band
-  flick?: boolean;
-  color?: string;
+  color: string;
+  dx?: number;
+  dy?: number;
 };
 
-const ITEMS: Item[] = [
-  { k: "x", top: "16%", left: "84%", size: 52, rot: -12, op: 0.5, depth: 2, flick: true },
-  { k: "o", top: "27%", left: "5%", size: 58, rot: 8, op: 0.42, depth: 1 },
-  { k: "bomb", top: "68%", left: "83%", size: 72, rot: 10, op: 0.5, depth: 3 },
-  { k: "monkey", top: "76%", left: "7%", size: 78, rot: -8, op: 0.42, depth: 2 },
-  { k: "skull", top: "40%", left: "90%", size: 64, rot: 14, op: 0.34, depth: 1 },
-  { k: "bolt", top: "52%", left: "3%", size: 56, rot: -10, op: 0.5, depth: 3, flick: true },
-  {
-    k: "text",
-    txt: "BOOM",
-    top: "86%",
-    left: "58%",
-    size: 60,
-    rot: -6,
-    op: 0.5,
-    depth: 2,
-    flick: true,
-    color: PINK,
-  },
-  { k: "heart", top: "31%", left: "73%", size: 40, rot: -14, op: 0.36, depth: 1 },
-  { k: "spark", top: "20%", left: "46%", size: 30, rot: 0, op: 0.22, depth: 0, flick: true },
-  { k: "ammo", top: "62%", left: "90%", size: 56, rot: 18, op: 0.36, depth: 2 },
-  { k: "crosshair", top: "10%", left: "30%", size: 50, rot: 0, op: 0.2, depth: 0 },
-  { k: "scribble", top: "90%", left: "16%", size: 90, rot: -4, op: 0.28, depth: 1 },
-  {
-    k: "text",
-    txt: "PEW PEW",
-    top: "47%",
-    left: "84%",
-    size: 26,
-    rot: 90,
-    op: 0.34,
-    depth: 1,
-    color: CYAN,
-  },
-  { k: "x", top: "82%", left: "44%", size: 34, rot: 20, op: 0.26, depth: 0 },
+// One curated, themed kit PER section — composed to echo that
+// section's line shape, not scattered at random.
+const SCENES: Def[][] = [
+  // 0 ASCENT — launch / self-taught rise
+  [
+    { k: "bolt", top: "70%", left: "20%", size: 56, rot: -12, op: 0.55, color: CYAN, dx: -30, dy: 70 },
+    { k: "spark", top: "47%", left: "62%", size: 28, rot: 0, op: 0.5, color: CYAN, dy: 50 },
+    { k: "arrow", top: "28%", left: "80%", size: 52, rot: 14, op: 0.5, color: PINK, dx: 30, dy: 60 },
+    { k: "x", top: "82%", left: "40%", size: 30, rot: 18, op: 0.4, color: PINK, dy: 40 },
+  ],
+  // 1 SCREEN — the interfaces he ships
+  [
+    { k: "code", top: "34%", left: "30%", size: 58, rot: -6, op: 0.5, color: CYAN, dx: -40 },
+    { k: "crosshair", top: "52%", left: "56%", size: 56, rot: 0, op: 0.45, color: PINK, dy: 30 },
+    { k: "o", top: "70%", left: "70%", size: 40, rot: 8, op: 0.4, color: CYAN, dy: 40 },
+    { k: "scribble", top: "78%", left: "34%", size: 84, rot: -4, op: 0.3, color: BONEC, dy: 30 },
+  ],
+  // 2 ROUTE — born Riyadh → based Beirut
+  [
+    { k: "pin", top: "76%", left: "22%", size: 54, rot: -8, op: 0.55, color: PINK, dx: -40, dy: 40 },
+    { k: "spark", top: "68%", left: "32%", size: 22, rot: 0, op: 0.45, color: CYAN, dy: 30 },
+    { k: "plane", top: "24%", left: "76%", size: 60, rot: 6, op: 0.5, color: CYAN, dx: 40, dy: 50 },
+    { k: "scribble", top: "50%", left: "50%", size: 96, rot: -10, op: 0.26, color: BONEC },
+  ],
+  // 3 NETWORK — connected skill graph
+  [
+    { k: "spark", top: "34%", left: "30%", size: 24, rot: 0, op: 0.5, color: CYAN, dx: -30 },
+    { k: "crosshair", top: "46%", left: "50%", size: 52, rot: 0, op: 0.45, color: PINK },
+    { k: "spark", top: "62%", left: "66%", size: 24, rot: 0, op: 0.5, color: PINK, dx: 30 },
+    { k: "bolt", top: "70%", left: "26%", size: 44, rot: -14, op: 0.45, color: CYAN, dy: 40 },
+    { k: "scribble", top: "52%", left: "46%", size: 100, rot: 6, op: 0.3, color: BONEC },
+  ],
+  // 4 TREND — numbers climbing
+  [
+    { k: "ammo", top: "70%", left: "30%", size: 56, rot: 16, op: 0.4, color: ORG, dy: 40 },
+    { k: "arrow", top: "42%", left: "56%", size: 50, rot: 0, op: 0.5, color: CYAN, dy: 50 },
+    { k: "text", txt: "BOOM", top: "26%", left: "74%", size: 46, rot: -6, op: 0.5, color: PINK, dx: 30 },
+    { k: "x", top: "82%", left: "50%", size: 28, rot: 20, op: 0.35, color: CYAN, dy: 30 },
+  ],
+  // 5 WAVE — live, playful chaos
+  [
+    { k: "text", txt: "PEW PEW", top: "46%", left: "84%", size: 24, rot: 90, op: 0.4, color: CYAN, dx: 40 },
+    { k: "monkey", top: "70%", left: "16%", size: 74, rot: -8, op: 0.45, color: PINK, dx: -40, dy: 40 },
+    { k: "bomb", top: "40%", left: "70%", size: 64, rot: 10, op: 0.5, color: ORG },
+    { k: "spark", top: "24%", left: "48%", size: 26, rot: 0, op: 0.4, color: CYAN, dy: 50 },
+  ],
+  // 6 SEND — reach out / sign-off
+  [
+    { k: "plane", top: "34%", left: "60%", size: 64, rot: 8, op: 0.55, color: CYAN, dx: 40, dy: 40 },
+    { k: "heart", top: "60%", left: "36%", size: 40, rot: -10, op: 0.45, color: PINK, dy: 40 },
+    { k: "skull", top: "44%", left: "22%", size: 54, rot: -6, op: 0.4, color: BONEC, dx: -30 },
+    { k: "text", txt: "BOOM", top: "76%", left: "64%", size: 44, rot: -8, op: 0.5, color: PINK, dy: 30 },
+  ],
 ];
 
+function Doodle({
+  d,
+  center,
+  sp,
+  reduced,
+}: {
+  d: Def;
+  center: number;
+  sp: MotionValue<number>;
+  reduced: boolean;
+}) {
+  const win = (p: number) => {
+    const x = Math.max(0, Math.min(1, 1 - Math.abs(p - center) / 0.16));
+    return sstep(x);
+  };
+  const opacity = useTransform(sp, (p) => d.op * win(p));
+  const scale = useTransform(sp, (p) => 0.6 + 0.4 * win(p));
+  const x = useTransform(sp, (p) => (1 - win(p)) * (d.dx ?? 0));
+  const y = useTransform(sp, (p) => (1 - win(p)) * (d.dy ?? 26));
+
+  return (
+    <motion.div
+      className="absolute"
+      style={{
+        top: d.top,
+        left: d.left,
+        width: d.size,
+        height: d.size,
+        marginLeft: -d.size / 2,
+        marginTop: -d.size / 2,
+        color: d.color,
+        rotate: d.rot,
+        opacity: reduced ? d.op : opacity,
+        scale: reduced ? 1 : scale,
+        x: reduced ? 0 : x,
+        y: reduced ? 0 : y,
+        filter: `drop-shadow(0 0 7px ${d.color})`,
+      }}
+    >
+      {d.k === "text" ? (
+        <span
+          className="f-anton block whitespace-nowrap"
+          style={{
+            fontSize: d.size,
+            color: d.color,
+            WebkitTextStroke: `1px ${d.color}`,
+            textShadow: `0 0 12px ${d.color}`,
+            lineHeight: 1,
+          }}
+        >
+          {d.txt}
+        </span>
+      ) : (
+        <div className="h-full w-full">{DOODLES[d.k]}</div>
+      )}
+    </motion.div>
+  );
+}
+
 export function Atmosphere() {
-  const reduced = useReducedMotion();
+  const reduced = useReducedMotion() ?? false;
   const { scrollYProgress } = useScroll();
   const queued = useRef(false);
   const latest = useRef(0);
@@ -266,15 +349,15 @@ export function Atmosphere() {
   useEffect(() => {
     const buf = new Array(PTS * 2).fill(0);
     const draw = (prog: number) => {
-      const s = prog * (SHAPES.length - 1);
-      const i = Math.max(0, Math.min(SHAPES.length - 2, Math.floor(s)));
+      const s = prog * (N - 1);
+      const i = Math.max(0, Math.min(N - 2, Math.floor(s)));
       const f = sstep(Math.max(0, Math.min(1, s - i)));
       const a = SHAPES[i];
       const b = SHAPES[i + 1];
       for (let k = 0; k < PTS * 2; k++) buf[k] = a[k] + (b[k] - a[k]) * f;
-      const d = toPath(buf);
-      lineRef.current?.setAttribute("d", d);
-      glowRef.current?.setAttribute("d", d);
+      const dd = toPath(buf);
+      lineRef.current?.setAttribute("d", dd);
+      glowRef.current?.setAttribute("d", dd);
     };
     draw(scrollYProgress.get());
     let qd = false;
@@ -289,20 +372,11 @@ export function Atmosphere() {
     return unsub;
   }, [scrollYProgress]);
 
-  // four parallax bands (transform-only → compositor cheap)
-  const d0 = useTransform(scrollYProgress, [0, 1], [0, -40]);
-  const d1 = useTransform(scrollYProgress, [0, 1], [0, -130]);
-  const d2 = useTransform(scrollYProgress, [0, 1], [0, -240]);
-  const d3 = useTransform(scrollYProgress, [0, 1], [0, -380]);
-  const rotS = useTransform(scrollYProgress, [0, 1], [0, 36]);
-  const bands = [d0, d1, d2, d3];
-
   return (
     <div
       aria-hidden
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
     >
-      {/* base wash */}
       <div
         className="absolute inset-0"
         style={{
@@ -311,7 +385,6 @@ export function Atmosphere() {
         }}
       />
 
-      {/* the morphing signal line */}
       <svg
         className="absolute inset-0 h-full w-full"
         viewBox="0 0 100 100"
@@ -348,69 +421,19 @@ export function Atmosphere() {
         </path>
       </svg>
 
-      {/* graffiti kit */}
-      {ITEMS.map((it, idx) => {
-        const flick =
-          !reduced && it.flick
-            ? {
-                opacity: [it.op, it.op * 0.35, it.op, it.op * 0.7, it.op],
-                filter: [
-                  "drop-shadow(0 0 0px currentColor)",
-                  "drop-shadow(0 0 6px currentColor)",
-                  "drop-shadow(0 0 1px currentColor)",
-                ],
-              }
-            : undefined;
-        return (
-          <motion.div
-            key={idx}
-            className="absolute"
-            style={{
-              top: it.top,
-              left: it.left,
-              width: it.size,
-              height: it.size,
-              color: it.color ?? "#fff",
-              opacity: it.op,
-              rotate: reduced ? 0 : rotS,
-              y: reduced ? 0 : bands[it.depth],
-              translateX: "-50%",
-              translateY: "-50%",
-            }}
-            animate={flick}
-            transition={
-              flick
-                ? {
-                    duration: 3.4 + (idx % 4),
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }
-                : undefined
-            }
-          >
-            <div style={{ transform: `rotate(${it.rot}deg)` }}>
-              {it.k === "text" ? (
-                <span
-                  className="f-anton block whitespace-nowrap"
-                  style={{
-                    fontSize: it.size,
-                    color: it.color ?? PINK,
-                    WebkitTextStroke: `1px ${it.color ?? PINK}`,
-                    textShadow: `0 0 10px ${it.color ?? PINK}`,
-                    lineHeight: 1,
-                  }}
-                >
-                  {it.txt}
-                </span>
-              ) : (
-                <div className="h-full w-full">{DOODLES[it.k]}</div>
-              )}
-            </div>
-          </motion.div>
-        );
-      })}
+      {/* per-section graffiti scenes — bloom in/out WITH the morph */}
+      {SCENES.map((scene, si) =>
+        scene.map((d, di) => (
+          <Doodle
+            key={`${si}-${di}`}
+            d={d}
+            center={si / (N - 1)}
+            sp={scrollYProgress}
+            reduced={reduced}
+          />
+        )),
+      )}
 
-      {/* analog grain */}
       <svg className="absolute inset-0 h-full w-full opacity-[0.05] mix-blend-soft-light">
         <filter id="atmo-grain">
           <feTurbulence
@@ -424,7 +447,6 @@ export function Atmosphere() {
         <rect width="100%" height="100%" filter="url(#atmo-grain)" />
       </svg>
 
-      {/* soft cinematic vignette */}
       <div
         className="absolute inset-0"
         style={{
