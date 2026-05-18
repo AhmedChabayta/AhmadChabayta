@@ -61,6 +61,7 @@ export function WorkPreview() {
               >
                 <Link
                   {...ProjectLinkProps(p)}
+                  data-line="card"
                   className="flex h-full flex-col gap-5 border border-border/40 bg-card/5 p-7 backdrop-blur-md transition-colors hover:border-orange/40 hover:bg-card/15 focus-visible:border-orange/40"
                 >
                   {SHOTS[p.slug] && (

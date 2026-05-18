@@ -62,48 +62,8 @@ function applyPalette(t: number) {
   root.style.setProperty("--ring", v(accent));
 }
 
-// ── The signal: ONE line, one meaningful shape per section ──────────
-const PTS = 10;
-// One continuous line. It starts as an underscore, then as you scroll
-// it morphs into a card, then a clean glyph per section (10 pts):
-//  0 UNDERSCORE  hero — the cursor / "the work speaks"
-//  1 CARD        work — it becomes the project card
-//  2 PIN         about — who & where (Beirut / Riyadh)
-//  3 STACK       capabilities — the layered tech stack
-//  4 BAR CHART   stats — the numbers
-//  5 WAVE        experiments — live interactive demos
-//  6 ENVELOPE    contact — reach out
-const SHAPES: number[][] = [
-  // UNDERSCORE (flat cursor line)
-  [24, 64, 31, 64, 38, 64, 45, 64, 52, 64, 59, 64, 66, 64, 73, 64, 80, 64, 86, 64],
-  // CARD (clean rounded rectangle)
-  [30, 30, 50, 28, 70, 30, 74, 45, 74, 62, 70, 72, 50, 74, 30, 72, 26, 57, 26, 42],
-  // PIN (teardrop)
-  [50, 90, 41, 74, 32, 60, 30, 44, 38, 30, 50, 26, 62, 30, 70, 44, 68, 60, 59, 75],
-  // STACK (three layered tiers)
-  [28, 40, 50, 37, 72, 40, 72, 50, 50, 53, 28, 50, 28, 60, 50, 63, 72, 60, 72, 66],
-  // BAR CHART (rising skyline)
-  [14, 76, 14, 56, 32, 56, 32, 42, 50, 42, 50, 30, 68, 30, 68, 22, 86, 22, 86, 76],
-  // WAVE (oscilloscope)
-  [12, 50, 21, 35, 30, 50, 39, 65, 50, 50, 61, 35, 70, 50, 79, 65, 88, 50, 94, 45],
-  // ENVELOPE (body + flap)
-  [24, 36, 50, 36, 76, 36, 76, 64, 50, 64, 24, 64, 24, 42, 40, 52, 60, 52, 76, 42],
-];
-const N = SHAPES.length;
+// easing used by the graffiti scene windows
 const sstep = (x: number) => x * x * (3 - 2 * x);
-function toPath(p: number[]): string {
-  const x = (i: number) => p[Math.max(0, Math.min(PTS - 1, i)) * 2];
-  const y = (i: number) => p[Math.max(0, Math.min(PTS - 1, i)) * 2 + 1];
-  let d = `M ${x(0).toFixed(2)} ${y(0).toFixed(2)}`;
-  for (let i = 0; i < PTS - 1; i++) {
-    const c1x = x(i) + (x(i + 1) - x(i - 1)) / 6;
-    const c1y = y(i) + (y(i + 1) - y(i - 1)) / 6;
-    const c2x = x(i + 1) - (x(i + 2) - x(i)) / 6;
-    const c2y = y(i + 1) - (y(i + 2) - y(i)) / 6;
-    d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)} ${c2x.toFixed(2)} ${c2y.toFixed(2)} ${x(i + 1).toFixed(2)} ${y(i + 1).toFixed(2)}`;
-  }
-  return d;
-}
 
 // ── Jinx / Arcane punk-cyberpunk doodle kit ─────────────────────────
 const PINK = "#ff2e88";
@@ -345,8 +305,6 @@ export function Atmosphere() {
   const { scrollYProgress } = useScroll();
   const queued = useRef(false);
   const latest = useRef(0);
-  const lineRef = useRef<SVGPathElement>(null);
-  const glowRef = useRef<SVGPathElement>(null);
 
   useEffect(() => {
     applyPalette(scrollYProgress.get());
@@ -362,68 +320,6 @@ export function Atmosphere() {
     });
   });
 
-  useEffect(() => {
-    const buf = new Array(PTS * 2).fill(0);
-    const draw = (prog: number) => {
-      const s = prog * (N - 1);
-      const i = Math.max(0, Math.min(N - 2, Math.floor(s)));
-      const f = sstep(Math.max(0, Math.min(1, s - i)));
-      const a = SHAPES[i];
-      const b = SHAPES[i + 1];
-      for (let k = 0; k < PTS * 2; k++) buf[k] = a[k] + (b[k] - a[k]) * f;
-      const dd = toPath(buf);
-      lineRef.current?.setAttribute("d", dd);
-      glowRef.current?.setAttribute("d", dd);
-    };
-
-    let target = scrollYProgress.get();
-    let cur = target;
-    draw(cur);
-
-    if (reduced) {
-      const unsub = scrollYProgress.on("change", (val) => draw(val));
-      return unsub;
-    }
-
-    // continuously ease cur → target so the morph is buttery on any
-    // scroll speed; the loop idles to zero cost when settled.
-    let raf = 0;
-    let running = false;
-    const tick = () => {
-      cur += (target - cur) * 0.085;
-      draw(cur);
-      if (Math.abs(target - cur) < 1e-4) {
-        cur = target;
-        draw(cur);
-        running = false;
-        return;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    const kick = () => {
-      if (running) return;
-      running = true;
-      raf = requestAnimationFrame(tick);
-    };
-    const unsub = scrollYProgress.on("change", (val) => {
-      target = val;
-      kick();
-    });
-    const onVis = () => {
-      if (document.hidden) {
-        cancelAnimationFrame(raf);
-        running = false;
-      } else kick();
-    };
-    document.addEventListener("visibilitychange", onVis);
-    return () => {
-      cancelAnimationFrame(raf);
-      running = false;
-      unsub();
-      document.removeEventListener("visibilitychange", onVis);
-    };
-  }, [scrollYProgress, reduced]);
-
   return (
     <div
       aria-hidden
@@ -437,38 +333,13 @@ export function Atmosphere() {
         }}
       />
 
-      <svg
-        className="absolute inset-0 h-full w-full"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="xMidYMid meet"
-        fill="none"
-      >
-        <path
-          ref={glowRef}
-          stroke="rgb(var(--orange))"
-          strokeWidth={3}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity={0.22}
-          style={{ filter: "blur(3.5px)" }}
-        />
-        <path
-          ref={lineRef}
-          stroke="rgb(var(--orange))"
-          strokeWidth={0.7}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity={0.78}
-        />
-      </svg>
-
-      {/* per-section graffiti scenes — bloom in/out WITH the morph */}
+      {/* per-section graffiti scenes — bloom in/out along scroll */}
       {SCENES.map((scene, si) =>
         scene.map((d, di) => (
           <Doodle
             key={`${si}-${di}`}
             d={d}
-            center={si / (N - 1)}
+            center={si / (SCENES.length - 1)}
             sp={scrollYProgress}
             reduced={reduced}
           />
