@@ -222,7 +222,6 @@ export function WorkPreview() {
           </div>
           <div
             ref={screenRef}
-            data-line="screen"
             className="relative aspect-[3/4] w-full max-w-[1000px] overflow-hidden rounded-md sm:aspect-[16/10]"
           >
             <div ref={rowRef} className="absolute inset-0 flex h-full will-change-transform">

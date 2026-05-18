@@ -52,7 +52,6 @@ export function Hero() {
 
         <div className="mt-12 flex flex-wrap items-end justify-between gap-x-12 gap-y-10 md:mt-20">
           <motion.div
-            data-line="hero"
             custom={2}
             initial="hidden"
             animate="show"
