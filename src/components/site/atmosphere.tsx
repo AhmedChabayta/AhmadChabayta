@@ -64,14 +64,29 @@ function applyPalette(t: number) {
 
 // ── The signal: ONE line, one meaningful shape per section ──────────
 const PTS = 10;
+// Each shape is a recognizable glyph for its section (10 pts → spline):
+//  0 CODE </>     hero — frontend developer
+//  1 WINDOW       work — the screens/products he ships
+//  2 PIN          about — who & where (Beirut / Riyadh)
+//  3 STACK        capabilities — the layered tech stack
+//  4 BAR CHART    stats — the numbers
+//  5 WAVE         experiments — live interactive demos
+//  6 ENVELOPE     contact — reach out
 const SHAPES: number[][] = [
-  [8, 84, 18, 82, 28, 77, 38, 72, 48, 64, 57, 55, 66, 45, 75, 34, 84, 24, 93, 13],
-  [24, 40, 24, 27, 50, 25, 76, 27, 79, 50, 76, 73, 50, 75, 24, 73, 23, 56, 24, 42],
-  [88, 82, 77, 73, 70, 64, 60, 62, 52, 53, 46, 44, 40, 41, 30, 33, 21, 24, 11, 15],
-  [13, 38, 28, 21, 40, 47, 54, 25, 50, 53, 67, 40, 60, 67, 79, 54, 72, 29, 89, 44],
-  [9, 79, 20, 72, 28, 74, 38, 59, 46, 62, 56, 45, 64, 48, 74, 31, 82, 34, 93, 17],
-  [7, 50, 17, 31, 28, 50, 39, 69, 50, 50, 61, 31, 72, 50, 83, 69, 92, 50, 97, 41],
-  [18, 88, 30, 80, 40, 64, 28, 56, 48, 50, 44, 38, 64, 40, 60, 26, 84, 32, 90, 14],
+  // CODE  </>
+  [38, 22, 22, 36, 12, 50, 22, 64, 38, 78, 52, 70, 48, 30, 62, 22, 86, 50, 62, 78],
+  // WINDOW (rounded screen outline)
+  [20, 30, 50, 28, 80, 30, 82, 50, 80, 72, 50, 74, 20, 72, 18, 50, 20, 38, 35, 30],
+  // PIN (teardrop)
+  [50, 92, 40, 72, 28, 58, 26, 42, 36, 28, 50, 24, 64, 28, 74, 42, 72, 58, 58, 74],
+  // STACK (three layered tiers)
+  [20, 32, 50, 44, 80, 32, 80, 48, 50, 60, 20, 48, 20, 64, 50, 76, 80, 64, 80, 80],
+  // BAR CHART (rising skyline)
+  [10, 80, 24, 80, 24, 60, 40, 60, 40, 42, 56, 42, 56, 26, 74, 26, 90, 26, 90, 80],
+  // WAVE (oscilloscope)
+  [7, 50, 17, 30, 28, 50, 39, 70, 50, 50, 61, 30, 72, 50, 83, 70, 92, 50, 97, 42],
+  // ENVELOPE (body + flap)
+  [18, 34, 50, 34, 82, 34, 82, 68, 50, 68, 18, 68, 18, 40, 40, 52, 60, 52, 82, 40],
 ];
 const N = SHAPES.length;
 const sstep = (x: number) => x * x * (3 - 2 * x);
@@ -217,7 +232,7 @@ const SCENES: Def[][] = [
   [
     { k: "bolt", top: "70%", left: "20%", size: 56, rot: -12, op: 0.55, color: CYAN, dx: -30, dy: 70 },
     { k: "spark", top: "47%", left: "62%", size: 28, rot: 0, op: 0.5, color: CYAN, dy: 50 },
-    { k: "arrow", top: "28%", left: "80%", size: 52, rot: 14, op: 0.5, color: PINK, dx: 30, dy: 60 },
+    { k: "code", top: "28%", left: "80%", size: 56, rot: 10, op: 0.5, color: PINK, dx: 30, dy: 60 },
     { k: "x", top: "82%", left: "40%", size: 30, rot: 18, op: 0.4, color: PINK, dy: 40 },
   ],
   // 1 SCREEN — the interfaces he ships
@@ -359,18 +374,54 @@ export function Atmosphere() {
       lineRef.current?.setAttribute("d", dd);
       glowRef.current?.setAttribute("d", dd);
     };
-    draw(scrollYProgress.get());
-    let qd = false;
+
+    let target = scrollYProgress.get();
+    let cur = target;
+    draw(cur);
+
+    if (reduced) {
+      const unsub = scrollYProgress.on("change", (val) => draw(val));
+      return unsub;
+    }
+
+    // continuously ease cur → target so the morph is buttery on any
+    // scroll speed; the loop idles to zero cost when settled.
+    let raf = 0;
+    let running = false;
+    const tick = () => {
+      cur += (target - cur) * 0.085;
+      draw(cur);
+      if (Math.abs(target - cur) < 1e-4) {
+        cur = target;
+        draw(cur);
+        running = false;
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    const kick = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
     const unsub = scrollYProgress.on("change", (val) => {
-      if (qd) return;
-      qd = true;
-      requestAnimationFrame(() => {
-        qd = false;
-        draw(val);
-      });
+      target = val;
+      kick();
     });
-    return unsub;
-  }, [scrollYProgress]);
+    const onVis = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf);
+        running = false;
+      } else kick();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      cancelAnimationFrame(raf);
+      running = false;
+      unsub();
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [scrollYProgress, reduced]);
 
   return (
     <div
@@ -394,31 +445,20 @@ export function Atmosphere() {
         <path
           ref={glowRef}
           stroke="rgb(var(--orange))"
-          strokeWidth={2.6}
+          strokeWidth={3}
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity={0.2}
-          style={{ filter: "blur(3px)" }}
+          opacity={0.22}
+          style={{ filter: "blur(3.5px)" }}
         />
         <path
           ref={lineRef}
           stroke="rgb(var(--orange))"
-          strokeWidth={0.55}
+          strokeWidth={0.7}
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity={0.72}
-          strokeDasharray={reduced ? undefined : "0.6 2.4"}
-        >
-          {!reduced && (
-            <animate
-              attributeName="stroke-dashoffset"
-              from="0"
-              to="-30"
-              dur="6s"
-              repeatCount="indefinite"
-            />
-          )}
-        </path>
+          opacity={0.78}
+        />
       </svg>
 
       {/* per-section graffiti scenes — bloom in/out WITH the morph */}
