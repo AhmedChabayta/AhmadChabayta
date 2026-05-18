@@ -6,9 +6,9 @@ import { Container, Section } from "@/components/ui";
 
 const STATS = [
   { value: 4, suffix: "+", label: "YEARS PROFESSIONAL" },
-  { value: 50, suffix: "k+", label: "LINES SHIPPED" },
-  { value: 30, suffix: "+", label: "PROJECTS" },
-  { value: 2, suffix: "", label: "LANGUAGES" },
+  { value: 300, suffix: "k+", label: "LINES SHIPPED" },
+  { value: 200, suffix: "+", label: "RICH MEDIA & APPS" },
+  { value: 2, suffix: "", label: "SPOKEN LANGUAGES" },
 ];
 
 function Counter({ to, suffix }: { to: number; suffix: string }) {
@@ -44,7 +44,7 @@ export function StatsStrip() {
     <Section
       pad="none"
       aria-labelledby="stats-heading"
-      className="bg-orange text-background"
+      className="bg-[rgb(var(--orange)/0.14)] text-foreground backdrop-blur-sm"
     >
       <h2 id="stats-heading" className="sr-only">
         Stats
@@ -57,15 +57,15 @@ export function StatsStrip() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.5, delay: i * 0.05 }}
-            className="flex flex-col gap-6 border-b border-r border-background/10 px-10 py-20 last:border-r-0 md:border-b-0 md:px-16 md:py-28"
+            className="flex flex-col gap-6 border-b border-r border-foreground/10 px-10 py-20 last:border-r-0 md:border-b-0 md:px-16 md:py-28"
           >
-            <span className="f-mono text-[0.55rem] text-background/60">
+            <span className="f-mono text-[0.55rem] text-foreground/45">
               / {String(i + 1).padStart(2, "0")}
             </span>
-            <span className="f-display text-[clamp(3.5rem,8vw,7rem)] leading-none">
+            <span className="f-display text-orange text-[clamp(3.5rem,8vw,7rem)] leading-none">
               <Counter to={value} suffix={suffix} />
             </span>
-            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-background/70">
+            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-foreground/65">
               {label}
             </span>
           </motion.div>
