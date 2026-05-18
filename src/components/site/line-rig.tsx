@@ -55,15 +55,8 @@ export function LineRig() {
     };
     setVB();
 
-    let hero: HTMLElement | null = null;
-    let cards: HTMLElement[] = [];
-    const collect = () => {
-      hero = document.querySelector('[data-line="hero"]');
-      cards = Array.from(
-        document.querySelectorAll<HTMLElement>('[data-line="card"]'),
-      );
-    };
-    collect();
+    const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
+    const ease = (x: number) => x * x * (3 - 2 * x);
 
     const cur: Box = {
       l: W * 0.28,
@@ -77,40 +70,64 @@ export function LineRig() {
 
     const computeTarget = () => {
       const vh = H;
-      const cy = vh * 0.5;
+      const hero = document.querySelector<HTMLElement>('[data-line="hero"]');
+      const screen = document.querySelector<HTMLElement>(
+        '[data-line="screen"]',
+      );
+
+      // underscore box, measured under the hero title
+      let u: Box | null = null;
+      let heroOn = false;
       if (hero) {
         const hr = hero.getBoundingClientRect();
-        if (hr.bottom > vh * 0.16 && hr.top < vh * 0.92) {
-          const gap = Math.max(12, hr.height * 0.18);
-          const y = hr.bottom + gap;
-          tgt.l = hr.left;
-          tgt.t = y;
-          tgt.r = hr.right;
-          tgt.b = y + 3;
-          tgt.rad = 2;
-          tgt.op = 0.8;
-          return;
-        }
+        heroOn = hr.bottom > vh * 0.16 && hr.top < vh * 0.95;
+        const gap = Math.max(12, hr.height * 0.18);
+        const y = hr.bottom + gap;
+        u = { l: hr.left, t: y, r: hr.right, b: y + 3, rad: 2, op: 0.8 };
       }
-      let best: HTMLElement | null = null;
-      let bestD = Infinity;
-      for (const c of cards) {
-        const r = c.getBoundingClientRect();
-        const d = Math.abs((r.top + r.bottom) / 2 - cy);
-        if (d < bestD) {
-          bestD = d;
-          best = c;
-        }
+
+      if (screen) {
+        const r = screen.getBoundingClientRect();
+        const pad = 6;
+        const S: Box = {
+          l: r.left - pad,
+          t: r.top - pad,
+          r: r.right + pad,
+          b: r.bottom + pad,
+          rad: 14,
+          op: 0.88,
+        };
+        const base =
+          u ?? {
+            l: r.left + r.width * 0.32,
+            t: r.top - 44,
+            r: r.right - r.width * 0.32,
+            b: r.top - 41,
+            rad: 2,
+            op: 0.8,
+          };
+        // continuous blend underscore → screen as it rises into view
+        const k = ease(clamp01((vh * 0.82 - r.top) / (vh * 0.5)));
+        tgt.l = base.l + (S.l - base.l) * k;
+        tgt.t = base.t + (S.t - base.t) * k;
+        tgt.r = base.r + (S.r - base.r) * k;
+        tgt.b = base.b + (S.b - base.b) * k;
+        tgt.rad = base.rad + (S.rad - base.rad) * k;
+        let op = 0.88;
+        if (k < 0.02) op = base.op; // pure underscore
+        if (r.bottom < vh * 0.16) op = 0.88 * clamp01(r.bottom / (vh * 0.16));
+        if (r.top > vh * 1.45 && !heroOn) op = 0;
+        tgt.op = op;
+        return;
       }
-      if (best && bestD < vh * 1.5) {
-        const r = best.getBoundingClientRect();
-        const pad = 7;
-        tgt.l = r.left - pad;
-        tgt.t = r.top - pad;
-        tgt.r = r.right + pad;
-        tgt.b = r.bottom + pad;
-        tgt.rad = 12;
-        tgt.op = 0.85;
+
+      if (u) {
+        tgt.l = u.l;
+        tgt.t = u.t;
+        tgt.r = u.r;
+        tgt.b = u.b;
+        tgt.rad = u.rad;
+        tgt.op = heroOn ? 0.8 : 0;
         return;
       }
       tgt.op = 0;
@@ -175,7 +192,6 @@ export function LineRig() {
     const onScroll = () => kick();
     const onResize = () => {
       setVB();
-      collect();
       kick();
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -187,10 +203,7 @@ export function LineRig() {
       } else kick();
     };
     document.addEventListener("visibilitychange", onVis);
-    const settle = window.setTimeout(() => {
-      collect();
-      kick();
-    }, 500);
+    const settle = window.setTimeout(() => kick(), 500);
 
     return () => {
       cancelAnimationFrame(raf);
