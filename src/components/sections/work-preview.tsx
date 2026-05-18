@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import { useInView, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { PROJECTS, type Project } from "@/data/projects";
 import { SHOTS } from "@/data/shots.generated";
@@ -41,31 +42,37 @@ function status(p: Project): { label: string; dot?: "pulse" | "solid" } {
  */
 function DrawnFrame({ delay }: { delay: number }) {
   const reduced = useReducedMotion();
+  const ref = useRef<SVGSVGElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-8% 0px -8% 0px" });
+  const on = reduced || inView;
   return (
     <svg
+      ref={ref}
       aria-hidden
       className="pointer-events-none absolute inset-0 z-10 h-full w-full"
       viewBox="0 0 100 100"
       preserveAspectRatio="none"
       fill="none"
     >
-      <motion.rect
+      <rect
         x="1.1"
         y="1.1"
         width="97.8"
         height="97.8"
         rx="2.4"
+        pathLength={1}
         stroke="rgb(var(--orange))"
-        strokeWidth={1.5}
+        strokeWidth={2}
         strokeLinecap="round"
         vectorEffect="non-scaling-stroke"
-        style={{ filter: "drop-shadow(0 0 5px rgb(var(--orange) / 0.45))" }}
-        initial={reduced ? { opacity: 0.5 } : { pathLength: 0, opacity: 0 }}
-        whileInView={reduced ? { opacity: 0.5 } : { pathLength: 1, opacity: 0.62 }}
-        viewport={{ once: true, margin: "-12%" }}
-        transition={{
-          pathLength: { duration: 1.15, ease: [0.22, 1, 0.36, 1], delay },
-          opacity: { duration: 0.35, delay },
+        strokeDasharray={1}
+        style={{
+          strokeDashoffset: on ? 0 : 1,
+          opacity: on ? 0.85 : 0,
+          filter: "drop-shadow(0 0 6px rgb(var(--orange) / 0.5))",
+          transition: reduced
+            ? "none"
+            : `stroke-dashoffset 1.15s cubic-bezier(.22,1,.36,1) ${delay}s, opacity .4s ease ${delay}s`,
         }}
       />
     </svg>
