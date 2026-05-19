@@ -7,7 +7,6 @@ import { Nav } from "@/components/site/nav";
 import { Footer } from "@/components/site/footer";
 import { ScrollProgress } from "@/components/site/scroll-progress";
 import { Atmosphere } from "@/components/site/atmosphere";
-import { LineRig } from "@/components/site/line-rig";
 
 const anton = Anton({
   variable: "--font-anton",
@@ -86,7 +85,6 @@ export default function RootLayout({
         <main id="main" className="w-full min-w-0 flex-1">
           {children}
         </main>
-        <LineRig />
         <Footer />
         <Analytics />
         <SpeedInsights />

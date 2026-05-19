@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useRef, type ReactNode } from "react";
+import { useInView, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { PROJECTS, type Project } from "@/data/projects";
 import { SHOTS } from "@/data/shots.generated";
-import { Tilt } from "@/components/motion/reveal";
 import {
   Badge,
   Container,
@@ -35,13 +34,59 @@ function status(p: Project): { label: string; dot?: "pulse" | "solid" } {
   return { label: "CASE STUDY" };
 }
 
+/**
+ * The line IS the container: an SVG stroke that draws itself into a
+ * frame as the card enters, with the real content rendered inside it.
+ * Sized to its own box (no measuring, no overlap), responsive.
+ */
+function LineFrame({ children }: { children: ReactNode }) {
+  const reduced = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-12% 0px -12% 0px" });
+  const on = reduced || inView;
+  return (
+    <div ref={ref} className="relative h-full">
+      <svg
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        fill="none"
+      >
+        <rect
+          x="1.2"
+          y="1.2"
+          width="97.6"
+          height="97.6"
+          rx="2.4"
+          pathLength={1}
+          stroke="rgb(var(--orange))"
+          strokeWidth={2}
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          strokeDasharray={1}
+          style={{
+            strokeDashoffset: on ? 0 : 1,
+            opacity: on ? 0.78 : 0,
+            filter: "drop-shadow(0 0 6px rgb(var(--orange) / 0.45))",
+            transition: reduced
+              ? "none"
+              : "stroke-dashoffset 1.15s cubic-bezier(.22,1,.36,1), opacity .4s ease",
+          }}
+        />
+      </svg>
+      <div className="relative h-full">{children}</div>
+    </div>
+  );
+}
+
 function ProjectCard({ p }: { p: Project }) {
   const isExternal = Boolean(p.externalUrl);
   const s = status(p);
   return (
     <Link
       {...ProjectLinkProps(p)}
-      className="group flex h-full flex-col gap-5 overflow-hidden rounded-sm border border-border/40 bg-card/40 p-7 backdrop-blur-md transition-colors hover:border-orange/40 focus-visible:border-orange/40"
+      className="group flex h-full flex-col gap-5 overflow-hidden rounded-sm bg-card/30 p-7 backdrop-blur-md transition-colors hover:bg-card/45"
     >
       {SHOTS[p.slug] && (
         <div className="relative -mx-7 -mt-7 mb-1 aspect-[16/10] overflow-hidden border-b border-border">
@@ -49,7 +94,7 @@ function ProjectCard({ p }: { p: Project }) {
             src={SHOTS[p.slug]}
             alt={`${p.title} — screenshot`}
             fill
-            sizes="(min-width:1024px) 50vw, 100vw"
+            sizes="(min-width:1280px) 25vw, (min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
             className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
           />
           <div
@@ -106,137 +151,31 @@ function ProjectCard({ p }: { p: Project }) {
   );
 }
 
-const HEADER = (
-  <SectionHeader
-    titleId="work-heading"
-    eyebrow="/ 01 — SELECTED WORK"
-    title="THE WORK."
-    aside={
-      <Text variant="mono" className="max-w-[28ch] md:text-right">
-        {PROJECTS.length} PROJECTS.
-        <br />
-        LIVE APPS, DEMOS &amp; CASE STUDIES.
-      </Text>
-    }
-  />
-);
-
-/** Accessible / no-JS / reduced-motion fallback: a normal grid. */
-function WorkGrid() {
+export function WorkPreview() {
   return (
     <Section id="work" aria-labelledby="work-heading">
       <Container>
-        {HEADER}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <SectionHeader
+          titleId="work-heading"
+          eyebrow="/ 01 — SELECTED WORK"
+          title="THE WORK."
+          aside={
+            <Text variant="mono" className="max-w-[28ch] md:text-right">
+              {PROJECTS.length} PROJECTS.
+              <br />
+              LIVE APPS, DEMOS &amp; CASE STUDIES.
+            </Text>
+          }
+        />
+
+        <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {PROJECTS.map((p) => (
-            <Tilt
-              key={p.slug}
-              className="group relative h-full overflow-hidden rounded-sm"
-            >
+            <LineFrame key={p.slug}>
               <ProjectCard p={p} />
-            </Tilt>
+            </LineFrame>
           ))}
         </div>
       </Container>
-    </Section>
-  );
-}
-
-export function WorkPreview() {
-  const reduced = useReducedMotion();
-  const trackRef = useRef<HTMLDivElement>(null);
-  const screenRef = useRef<HTMLDivElement>(null);
-  const rowRef = useRef<HTMLDivElement>(null);
-  const idxRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    if (reduced) return;
-    const track = trackRef.current;
-    const screen = screenRef.current;
-    const row = rowRef.current;
-    if (!track || !screen || !row) return;
-    const n = PROJECTS.length;
-    let raf = 0;
-    let running = false;
-
-    const place = () => {
-      const r = track.getBoundingClientRect();
-      const span = r.height - window.innerHeight;
-      const prog = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
-      const af = prog * (n - 1);
-      const w = screen.clientWidth;
-      row.style.transform = `translate3d(${(-af * w).toFixed(2)}px,0,0)`;
-      const kids = row.children;
-      for (let i = 0; i < kids.length; i++) {
-        const el = kids[i] as HTMLElement;
-        const d = Math.abs(i - af);
-        const o = Math.max(0, 1 - d * 1.7);
-        el.style.opacity = o.toFixed(3);
-        el.style.transform = `scale(${(1 - Math.min(d, 1) * 0.07).toFixed(3)})`;
-        el.style.pointerEvents = d < 0.5 ? "auto" : "none";
-      }
-      if (idxRef.current) {
-        idxRef.current.textContent = String(
-          Math.min(n, Math.round(af) + 1),
-        ).padStart(2, "0");
-      }
-    };
-
-    const tick = () => {
-      place();
-      running = false;
-    };
-    const onScroll = () => {
-      if (running) return;
-      running = true;
-      raf = requestAnimationFrame(tick);
-    };
-    place();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [reduced]);
-
-  if (reduced) return <WorkGrid />;
-
-  return (
-    <Section id="work" aria-labelledby="work-heading" pad="none">
-      <Container className="px-6 pt-28 md:px-10 md:pt-40">{HEADER}</Container>
-      <div
-        ref={trackRef}
-        className="relative"
-        style={{ height: `${PROJECTS.length * 55 + 50}vh` }}
-      >
-        <div className="sticky top-0 flex h-screen flex-col items-center justify-center gap-5 px-4 md:px-10">
-          <div className="flex w-full max-w-[1000px] items-center justify-between px-1">
-            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground">
-              <span ref={idxRef}>01</span> / {String(PROJECTS.length).padStart(2, "0")}
-            </span>
-            <span className="f-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground">
-              SCROLL ↓
-            </span>
-          </div>
-          <div
-            ref={screenRef}
-            className="relative aspect-[3/4] w-full max-w-[1000px] overflow-hidden rounded-md sm:aspect-[16/10]"
-          >
-            <div ref={rowRef} className="absolute inset-0 flex h-full will-change-transform">
-              {PROJECTS.map((p) => (
-                <div
-                  key={p.slug}
-                  className="h-full w-full shrink-0 p-3 sm:p-6"
-                >
-                  <ProjectCard p={p} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </Section>
   );
 }
